@@ -380,7 +380,6 @@
   <div id="cloud">CLOUD: <span id="cloudState">OFF</span></div>
   <div id="toast">OK</div>
 
-  <!-- LANDING -->
   <section id="landing">
     <div class="landingWrap">
       <div class="hero">
@@ -424,7 +423,6 @@
     </div>
   </section>
 
-  <!-- APP -->
   <section id="app" class="appShell">
     <div class="app">
       <aside class="sidebar">
@@ -464,7 +462,6 @@
     </div>
   </section>
 
-  <!-- MODALS -->
   <div class="modal" id="mCreate">
     <div class="modalBox">
       <h3>Créer un dossier personnage</h3>
@@ -585,7 +582,6 @@
     </div>
   </div>
 
-  <!-- Firebase (modules) -->
   <script type="module">
     /******************************************************************
      * 0) Firebase imports
@@ -601,14 +597,15 @@
      * 1) Firebase config — YOU MUST FILL THIS
      ******************************************************************/
     const firebaseConfig = {
-  apiKey: "AIzaSyDgXHDBR8mN9OLXtv8syODzatGFFs7E5js",
-  authDomain: "grandline-parisrp.firebaseapp.com",
-  projectId: "grandline-parisrp",
-  storageBucket: "grandline-parisrp.firebasestorage.app",
-  messagingSenderId: "534184720773",
-  appId: "1:534184720773:web:67e5d5c21e4db0cfc06cec",
-  measurementId: "G-2SD0NEHV3Q"
-};
+      apiKey: "AIzaSyDgXHDBR8mN9OLXtv8syODzatGFFs7E5js",
+      authDomain: "grandline-parisrp.firebaseapp.com",
+      projectId: "grandline-parisrp",
+      storageBucket: "grandline-parisrp.firebasestorage.app",
+      messagingSenderId: "534184720773",
+      appId: "1:534184720773:web:67e5d5c21e4db0cfc06cec",
+      measurementId: "G-2SD0NEHV3Q"
+    };
+
     /******************************************************************
      * 2) Basic utils
      ******************************************************************/
@@ -2019,7 +2016,7 @@
           <h2>Timeline</h2>
           <pre>${escapeHtml(JSON.stringify(activeProfile.data?.timeline?.events||[], null, 2))}</pre>
         </div>
-        <script>window.print();</script>
+        <script>window.print();<\/script>
         </body></html>
       `);
       w.document.close();
