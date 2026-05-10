@@ -26,7 +26,7 @@
       color:var(--text);
       background:
         linear-gradient(to bottom, rgba(4, 4, 6, 0.85), rgba(4, 4, 6, 0.98)),
-        url('fond.jpg') center/cover fixed;
+        url('fond.png') center/cover fixed;
     }
     
     button, input, textarea, select{font-family:inherit}
@@ -536,13 +536,13 @@
 
   <div class="modal" id="mTools">
     <div class="modalBox">
-      <h3>Outils</h3>
+      <h3>Outils Systèmes</h3>
 
       <div class="panel">
         <div class="toggleRow">
           <div>
-            <div style="font-weight:900">Export / Import</div>
-            <div class="muted" style="font-size:12px;line-height:1.6">Backup JSON de ce profil (utile si tu changes de cloud ou pour debug).</div>
+            <div style="font-weight:900">Export / Import JSON</div>
+            <div class="muted" style="font-size:12px;line-height:1.6">Backup JSON de ce profil (utile pour debug ou sauver une copie).</div>
           </div>
           <div style="display:flex;gap:10px;flex-wrap:wrap">
             <button class="btn" id="export"><i class="fa-solid fa-file-export"></i> Export</button>
@@ -554,15 +554,24 @@
       <div class="panel">
         <div class="toggleRow">
           <div>
-            <div style="font-weight:900">Mode impression “Dossier Marine”</div>
-            <div class="muted" style="font-size:12px;line-height:1.6">Génère une page imprimable (PDF via “Imprimer” du navigateur).</div>
+            <div style="font-weight:900">Mode impression (Dossier RP)</div>
+            <div class="muted" style="font-size:12px;line-height:1.6">Génère un PDF du Lore et de l'identité pour présentation HRP.</div>
           </div>
           <button class="btn primary" id="print"><i class="fa-solid fa-print"></i> Imprimer</button>
         </div>
       </div>
 
+      <div class="panel" style="border-color: rgba(231, 76, 60, 0.4);">
+        <div class="toggleRow">
+          <div>
+            <div style="font-weight:900; color: var(--danger);">Zone de Danger (Suppression)</div>
+            <div class="muted" style="font-size:12px;line-height:1.6">Détruit définitivement le dossier du Cloud. Action irréversible.</div>
+          </div>
+          <button class="btn danger" id="deleteProfileBtn"><i class="fa-solid fa-trash"></i> Supprimer ce dossier</button>
+        </div>
+      </div>
       <div class="modalActions">
-        <button class="btn primary" id="tClose">OK</button>
+        <button class="btn primary" id="tClose">Fermer</button>
       </div>
     </div>
   </div>
@@ -602,7 +611,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
     import {
       getFirestore, doc, setDoc, getDoc, onSnapshot, collection,
-      query, orderBy, limit, getDocs
+      query, orderBy, limit, getDocs, deleteDoc
     } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
     import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
 
@@ -971,7 +980,12 @@
       nav.textContent = "";
 
       const tabs = visibleTabsForViewer();
-      if(!tabs.find(t=>t.id===currentTabId) && tabs.length) currentTabId = tabs[0].id;
+      // ======= CORRECTION BUG ONGLETS =======
+      // On ne reset pas l'onglet si l'utilisateur est sur la page de config !
+      if(currentTabId !== "__tabs_settings__" && !tabs.find(t=>t.id===currentTabId) && tabs.length) {
+        currentTabId = tabs[0].id;
+      }
+      // =======================================
 
       for(const t of tabs){
         const btn = document.createElement("button");
@@ -986,7 +1000,7 @@
 
       if(unlocked){
         const s = document.createElement("button");
-        s.className = "sbBtn";
+        s.className = "sbBtn" + (currentTabId === "__tabs_settings__" ? " active" : "");
         s.innerHTML = `<i class="fa-solid fa-gear"></i> Onglets (config)`;
         s.addEventListener("click", ()=>{
           currentTabId = "__tabs_settings__";
@@ -1014,9 +1028,7 @@
       for(const [k,v] of Object.entries(attrs)){
         if(k==="class") node.className = v;
         else if(k==="html") node.innerHTML = v;
-        // ======== CORRECTION DU BUG DES BOUTONS ========
         else if(k.startsWith("on") && typeof v==="function") node.addEventListener(k.slice(2).toLowerCase(), v);
-        // ===============================================
         else node.setAttribute(k, v);
       }
       for(const c of children){
@@ -1125,6 +1137,18 @@
           el("div",{class:"panel"},[
             el("div",{class:"fieldLabel"},["Rôle / Job"]),
             editableDiv(idt.role, (v)=>{ deepSet(activeProfile,"data.identite.role",v); scheduleCloudSave(); })
+          ]),
+          el("div",{class:"panel"},[
+            el("div",{class:"fieldLabel"},["Physique"]),
+            editableDiv(idt.phys, (v)=>{ deepSet(activeProfile,"data.identite.phys",v); scheduleCloudSave(); })
+          ]),
+          el("div",{class:"panel"},[
+            el("div",{class:"fieldLabel"},["Signe distinctif"]),
+            editableDiv(idt.sign, (v)=>{ deepSet(activeProfile,"data.identite.sign",v); scheduleCloudSave(); })
+          ]),
+          el("div",{class:"panel"},[
+            el("div",{class:"fieldLabel"},["Voix"]),
+            editableDiv(idt.voice, (v)=>{ deepSet(activeProfile,"data.identite.voice",v); scheduleCloudSave(); })
           ])
         ])
       ]);
@@ -1700,7 +1724,7 @@
     }
 
     /******************************************************************
-     * 11) Tabs settings (rename/hide/reorder/public/private)
+     * 11) Tabs settings
      ******************************************************************/
     function renderTabsSettings(){
       const tabs = activeProfile.tabs || [];
@@ -1726,7 +1750,7 @@
                   el("input",{class:"input", value:t.title, onInput:(e)=>{ t.title=e.target.value; scheduleCloudSave(); renderApp(); }})
                 ]),
                 el("div",{},[
-                  el("div",{class:"fieldLabel"},["Icône (FontAwesome, ex: fa-scroll)"]),
+                  el("div",{class:"fieldLabel"},["Icône (FontAwesome)"]),
                   el("input",{class:"input", value:t.icon||"", onInput:(e)=>{ t.icon=e.target.value; scheduleCloudSave(); renderApp(); }})
                 ])
               ]),
@@ -1803,7 +1827,7 @@
     }
 
     /******************************************************************
-     * 13) Create profile (cloud)
+     * 13) Create profile
      ******************************************************************/
     function openCreateModal(){
       modal($("mCreate"), true);
@@ -1833,7 +1857,7 @@
       
       p.key = key;
       p.displayName = name;
-      p.data.identite.fullName = name;
+      if (p.data && p.data.identite) p.data.identite.fullName = name;
       p.public = true;
       p.meta = p.meta || {};
       p.meta.img = img || p.meta.img || "";
@@ -1855,7 +1879,7 @@
     }
 
     /******************************************************************
-     * 14) Tools: export/import/print
+     * 14) Tools: export/import/print/delete
      ******************************************************************/
     function exportActive(){
       const json = JSON.stringify(activeProfile, null, 2);
@@ -1883,34 +1907,55 @@
       }
     }
 
+    // ==== CORRECTION IMPRESSION PDF PROPRE ====
     function printProfile(){
       const w = window.open("", "_blank");
-      const name = activeProfile.displayName || activeProfile.key;
+      const p = activeProfile;
+      const name = p.displayName || p.key;
+      const idt = p.data?.identite || {};
+      const lore = p.data?.lore?.sections || [];
+      const timeline = p.data?.timeline?.events || [];
+
+      const idtHtml = `
+        <p><strong>Nom complet :</strong> ${idt.fullName||""}</p>
+        <p><strong>Âge :</strong> ${idt.age||""}</p>
+        <p><strong>Naissance :</strong> ${idt.birthdate||""} à ${idt.birthplace||""}</p>
+        <p><strong>Origines :</strong> ${idt.origins||""}</p>
+        <p><strong>Rôle :</strong> ${idt.role||""}</p>
+        <p><strong>Physique :</strong> ${idt.phys||""} - ${idt.sign||""}</p>
+        <p><strong>Voix :</strong> ${idt.voice||""}</p>
+      `;
+
+      const loreHtml = lore.map(s => `<h3>${escapeHtml(s.title)}</h3><p>${escapeHtml(s.text)}</p>`).join('');
+      const tlHtml = timeline.map(e => `<li><strong>${new Date(e.at).toLocaleDateString()} - ${escapeHtml(e.title)}:</strong> ${escapeHtml(e.text)}</li>`).join('');
+
       w.document.write(`
-        <html><head><title>${name} — Dossier</title>
+        <html><head><title>${name} — Dossier RP</title>
         <style>
-          body{font-family:Arial; padding:30px}
-          h1{margin:0 0 10px}
-          .stamp{position:fixed; top:20px; right:20px; border:2px solid #d00; padding:10px 14px; transform:rotate(8deg); font-weight:900}
-          .sec{margin:18px 0}
-          .muted{color:#666}
+          body{font-family:'Segoe UI', Arial, sans-serif; padding:40px; color:#111; line-height:1.6;}
+          h1{margin:0 0 5px; font-size:32px; border-bottom:2px solid #000; padding-bottom:10px; text-transform:uppercase;}
+          h2{margin-top:30px; font-size:20px; color:#333; border-bottom:1px solid #ccc; padding-bottom:5px; text-transform:uppercase;}
+          h3{margin-top:20px; font-size:16px; color:#555;}
+          .stamp{position:fixed; top:30px; right:40px; border:3px solid #d00; color:#d00; padding:10px 15px; transform:rotate(8deg); font-weight:900; font-size:18px; border-radius:4px;}
+          .ref{color:#666; font-family:monospace; margin-bottom:30px;}
+          p{margin:8px 0;}
+          ul{padding-left:20px;}
+          li{margin-bottom:10px;}
         </style></head><body>
         <div class="stamp">GRANDLINE // CONFIDENTIEL</div>
-        <h1>${name}</h1>
-        <div class="muted">${activeProfile.meta?.ref||""}</div>
-        <div class="sec">
-          <h2>Identité</h2>
-          <pre>${escapeHtml(JSON.stringify(activeProfile.data?.identite||{}, null, 2))}</pre>
-        </div>
-        <div class="sec">
-          <h2>Lore</h2>
-          <pre>${escapeHtml(JSON.stringify(activeProfile.data?.lore?.sections||[], null, 2))}</pre>
-        </div>
-        <div class="sec">
-          <h2>Timeline</h2>
-          <pre>${escapeHtml(JSON.stringify(activeProfile.data?.timeline?.events||[], null, 2))}</pre>
-        </div>
-        <script>window.print();<\/script>
+        <h1>DOSSIER : ${escapeHtml(name)}</h1>
+        <div class="ref">REF: ${escapeHtml(p.meta?.ref||"INCONNUE")} | EXPORT OFFICIEL PARIS RP</div>
+        
+        <h2>1. Identité Civile</h2>
+        ${idtHtml}
+
+        <h2>2. Histoire et Rapports</h2>
+        ${loreHtml || "<p>Aucune donnée d'histoire.</p>"}
+
+        <h2>3. Chronologie (Timeline)</h2>
+        <ul>${tlHtml || "<li>Aucun événement enregistré.</li>"}</ul>
+        
+        <script>setTimeout(() => window.print(), 500);<\/script>
         </body></html>
       `);
       w.document.close();
@@ -1946,6 +1991,24 @@
     $("iCancel").addEventListener("click", ()=>modal($("mImport"), false));
     $("iOk").addEventListener("click", importActive);
     $("print").addEventListener("click", printProfile);
+
+    // ======= NOUVEL EVENT POUR SUPPRIMER LE PROFIL =======
+    $("deleteProfileBtn").addEventListener("click", async ()=>{
+      if(!unlocked) return toast("Déverrouille le profil d'abord");
+      if(activeKey === "harry" || activeKey === "seya") return toast("Impossible de supprimer les profils de base");
+      
+      if(confirm("ATTENTION: Veux-tu vraiment supprimer DÉFINITIVEMENT ce profil du Cloud ? (Action irréversible)")){
+        try {
+          await deleteDoc(doc(db, "profiles", activeKey));
+          toast("Profil supprimé !");
+          modal($("mTools"), false);
+          backToLanding();
+        } catch(e) {
+          console.error(e);
+          toast("Erreur de suppression");
+        }
+      }
+    });
 
     document.addEventListener("keydown", (e)=>{
       if(e.key==="/" && document.activeElement?.tagName!=="INPUT" && document.activeElement?.tagName!=="TEXTAREA"){
