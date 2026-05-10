@@ -38,7 +38,6 @@
     .logo-main { height: 90px; width: auto; max-width: 300px; object-fit: contain; display: block; filter: drop-shadow(0 0 10px rgba(212,175,55, 0.5)); }
     .logo-sidebar { height: 80px; width: auto; max-width: 200px; object-fit: contain; display: block; margin: 0 auto 15px auto; filter: drop-shadow(0 0 5px rgba(212,175,55, 0.5)); }
 
-    /* === STYLE DE L'AVATAR DANS LA SIDEBAR === */
     .avatar-sidebar {
       height: 100px; width: 100px; border-radius: 50%; object-fit: cover; object-position: center;
       display: block; margin: 0 auto 15px auto; border: 2px solid var(--goldDim); box-shadow: 0 5px 15px rgba(0,0,0,0.5);
@@ -59,14 +58,13 @@
     .btn.small{padding:8px 10px;font-size:11px;border-radius:12px}
     .btn:disabled{opacity:.45;cursor:not-allowed; filter: grayscale(100%);}
 
-    /* ======= CREDIT STYLE ======= */
     .credit-landing {
       position: fixed; bottom: 20px; right: 30px; font-family: "Share Tech Mono"; font-size: 13px;
       color: var(--muted); letter-spacing: 1px; z-index: 10; display:flex; align-items:center; gap:8px;
     }
     .credit-landing a { color: var(--gold); font-weight: bold; text-decoration: none; }
     .credit-landing a:hover { text-decoration: underline; }
-    .admin-icon { cursor: pointer; transition: 0.2s; }
+    .admin-icon { cursor: pointer; transition: 0.2s; padding:5px; }
     .admin-icon:hover { color: var(--gold); transform: scale(1.1); }
 
     .dev-credit-sidebar { font-family: "Share Tech Mono", monospace; font-size: 10px; color: #444; text-align: center; margin-top: 15px; padding-top: 10px; border-top: 1px solid #1f1f26; }
@@ -301,7 +299,6 @@
       <aside class="sidebar">
         <div class="sbHead">
           <img id="sbProfileImage" src="logo.png" alt="Avatar" class="logo-sidebar" style="display:none;">
-          
           <h2 id="sbName">DOSSIER</h2>
           <p>v7.0 // GRANDLINE FILESYSTEM</p>
           <div class="sbMeta">
@@ -347,7 +344,7 @@
         <input id="adminPwd" type="password" class="input" placeholder="Mot de passe...">
       </div>
       <div class="modalActions" style="margin-top:15px;">
-        <button class="btn" onclick="closeModal('mAdminAuth')">Annuler</button>
+        <button class="btn" id="btnCloseAdminAuth">Annuler</button>
         <button class="btn danger" id="btnAdminLogin">Connexion</button>
       </div>
     </div>
@@ -356,7 +353,6 @@
   <div class="modal" id="mAdminPanel">
     <div class="modalBox" style="width:min(500px, 95vw);">
       <h3 style="color:var(--danger);"><i class="fa-solid fa-server"></i> Panel Administration</h3>
-      
       <div class="panel" style="margin-top:20px; border-color: rgba(231, 76, 60, 0.3);">
         <div class="toggleRow">
           <div>
@@ -369,9 +365,8 @@
           </label>
         </div>
       </div>
-
       <div class="modalActions">
-        <button class="btn primary" onclick="closeModal('mAdminPanel')">Fermer le panel</button>
+        <button class="btn primary" id="btnCloseAdminPanel">Fermer le panel</button>
       </div>
     </div>
   </div>
@@ -483,23 +478,6 @@
     </div>
   </div>
 
-  <div class="modal" id="modalGallery">
-    <div class="modalBox">
-      <h3>Ajouter Photo</h3>
-      <div class="formGroup">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-          <label style="margin:0;">Image (URL ou Fichier)</label>
-          <button type="button" class="btn small primary" id="btnUploadGallery"><i class="fa-solid fa-upload"></i> Importer du PC</button>
-        </div>
-        <input type="text" id="galleryUrl" class="input" placeholder="Ex: screen1.png ou import PC">
-      </div>
-      <div class="modalActions">
-        <button class="btn" onclick="closeModal('modalGallery')" style="background:transparent; border-color:#555; color:#888;">Annuler</button>
-        <button class="btn primary" onclick="addPhoto()">Ajouter</button>
-      </div>
-    </div>
-  </div>
-
   <div class="modal" id="mHelp">
     <div class="modalBox">
       <h3>Aide</h3>
@@ -536,85 +514,116 @@
     };
 
     const $ = (id)=>document.getElementById(id);
-    window.closeModal = function(id) { $(id).classList.remove('show'); }
-
-    let currentRouletteResult = "EN ATTENTE…"; 
     
-    // === CONFIGURATION ADMIN ===
-    const ADMIN_PASSWORD = "ruubix_master"; // <--- CHANGE CE MOT DE PASSE ICI SI TU VEUX
-    let isGlobalCreationAllowed = true; 
-    let sysConfigRef = null;
-
+    // Utilitaires de base
+    function modal(el, show){ el.classList.toggle("show", !!show); }
     function toast(msg){
-      const t = $("toast");
-      t.textContent = msg;
-      t.classList.add("show");
+      const t = $("toast"); t.textContent = msg; t.classList.add("show");
       setTimeout(()=>t.classList.remove("show"), 1600);
     }
-
-    function uid(){
-      const r = (crypto?.getRandomValues) ? crypto.getRandomValues(new Uint32Array(2)) : [Date.now(), Math.random()*1e9];
-      return "id_" + r[0].toString(16) + r[1].toString(16);
-    }
-
-    function hashPin(pin){
-      let h = 5381;
-      for(let i=0;i<pin.length;i++) h = ((h<<5)+h) + pin.charCodeAt(i);
-      return "h" + (h>>>0).toString(16);
-    }
-
-    function slugify(s){
-      return (s||"")
-        .toLowerCase()
-        .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
-        .replace(/[^a-z0-9]+/g,"-")
-        .replace(/(^-|-$)/g,"")
-        .slice(0, 32) || ("user-"+Math.floor(Math.random()*9999));
-    }
-
-    function deepSet(obj, path, value){
-      const parts = path.split(".");
-      let cur = obj;
-      for(let i=0;i<parts.length-1;i++){
-        const k = parts[i];
-        if(typeof cur[k] !== "object" || cur[k]===null) cur[k] = {};
-        cur = cur[k];
-      }
-      cur[parts[parts.length-1]] = value;
-    }
+    function uid(){ const r = (crypto?.getRandomValues) ? crypto.getRandomValues(new Uint32Array(2)) : [Date.now(), Math.random()*1e9]; return "id_" + r[0].toString(16) + r[1].toString(16); }
+    function hashPin(pin){ let h = 5381; for(let i=0;i<pin.length;i++) h = ((h<<5)+h) + pin.charCodeAt(i); return "h" + (h>>>0).toString(16); }
+    function slugify(s){ return (s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/(^-|-$)/g,"").slice(0, 32) || ("user-"+Math.floor(Math.random()*9999)); }
+    function deepSet(obj, path, value){ const parts = path.split("."); let cur = obj; for(let i=0;i<parts.length-1;i++){ const k = parts[i]; if(typeof cur[k] !== "object" || cur[k]===null) cur[k] = {}; cur = cur[k]; } cur[parts[parts.length-1]] = value; }
 
     window.processImageUpload = function(file, callback) {
       if(!file) return;
       if(file.type.indexOf('image') === -1) return toast("Ce n'est pas une image.");
-      
       toast("Chargement...");
       const reader = new FileReader();
       reader.onload = (e) => {
         const img = new Image();
         img.onload = () => {
           const canvas = document.createElement("canvas");
-          const MAX_SIZE = 600;
-          let width = img.width;
-          let height = img.height;
+          const MAX_SIZE = 600; let width = img.width; let height = img.height;
           if (width > height) { if (width > MAX_SIZE) { height *= MAX_SIZE / width; width = MAX_SIZE; } } 
           else { if (height > MAX_SIZE) { width *= MAX_SIZE / height; height = MAX_SIZE; } }
           canvas.width = width; canvas.height = height;
           const ctx = canvas.getContext("2d"); ctx.drawImage(img, 0, 0, width, height);
-          const dataUrl = canvas.toDataURL("image/jpeg", 0.6);
-          callback(dataUrl);
+          callback(canvas.toDataURL("image/jpeg", 0.6));
         };
         img.src = e.target.result;
       };
       reader.readAsDataURL(file);
     }
 
-    const PIN_HARRY = "15122004";
-    const PIN_SEYA  = "11111110";
+    // Variables globales
+    let currentRouletteResult = "EN ATTENTE…"; 
+    const ADMIN_PASSWORD = "ruubix_master"; 
+    let isGlobalCreationAllowed = true; 
+    let sysConfigRef = null;
+    let profilesCache = new Map(); 
+    let activeKey = null; 
+    let activeProfile = null; 
+    let unlocked = false; 
+    let unsubscribeActive = null;
+    let saveTimer = null;
+    let currentTabId = "identite";
+    
+    // =========================================================================
+    // ETAPE 1 : ATTACHER TOUS LES BOUTONS (MÊME SI FIREBASE CRASHE)
+    // =========================================================================
+    
+    // Boutons de navigation et menus
+    $("mobileMenuBtn").addEventListener("click", () => { document.querySelector(".sidebar").classList.add("open"); $("sidebarOverlay").classList.add("open"); });
+    $("sidebarOverlay").addEventListener("click", () => { document.querySelector(".sidebar").classList.remove("open"); $("sidebarOverlay").classList.remove("open"); });
+    $("back").addEventListener("click", backToLanding);
+    $("q").addEventListener("input", renderLanding);
+    
+    // Boutons Admin
+    $("btnOpenAdminAuth").addEventListener("click", () => { modal($("mAdminAuth"), true); });
+    $("btnCloseAdminAuth").addEventListener("click", () => { modal($("mAdminAuth"), false); });
+    $("btnCloseAdminPanel").addEventListener("click", () => { modal($("mAdminPanel"), false); });
+    $("btnAdminLogin").addEventListener("click", () => {
+        if($("adminPwd").value === ADMIN_PASSWORD) {
+            toast("Accès autorisé"); modal($("mAdminAuth"), false); $("adminPwd").value = ""; modal($("mAdminPanel"), true);
+        } else { toast("Mot de passe incorrect"); }
+    });
+    $("adminToggleCreation").addEventListener("change", (e) => {
+        if(sysConfigRef) {
+            import { setDoc } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+            setDoc(sysConfigRef, { allowCreation: e.target.checked }, { merge: true }).catch(err=>console.error(err));
+            toast(e.target.checked ? "Création activée" : "Création désactivée");
+        }
+    });
 
+    // Boutons Création
+    $("btnCreate").addEventListener("click", openCreateModal);
+    $("cOk").addEventListener("click", createProfile);
+    $("cCancel").addEventListener("click", ()=>modal($("mCreate"), false));
+
+    // Boutons Unlock / Lock
+    $("unlock").addEventListener("click", openUnlockModal);
+    $("lock").addEventListener("click", lock);
+    $("uOk").addEventListener("click", unlock);
+    $("uCancel").addEventListener("click", ()=>modal($("mUnlock"), false));
+
+    // Outils & Modal divers
+    $("tools").addEventListener("click", ()=>modal($("mTools"), true));
+    $("tClose").addEventListener("click", ()=>modal($("mTools"), false));
+    $("export").addEventListener("click", exportActive);
+    $("importOpen").addEventListener("click", ()=>modal($("mImport"), true));
+    $("iCancel").addEventListener("click", ()=>modal($("mImport"), false));
+    $("iOk").addEventListener("click", importActive);
+    $("print").addEventListener("click", printProfile);
+    $("btnHelp").addEventListener("click", ()=>modal($("mHelp"), true));
+    $("hOk").addEventListener("click", ()=>modal($("mHelp"), false));
+
+    $("deleteProfileBtn").addEventListener("click", async ()=>{
+      if(!unlocked) return toast("Déverrouille d'abord");
+      if(activeKey === "harry" || activeKey === "seya") return toast("Impossible de supprimer les profils de base");
+      if(confirm("Supprimer définitivement ?")){ 
+          import { deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+          await deleteDoc(doc(db, "profiles", activeKey)); backToLanding(); modal($("mTools"), false);
+      }
+    });
+
+    // =========================================================================
+    // ETAPE 2 : CONFIGURATION DES DONNÉES PAR DÉFAUT
+    // =========================================================================
+    
     const defaultProfile = (key, name)=>({
-      key, displayName: name, public: true,
-      meta: { ref: "", img: "", tags: ["GRANDLINE", "PARIS RP"] },
-      security: { pinHash: "", fixedPin: false },
+      key, displayName: name, public: true, meta: { ref: "", img: "", tags: ["GRANDLINE", "PARIS RP"] }, security: { pinHash: "", fixedPin: false },
       tabs: [
         { id:"identite", type:"identite", title:"Identité", icon:"fa-id-card", visiblePublic:true, enabled:true },
         { id:"stats", type:"stats", title:"Stats", icon:"fa-chart-simple", visiblePublic:true, enabled:true },
@@ -688,78 +697,84 @@
       return p;
     };
 
+    // =========================================================================
+    // ETAPE 3 : INITIALISATION DE FIREBASE DANS UN BLOC SÉCURISÉ (TRY/CATCH)
+    // =========================================================================
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const auth = getAuth(app);
-
-    $("cloudState").textContent = "CONNECTING";
-    let uidAuth = null;
-
-    onAuthStateChanged(auth, (user)=>{
-      if(user){ 
-          uidAuth = user.uid; 
-          $("viewerChip").innerHTML = `<i class="fa-solid fa-user"></i> uid:${uidAuth.slice(0,6)}…`; 
-          $("cloudState").textContent = "ON"; 
-      }
-    });
-
-    await signInAnonymously(auth);
-    toast("Cloud connecté");
-
-    // === GESTION DU SYSTÈME GLOBAL (ADMIN) ===
-    sysConfigRef = doc(db, "system", "config");
-    onSnapshot(sysConfigRef, (snap) => {
-        if(snap.exists()) {
-            isGlobalCreationAllowed = snap.data().allowCreation;
-        } else {
-            // Si le doc n'existe pas encore, on le crée en autorisant par défaut
-            isGlobalCreationAllowed = true;
-            setDoc(sysConfigRef, { allowCreation: true });
-        }
-        
-        // Met à jour le bouton de création sur l'accueil
-        const btnCreate = $("btnCreate");
-        const toggleCreation = $("adminToggleCreation");
-        
-        if (btnCreate) {
-            if(isGlobalCreationAllowed) {
-                btnCreate.disabled = false;
-                btnCreate.innerHTML = '<i class="fa-solid fa-user-plus"></i> Créer mon perso';
-                btnCreate.style.filter = "none";
-            } else {
-                btnCreate.disabled = true;
-                btnCreate.innerHTML = '<i class="fa-solid fa-lock"></i> Douane fermée';
-                btnCreate.style.filter = "grayscale(100%)";
-            }
-        }
-        
-        // Met à jour le visuel du panel admin si ouvert
-        if (toggleCreation) {
-            toggleCreation.checked = isGlobalCreationAllowed;
-        }
-    });
-    // ==========================================
-
     const profilesCol = collection(db, "profiles");
+    
+    async function bootFirebase() {
+        try {
+            $("cloudState").textContent = "CONNECTING";
+            onAuthStateChanged(auth, (user)=>{
+              if(user){ 
+                  uidAuth = user.uid; 
+                  $("viewerChip").innerHTML = `<i class="fa-solid fa-user"></i> uid:${uidAuth.slice(0,6)}…`; 
+                  $("cloudState").textContent = "ON"; 
+              }
+            });
 
-    async function ensureBaseProfilesExist(){
-      const hRef = doc(db, "profiles", "harry"); const sRef = doc(db, "profiles", "seya");
-      const [hSnap, sSnap] = await Promise.all([getDoc(hRef), getDoc(sRef)]);
-      if(!hSnap.exists()) await setDoc(hRef, harryProfile()); 
-      if(!sSnap.exists()) await setDoc(sRef, seyaProfile());
+            await signInAnonymously(auth);
+            toast("Cloud connecté");
+
+            // Initialisation configuration système avec gestion des erreurs
+            sysConfigRef = doc(db, "system", "config");
+            onSnapshot(sysConfigRef, (snap) => {
+                if(snap.exists()) {
+                    isGlobalCreationAllowed = snap.data().allowCreation;
+                } else {
+                    import { setDoc } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+                    isGlobalCreationAllowed = true;
+                    setDoc(sysConfigRef, { allowCreation: true }).catch(err=>console.warn("Write sys block:", err.message));
+                }
+                
+                const btnCreate = $("btnCreate");
+                const toggleCreation = $("adminToggleCreation");
+                
+                if (btnCreate) {
+                    if(isGlobalCreationAllowed) {
+                        btnCreate.disabled = false;
+                        btnCreate.innerHTML = '<i class="fa-solid fa-user-plus"></i> Créer mon perso';
+                        btnCreate.style.filter = "none";
+                    } else {
+                        btnCreate.disabled = true;
+                        btnCreate.innerHTML = '<i class="fa-solid fa-lock"></i> Douane fermée';
+                        btnCreate.style.filter = "grayscale(100%)";
+                    }
+                }
+                if (toggleCreation) {
+                    toggleCreation.checked = isGlobalCreationAllowed;
+                }
+            }, (error) => {
+                console.warn("Lecture configuration Admin bloquée par les règles :", error.message);
+                // Si bloqué, on laisse ouvert par défaut pour que l'app fonctionne quand même.
+            });
+
+            // Base profiles
+            const hRef = doc(db, "profiles", "harry"); const sRef = doc(db, "profiles", "seya");
+            const [hSnap, sSnap] = await Promise.all([getDoc(hRef), getDoc(sRef)]);
+            import { setDoc } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+            if(!hSnap.exists()) await setDoc(hRef, harryProfile()); 
+            if(!sSnap.exists()) await setDoc(sRef, seyaProfile());
+
+            await refreshProfilesList();
+            
+        } catch (error) {
+            console.error("Erreur critique Firebase :", error);
+            toast("Erreur base de données");
+        }
     }
-    await ensureBaseProfilesExist();
+    
+    // On lance Firebase
+    bootFirebase();
 
-    let profilesCache = new Map(); 
-    let activeKey = null; 
-    let activeProfile = null; 
-    let unlocked = false; 
-    let unsubscribeActive = null;
+    // =========================================================================
+    // ETAPE 4 : LOGIQUE DE L'APPLICATION
+    // =========================================================================
 
-    let saveTimer = null;
-    function setSaveState(text){ 
-        $("saveChip").innerHTML = `<i class="fa-solid fa-floppy-disk"></i> ${text}`; 
-    }
+    function setSaveState(text){ $("saveChip").innerHTML = `<i class="fa-solid fa-floppy-disk"></i> ${text}`; }
 
     function scheduleCloudSave(){
       if(!unlocked) return;
@@ -768,6 +783,7 @@
       saveTimer = setTimeout(async ()=>{
         try{
           activeProfile.updatedAt = Date.now();
+          import { setDoc } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
           await setDoc(doc(db, "profiles", activeKey), activeProfile, { merge:true });
           setSaveState("Saved");
         }catch(e){ 
@@ -826,14 +842,10 @@
         const hay = `${p.displayName||""} ${p.key||""} ${(p.data?.identite?.role||"")} ${(p.meta?.tags||[]).join(" ")}`.toLowerCase();
         if(q && !hay.includes(q)) continue;
         
-        const card = document.createElement("div"); 
-        card.className = "card";
+        const card = document.createElement("div"); card.className = "card";
+        const row = document.createElement("div"); row.className = "row";
+        const av = document.createElement("div"); av.className = "avatar";
         
-        const row = document.createElement("div"); 
-        row.className = "row";
-        
-        const av = document.createElement("div"); 
-        av.className = "avatar";
         const img = document.createElement("img"); 
         img.src = p.meta?.img || ""; 
         img.onerror = ()=> img.style.opacity = '0';
@@ -931,8 +943,6 @@
       refreshProfilesList();
     }
 
-    let currentTabId = "identite";
-
     function visibleTabsForViewer(){
       const tabs = activeProfile.tabs || [];
       return tabs.filter(t => t.enabled && (t.visiblePublic || unlocked));
@@ -954,10 +964,8 @@
         btn.addEventListener("click", ()=>{ 
             currentTabId = t.id; 
             currentRouletteResult = "EN ATTENTE…"; 
-            
             document.querySelector(".sidebar").classList.remove("open");
             $("sidebarOverlay").classList.remove("open");
-            
             renderApp(); 
         });
         nav.appendChild(btn);
@@ -969,10 +977,8 @@
         s.innerHTML = `<i class="fa-solid fa-gear"></i> Onglets (config)`;
         s.addEventListener("click", ()=>{ 
             currentTabId = "__tabs_settings__"; 
-            
             document.querySelector(".sidebar").classList.remove("open");
             $("sidebarOverlay").classList.remove("open");
-            
             renderApp(); 
         });
         nav.appendChild(s);
@@ -1152,7 +1158,7 @@
                 if(preview) { preview.src = base64; preview.style.opacity = '1'; }
                 scheduleCloudSave(); 
                 toast("Image uploadée !");
-                renderAppHeader();
+                renderAppHeader(); 
               });
               fi.click();
             }}, [el("i",{class:"fa-solid fa-upload"})," Parcourir"]) : null
@@ -1210,7 +1216,7 @@
           preview.src = url;
           preview.style.opacity = '1';
           scheduleCloudSave();
-          renderAppHeader();
+          renderAppHeader(); 
         });
       },0);
 
@@ -1274,6 +1280,9 @@
                 r.history.unshift({at:Date.now(), text:chosen.text}); 
                 r.history = r.history.slice(0,50);
                 scheduleCloudSave(); 
+                // Ne plus re-render tout l'écran ici pour ne pas écraser l'affichage du résultat
+                // On met juste à jour l'historique visuellement si on veut, mais c'est mieux de laisser tel quel 
+                // jusqu'au prochain changement d'onglet pour garder l'effet WOW.
                 renderApp(); 
             } 
         }, 90);
@@ -1299,6 +1308,16 @@
                   unlocked ? el("i",{class:"fa-solid fa-xmark", style:"margin-left:10px;cursor:pointer;", onClick:()=>{ r.options=r.options.filter(x=>x.id!==o.id); scheduleCloudSave(); renderApp(); }}) : null
               ])
           ))
+        ]),
+        el("div",{class:"panel"},[
+          el("div",{style:"font-weight:900;margin-bottom:10px"},["Historique"]),
+          el("div",{style:"display:flex;flex-direction:column;gap:8px"}, (r.history||[]).slice(0,12).map(h=>{
+            const d = new Date(h.at);
+            return el("div",{style:"display:flex;gap:10px;align-items:center;flex-wrap:wrap"},[
+              el("span",{class:"chip"},[d.toLocaleString()]),
+              el("span",{style:"color:#bbb"},[h.text])
+            ]);
+          }))
         ])
       ]);
     }
@@ -1758,40 +1777,7 @@
       return root;
     }
 
-    // === FONCTIONS GLOBALES ===
-    
-    $("mobileMenuBtn").addEventListener("click", () => {
-        document.querySelector(".sidebar").classList.add("open");
-        $("sidebarOverlay").classList.add("open");
-    });
-    
-    $("sidebarOverlay").addEventListener("click", () => {
-        document.querySelector(".sidebar").classList.remove("open");
-        $("sidebarOverlay").classList.remove("open");
-    });
-
-    $("btnOpenAdminAuth").addEventListener("click", () => {
-        modal($("mAdminAuth"), true);
-    });
-
-    $("btnAdminLogin").addEventListener("click", () => {
-        const pwd = $("adminPwd").value;
-        if(pwd === ADMIN_PASSWORD) {
-            toast("Accès autorisé");
-            modal($("mAdminAuth"), false);
-            $("adminPwd").value = "";
-            modal($("mAdminPanel"), true);
-        } else {
-            toast("Mot de passe incorrect");
-        }
-    });
-
-    $("adminToggleCreation").addEventListener("change", (e) => {
-        const newState = e.target.checked;
-        setDoc(sysConfigRef, { allowCreation: newState }, { merge: true });
-        toast(newState ? "Création activée" : "Création désactivée");
-    });
-
+    // === FONCTIONS GLOBALES (Modal, Déverrouillage) ===
     function openUnlockModal(){ $("uPin").value = ""; modal($("mUnlock"), true); }
     
     function unlock(){
@@ -1805,17 +1791,28 @@
     function lock(){ unlocked = false; setEditMode(false); toast("Verrouillé"); renderApp(); }
     
     function openCreateModal(){ 
-        if(!isGlobalCreationAllowed) return toast("La création de dossier est fermée par l'administration.");
-        modal($("mCreate"), true); 
-        fillDuplicateSelect(); 
+      if(!isGlobalCreationAllowed) return toast("La création de dossier est fermée par l'administration.");
+      modal($("mCreate"), true); 
+      fillDuplicateSelect(); 
     }
     
     async function createProfile(){
       if(!isGlobalCreationAllowed) return toast("Création refusée.");
       const name = ($("cName").value || "").trim() || "Dossier"; const key = slugify(($("cKey").value || "").trim() || name); const pin = ($("cPin").value || "").trim();
       if(pin.length < 4) return toast("PIN trop court");
+      
       const ref = doc(db, "profiles", key); const exists = await getDoc(ref); if(exists.exists()) return toast("ID déjà pris");
-      const p = defaultProfile(key, name); p.security.pinHash = hashPin(pin);
+      
+      const base = profilesCache.get($("cFrom").value) || harryProfile();
+      const p = JSON.parse(JSON.stringify(base)); 
+      
+      p.key = key; p.displayName = name; p.data.identite.fullName = name; p.public = true;
+      p.meta = p.meta || {}; p.meta.img = ($("cImg").value || "").trim(); p.meta.ref = "";
+      p.security = p.security || {}; p.security.fixedPin = false; p.security.pinHash = hashPin(pin);
+      p.updatedAt = Date.now();
+      p.data.timeline.events = []; p.data.goals.court = []; p.data.goals.long = []; p.data.roulette.history = [];
+
+      import { setDoc } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
       await setDoc(ref, p); toast("Profil créé !"); modal($("mCreate"), false); await refreshProfilesList();
     }
 
@@ -1833,16 +1830,13 @@
     async function importActive(){
       if(!unlocked) return toast("Déverrouille d'abord");
       try{
-        const raw = ($("importJson").value||"").trim();
-        const obj = JSON.parse(raw);
+        const raw = ($("importJson").value||"").trim(); const obj = JSON.parse(raw);
         if(!obj.key || obj.key !== activeKey) return toast("Le JSON doit correspondre à ce profil");
         activeProfile = obj;
+        import { setDoc } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
         await setDoc(doc(db,"profiles",activeKey), activeProfile, {merge:false});
-        modal($("mImport"), false);
-        toast("Import OK");
-      }catch(e){
-        alert("JSON invalide: " + e.message);
-      }
+        modal($("mImport"), false); toast("Import OK");
+      }catch(e){ alert("JSON invalide: " + e.message); }
     }
 
     function printProfile(){
@@ -1898,43 +1892,7 @@
       w.document.close();
     }
 
-    function escapeHtml(s){
-      return String(s ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");
-    }
-
-    $("q").addEventListener("input", renderLanding);
-    $("btnCreate").addEventListener("click", openCreateModal);
-    $("cOk").addEventListener("click", createProfile);
-    $("back").addEventListener("click", backToLanding);
-    $("unlock").addEventListener("click", openUnlockModal);
-    $("lock").addEventListener("click", lock);
-    $("uOk").addEventListener("click", unlock);
-    $("uCancel").addEventListener("click", ()=>modal($("mUnlock"), false));
-    $("cCancel").addEventListener("click", ()=>modal($("mCreate"), false));
-    $("tools").addEventListener("click", ()=>modal($("mTools"), true));
-    $("tClose").addEventListener("click", ()=>modal($("mTools"), false));
-    $("export").addEventListener("click", exportActive);
-    $("importOpen").addEventListener("click", ()=>modal($("mImport"), true));
-    $("iCancel").addEventListener("click", ()=>modal($("mImport"), false));
-    $("iOk").addEventListener("click", importActive);
-    $("print").addEventListener("click", printProfile);
-
-    $("deleteProfileBtn").addEventListener("click", async ()=>{
-      if(!unlocked) return toast("Déverrouille d'abord");
-      if(activeKey === "harry" || activeKey === "seya") return toast("Impossible de supprimer les profils de base");
-      if(confirm("Supprimer définitivement ?")){ await deleteDoc(doc(db, "profiles", activeKey)); backToLanding(); modal($("mTools"), false);}
-    });
-
-    document.addEventListener("keydown", (e)=>{
-      if(e.key==="/" && document.activeElement?.tagName!=="INPUT" && document.activeElement?.tagName!=="TEXTAREA"){
-        e.preventDefault(); $("q").focus();
-      }
-      if(e.key==="Escape"){
-        [$("mCreate"),$("mUnlock"),$("mTools"),$("mImport"),$("mHelp"), $("mAdminAuth"), $("mAdminPanel")].forEach(m=>m.classList.remove("show"));
-      }
-    });
-
-    await refreshProfilesList();
+    function escapeHtml(s){ return String(s ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;"); }
   </script>
 </body>
 </html>
