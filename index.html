@@ -19,24 +19,25 @@
       --shadow: 0 40px 120px rgba(0,0,0,1);
     }
     *{box-sizing:border-box;margin:0;padding:0}
+    
     body{
       height:100vh; overflow:hidden;
       font-family:Montserrat,system-ui;
       color:var(--text);
       background:
         linear-gradient(to bottom, rgba(4, 4, 6, 0.85), rgba(4, 4, 6, 0.98)),
-        url('fond.png') center/cover fixed;
+        url('fond.jpg') center/cover fixed;
     }
+    
     button, input, textarea, select{font-family:inherit}
     :focus-visible{outline:none;box-shadow:var(--focus);border-radius:12px}
     a{color:var(--gold)}
 
-    /* ======= LOGOS CORRIGÉS ======= */
     .logo-main {
       height: 60px; 
       width: auto;
       max-width: 250px;
-      object-fit: contain; /* Empêche l'écrasement de l'image */
+      object-fit: contain; 
       display: block;
       filter: drop-shadow(0 0 10px rgba(212,175,55, 0.5));
     }
@@ -44,13 +45,12 @@
       height: 40px; 
       width: auto;
       max-width: 200px;
-      object-fit: contain; /* Empêche l'écrasement de l'image */
+      object-fit: contain; 
       display: block;
       margin: 0 auto 15px auto;
       filter: drop-shadow(0 0 5px rgba(212,175,55, 0.5));
     }
 
-    /* ---------- GLOBAL UI ---------- */
     .btn{
       display:inline-flex; align-items:center; gap:10px;
       border-radius:14px;
@@ -100,7 +100,6 @@
     .kbd{font-family:"Share Tech Mono";font-size:11px;color:#999;border:1px solid #2a2a33;border-bottom-width:3px;border-radius:8px;padding:2px 8px;background:#0a0a0d}
     .muted{color:var(--muted)}
 
-    /* ---------- LANDING ---------- */
     #landing{
       position:fixed; inset:0;
       display:flex; align-items:center; justify-content:center;
@@ -205,7 +204,6 @@
     .badge.cloud{border-color:rgba(212,175,55,.22); color:#ffe7a1}
     .actions{display:flex; gap:10px; margin-top:12px; flex-wrap:wrap}
 
-    /* ---------- APP SHELL ---------- */
     #app{display:none}
     .appShell{
       position:fixed; inset:0;
@@ -318,24 +316,20 @@
     body.edit .editable{border-color:#2a2a33; cursor:text}
     body.edit .editable:focus{background:#0a0a0d; border-color:rgba(212,175,55,.7); outline:none}
 
-    /* Toggles / switches */
     .toggleRow{display:flex;align-items:center;justify-content:space-between;gap:12px}
     .switch{display:inline-flex;align-items:center;gap:10px}
     .switch input{width:18px;height:18px}
 
-    /* Stats bars */
     .stat{margin-bottom:12px}
     .statTop{display:flex;justify-content:space-between;gap:10px;color:#a6a6a6;font-size:12px;margin-bottom:6px}
     .bar{height:8px;border-radius:999px;background:#08080a;border:1px solid #1a1a20;overflow:hidden}
     .fill{height:100%;background:var(--gold)}
 
-    /* Timeline */
     .timelineItem{border:1px solid #1f1f26;background:#0a0a0d;border-radius:16px;padding:14px}
     .tlHead{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
     .tagRow{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
     .tag{font-family:"Share Tech Mono";font-size:11px;padding:4px 10px;border-radius:999px;border:1px solid #2a2a33;background:#07070a;color:#bbb}
 
-    /* Roulette */
     .result{
       font-family:"Share Tech Mono";
       background:#000;
@@ -351,11 +345,9 @@
     .spin{animation:glitch .08s infinite}
     @keyframes glitch{from{transform:translate(2px,0)}to{transform:translate(-2px,0)}}
 
-    /* Canvas */
     .canvasWrap{border:1px solid #1f1f26;background:#0a0a0d;border-radius:18px;overflow:hidden}
     canvas{display:block;width:100%;height:420px;touch-action:none}
 
-    /* Modal */
     .modal{display:none; position:fixed; inset:0; background:rgba(0,0,0,.88); backdrop-filter: blur(8px); z-index:50; padding:18px; align-items:center; justify-content:center}
     .modal.show{display:flex}
     .modalBox{
@@ -371,7 +363,6 @@
     .formGroup textarea{min-height:120px; resize:vertical}
     .modalActions{display:flex; justify-content:flex-end; gap:10px; margin-top:12px; flex-wrap:wrap}
 
-    /* Toast */
     #toast{
       position:fixed; bottom:30px; left:50%;
       transform:translateX(-50%) translateY(100px);
@@ -384,7 +375,6 @@
     }
     #toast.show{transform:translateX(-50%) translateY(0); opacity:1}
 
-    /* Debug indicator */
     #cloud{
       position:fixed; top:14px; right:14px; z-index:999;
       font-family:"Share Tech Mono";
@@ -869,7 +859,7 @@
         av.className = "avatar";
         const img = document.createElement("img");
         img.src = p.meta?.img || "";
-        img.onerror = ()=> img.style.opacity = '0'; // Cache l'image cassée pour laisser le fond noir
+        img.onerror = ()=> img.style.opacity = '0';
         av.appendChild(img);
 
         const info = document.createElement("div");
@@ -946,12 +936,9 @@
         }
         const newData = snap.data();
         
-        // ========= CORRECTION DU BUG D'ÉDITION =========
-        // Si l'utilisateur est en train d'éditer, on ignore les mises à jour Cloud qui viennent de lui-même pour ne pas lui faire perdre le focus.
         if (unlocked && activeProfile && newData.updatedAt <= activeProfile.updatedAt) {
             return; 
         }
-        // ================================================
 
         activeProfile = newData;
         profilesCache.set(key, activeProfile);
@@ -1027,7 +1014,9 @@
       for(const [k,v] of Object.entries(attrs)){
         if(k==="class") node.className = v;
         else if(k==="html") node.innerHTML = v;
-        else if(k.startsWith("on") && typeof v==="function") node.addEventListener(k.slice(2), v);
+        // ======== CORRECTION DU BUG DES BOUTONS ========
+        else if(k.startsWith("on") && typeof v==="function") node.addEventListener(k.slice(2).toLowerCase(), v);
+        // ===============================================
         else node.setAttribute(k, v);
       }
       for(const c of children){
@@ -1842,10 +1831,9 @@
       const base = profilesCache.get(from) || harryProfile();
       const p = JSON.parse(JSON.stringify(base)); 
       
-      // Corrections sur les attributs du clone
       p.key = key;
       p.displayName = name;
-      p.data.identite.fullName = name; // Corrige le bug où le clone gardait le nom d'Harry
+      p.data.identite.fullName = name;
       p.public = true;
       p.meta = p.meta || {};
       p.meta.img = img || p.meta.img || "";
