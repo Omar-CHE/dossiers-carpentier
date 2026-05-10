@@ -476,6 +476,23 @@
     </div>
   </div>
 
+  <div class="modal" id="modalGallery">
+    <div class="modalBox">
+      <h3>Ajouter Photo</h3>
+      <div class="formGroup">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <label style="margin:0;">Image (URL ou Fichier)</label>
+          <button type="button" class="btn small primary" id="btnUploadGallery"><i class="fa-solid fa-upload"></i> Importer du PC</button>
+        </div>
+        <input type="text" id="galleryUrl" class="input" placeholder="Ex: screen1.png ou import PC">
+      </div>
+      <div class="modalActions">
+        <button class="btn" onclick="closeModal('modalGallery')" style="background:transparent; border-color:#555; color:#888;">Annuler</button>
+        <button class="btn primary" onclick="addPhoto()">Ajouter</button>
+      </div>
+    </div>
+  </div>
+
   <div class="modal" id="mHelp">
     <div class="modalBox">
       <h3>Aide</h3>
@@ -494,62 +511,71 @@
   </div>
 
   <script type="module">
-    // -------------------------------------------------------------------------
+    // =========================================================================
     // 1. ATTACHEMENT SÉCURISÉ DES ÉVÉNEMENTS (Garantit que l'UI marche)
-    // -------------------------------------------------------------------------
+    // =========================================================================
     const $ = (id)=>document.getElementById(id);
     
-    function modal(el, show){ el.classList.toggle("show", !!show); }
-    function toast(msg){
-      const t = $("toast"); t.textContent = msg; t.classList.add("show");
-      setTimeout(()=>t.classList.remove("show"), 1600);
+    function modal(el, show){ 
+        if(el) el.classList.toggle("show", !!show); 
     }
     
-    $("mobileMenuBtn").addEventListener("click", () => { document.querySelector(".sidebar").classList.add("open"); $("sidebarOverlay").classList.add("open"); });
-    $("sidebarOverlay").addEventListener("click", () => { document.querySelector(".sidebar").classList.remove("open"); $("sidebarOverlay").classList.remove("open"); });
-    $("back").addEventListener("click", backToLanding);
-    $("q").addEventListener("input", renderLanding);
+    function toast(msg){
+      const t = $("toast"); 
+      if(t) {
+          t.textContent = msg; t.classList.add("show");
+          setTimeout(()=>t.classList.remove("show"), 1600);
+      }
+    }
     
-    $("btnOpenAdminAuth").addEventListener("click", () => { modal($("mAdminAuth"), true); });
-    $("btnCloseAdminAuth").addEventListener("click", () => { modal($("mAdminAuth"), false); });
-    $("btnCloseAdminPanel").addEventListener("click", () => { modal($("mAdminPanel"), false); });
-    $("btnAdminLogin").addEventListener("click", () => {
+    if($("mobileMenuBtn")) $("mobileMenuBtn").addEventListener("click", () => { document.querySelector(".sidebar").classList.add("open"); $("sidebarOverlay").classList.add("open"); });
+    if($("sidebarOverlay")) $("sidebarOverlay").addEventListener("click", () => { document.querySelector(".sidebar").classList.remove("open"); $("sidebarOverlay").classList.remove("open"); });
+    if($("back")) $("back").addEventListener("click", backToLanding);
+    if($("q")) $("q").addEventListener("input", renderLanding);
+    
+    if($("btnOpenAdminAuth")) $("btnOpenAdminAuth").addEventListener("click", () => { modal($("mAdminAuth"), true); });
+    if($("btnCloseAdminAuth")) $("btnCloseAdminAuth").addEventListener("click", () => { modal($("mAdminAuth"), false); });
+    if($("btnCloseAdminPanel")) $("btnCloseAdminPanel").addEventListener("click", () => { modal($("mAdminPanel"), false); });
+    if($("btnAdminLogin")) $("btnAdminLogin").addEventListener("click", () => {
         if($("adminPwd").value === ADMIN_PASSWORD) {
             toast("Accès autorisé"); modal($("mAdminAuth"), false); $("adminPwd").value = ""; modal($("mAdminPanel"), true);
         } else { toast("Mot de passe incorrect"); }
     });
 
-    $("btnCreate").addEventListener("click", openCreateModal);
-    $("cOk").addEventListener("click", createProfile);
-    $("cCancel").addEventListener("click", ()=>modal($("mCreate"), false));
+    if($("btnCreate")) $("btnCreate").addEventListener("click", openCreateModal);
+    if($("cOk")) $("cOk").addEventListener("click", createProfile);
+    if($("cCancel")) $("cCancel").addEventListener("click", ()=>modal($("mCreate"), false));
 
-    $("unlock").addEventListener("click", openUnlockModal);
-    $("lock").addEventListener("click", lock);
-    $("uOk").addEventListener("click", unlock);
-    $("uCancel").addEventListener("click", ()=>modal($("mUnlock"), false));
+    if($("unlock")) $("unlock").addEventListener("click", openUnlockModal);
+    if($("lock")) $("lock").addEventListener("click", lock);
+    if($("uOk")) $("uOk").addEventListener("click", unlock);
+    if($("uCancel")) $("uCancel").addEventListener("click", ()=>modal($("mUnlock"), false));
 
-    $("tools").addEventListener("click", ()=>modal($("mTools"), true));
-    $("tClose").addEventListener("click", ()=>modal($("mTools"), false));
-    $("export").addEventListener("click", exportActive);
-    $("importOpen").addEventListener("click", ()=>modal($("mImport"), true));
-    $("iCancel").addEventListener("click", ()=>modal($("mImport"), false));
-    $("iOk").addEventListener("click", importActive);
-    $("print").addEventListener("click", printProfile);
-    $("btnHelp").addEventListener("click", ()=>modal($("mHelp"), true));
-    $("hOk").addEventListener("click", ()=>modal($("mHelp"), false));
+    if($("tools")) $("tools").addEventListener("click", ()=>modal($("mTools"), true));
+    if($("tClose")) $("tClose").addEventListener("click", ()=>modal($("mTools"), false));
+    if($("export")) $("export").addEventListener("click", exportActive);
+    if($("importOpen")) $("importOpen").addEventListener("click", ()=>modal($("mImport"), true));
+    if($("iCancel")) $("iCancel").addEventListener("click", ()=>modal($("mImport"), false));
+    if($("iOk")) $("iOk").addEventListener("click", importActive);
+    if($("print")) $("print").addEventListener("click", printProfile);
+    if($("btnHelp")) $("btnHelp").addEventListener("click", ()=>modal($("mHelp"), true));
+    if($("hOk")) $("hOk").addEventListener("click", ()=>modal($("mHelp"), false));
 
     document.addEventListener("keydown", (e)=>{
       if(e.key==="/" && document.activeElement?.tagName!=="INPUT" && document.activeElement?.tagName!=="TEXTAREA"){
-        e.preventDefault(); $("q").focus();
+        e.preventDefault(); if($("q")) $("q").focus();
       }
       if(e.key==="Escape"){
-        [$("mCreate"),$("mUnlock"),$("mTools"),$("mImport"),$("mHelp"), $("mAdminAuth"), $("mAdminPanel")].forEach(m=>m.classList.remove("show"));
+        ["mCreate","mUnlock","mTools","mImport","mHelp","mAdminAuth","mAdminPanel","modalGallery"].forEach(id=>{
+            const m = $(id);
+            if(m) m.classList.remove("show");
+        });
       }
     });
 
-    // -------------------------------------------------------------------------
+    // =========================================================================
     // 2. IMPORTS ET VARIABLES GLOBALES
-    // -------------------------------------------------------------------------
+    // =========================================================================
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
     import { getFirestore, doc, setDoc, getDoc, onSnapshot, collection, query, orderBy, limit, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
     import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
@@ -579,9 +605,9 @@
     let auth = null;
     let profilesCol = null;
 
-    // -------------------------------------------------------------------------
+    // =========================================================================
     // 3. FONCTIONS UTILITAIRES
-    // -------------------------------------------------------------------------
+    // =========================================================================
     function uid(){ const r = (crypto?.getRandomValues) ? crypto.getRandomValues(new Uint32Array(2)) : [Date.now(), Math.random()*1e9]; return "id_" + r[0].toString(16) + r[1].toString(16); }
     function hashPin(pin){ let h = 5381; for(let i=0;i<pin.length;i++) h = ((h<<5)+h) + pin.charCodeAt(i); return "h" + (h>>>0).toString(16); }
     function slugify(s){ return (s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/(^-|-$)/g,"").slice(0, 32) || ("user-"+Math.floor(Math.random()*9999)); }
@@ -686,93 +712,90 @@
       return p;
     };
 
-    // -------------------------------------------------------------------------
-    // 5. INITIALISATION DE FIREBASE SÉCURISÉE
-    // -------------------------------------------------------------------------
-    try {
-        const app = initializeApp(firebaseConfig);
-        db = getFirestore(app);
-        auth = getAuth(app);
-        profilesCol = collection(db, "profiles");
+    // =========================================================================
+    // 4. INITIALISATION DE FIREBASE SÉCURISÉE (TRY/CATCH)
+    // =========================================================================
+    async function bootFirebase() {
+        try {
+            const app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            auth = getAuth(app);
+            profilesCol = collection(db, "profiles");
 
-        $("cloudState").textContent = "CONNECTING";
-        
-        onAuthStateChanged(auth, (user)=>{
-          if(user){ 
-              $("viewerChip").innerHTML = `<i class="fa-solid fa-user"></i> uid:${user.uid.slice(0,6)}…`; 
-              $("cloudState").textContent = "ON"; 
-          }
-        });
-
-        signInAnonymously(auth).then(() => {
-            toast("Cloud connecté");
-
-            // 1. Charger les profils en priorité (GARANTIT L'AFFICHAGE DU SITE)
-            refreshProfilesList().then(() => {
-                
-                // 2. Vérifier/Créer les profils de base SANS bloquer si erreur de permission
-                const hRef = doc(db, "profiles", "harry"); const sRef = doc(db, "profiles", "seya");
-                Promise.all([getDoc(hRef), getDoc(sRef)]).then(([hSnap, sSnap]) => {
-                    let p = [];
-                    if(!hSnap.exists()) p.push(setDoc(hRef, harryProfile())); 
-                    if(!sSnap.exists()) p.push(setDoc(sRef, seyaProfile()));
-                    if(p.length > 0) {
-                        Promise.all(p).then(() => refreshProfilesList()).catch(e => console.warn("Impossible de créer les bases:", e.message));
-                    }
-                }).catch(e => console.warn("Lecture des bases ignorée:", e.message));
-
+            $("cloudState").textContent = "CONNECTING";
+            
+            onAuthStateChanged(auth, (user)=>{
+              if(user){ 
+                  $("viewerChip").innerHTML = `<i class="fa-solid fa-user"></i> uid:${user.uid.slice(0,6)}…`; 
+                  $("cloudState").textContent = "ON"; 
+              }
             });
 
-            // 3. Charger le panneau admin SANS bloquer
+            await signInAnonymously(auth);
+            toast("Cloud connecté");
+
+            // Panneau Admin (sans bloquer si refus)
             sysConfigRef = doc(db, "system", "config");
             onSnapshot(sysConfigRef, (snap) => {
                 if(snap.exists()) {
                     isGlobalCreationAllowed = snap.data().allowCreation;
                 } else {
                     isGlobalCreationAllowed = true;
-                    setDoc(sysConfigRef, { allowCreation: true }).catch(e => console.warn("Admin non inscriptible:", e.message));
+                    setDoc(sysConfigRef, { allowCreation: true }).catch(e => console.warn("Admin Config protégée"));
                 }
                 
-                const btnCreate = $("btnCreate");
-                const toggleCreation = $("adminToggleCreation");
-                
-                if (btnCreate) {
+                if ($("btnCreate")) {
                     if(isGlobalCreationAllowed) {
-                        btnCreate.disabled = false;
-                        btnCreate.innerHTML = '<i class="fa-solid fa-user-plus"></i> Créer mon perso';
-                        btnCreate.style.filter = "none";
+                        $("btnCreate").disabled = false;
+                        $("btnCreate").innerHTML = '<i class="fa-solid fa-user-plus"></i> Créer mon perso';
+                        $("btnCreate").style.filter = "none";
                     } else {
-                        btnCreate.disabled = true;
-                        btnCreate.innerHTML = '<i class="fa-solid fa-lock"></i> Douane fermée';
-                        btnCreate.style.filter = "grayscale(100%)";
+                        $("btnCreate").disabled = true;
+                        $("btnCreate").innerHTML = '<i class="fa-solid fa-lock"></i> Douane fermée';
+                        $("btnCreate").style.filter = "grayscale(100%)";
                     }
                 }
-                if (toggleCreation) {
-                    toggleCreation.checked = isGlobalCreationAllowed;
+                if ($("adminToggleCreation")) {
+                    $("adminToggleCreation").checked = isGlobalCreationAllowed;
                 }
             }, (error) => {
-                console.warn("Sécurité Admin active. Création par défaut ouverte localement.", error.message);
+                console.warn("Droit lecture config admin manquant:", error.message);
             });
             
-            // Attacher l'événement admin qui a besoin de sysConfigRef
-            $("adminToggleCreation").addEventListener("change", (e) => {
-                setDoc(sysConfigRef, { allowCreation: e.target.checked }, { merge: true }).catch(err=>console.error(err));
-                toast(e.target.checked ? "Création activée" : "Création désactivée");
-            });
+            if($("adminToggleCreation")) {
+                $("adminToggleCreation").addEventListener("change", (e) => {
+                    setDoc(sysConfigRef, { allowCreation: e.target.checked }, { merge: true }).catch(err=>console.error(err));
+                    toast(e.target.checked ? "Création activée" : "Création désactivée");
+                });
+            }
 
-        }).catch(err => {
-            console.error("Auth error", err);
-            toast("Erreur d'authentification");
-        });
+            // Chargement Data
+            const hRef = doc(db, "profiles", "harry"); const sRef = doc(db, "profiles", "seya");
+            Promise.all([getDoc(hRef), getDoc(sRef)]).then(([hSnap, sSnap]) => {
+                let p = [];
+                if(!hSnap.exists()) p.push(setDoc(hRef, harryProfile())); 
+                if(!sSnap.exists()) p.push(setDoc(sRef, seyaProfile()));
+                if(p.length > 0) {
+                    Promise.all(p).then(() => refreshProfilesList()).catch(e => console.warn(e));
+                }
+            }).catch(e => console.warn("Init base:", e.message));
 
-    } catch(e) {
-        console.error("Crash critique Firebase:", e);
-        toast("Erreur de système");
+            await refreshProfilesList();
+            
+        } catch (error) {
+            console.error("Firebase a été bloqué :", error);
+            $("cloudState").textContent = "ERREUR";
+            $("cloudState").style.color = "var(--danger)";
+            toast("Connexion refusée (Domaine non autorisé sur Firebase ?)");
+        }
     }
+    
+    // Lancement de l'app !
+    bootFirebase();
 
-    // -------------------------------------------------------------------------
-    // 6. LOGIQUE DE L'APPLICATION (Vues et Rendu)
-    // -------------------------------------------------------------------------
+    // =========================================================================
+    // 5. LOGIQUE DE L'APPLICATION (Vues et Rendu)
+    // =========================================================================
     function setSaveState(text){ $("saveChip").innerHTML = `<i class="fa-solid fa-floppy-disk"></i> ${text}`; }
 
     function scheduleCloudSave(){
@@ -810,13 +833,15 @@
           profilesCache.clear();
           snap.forEach(d=>{ profilesCache.set(d.id, d.data()); });
           renderLanding(); storageInfo(); fillDuplicateSelect();
-      } catch(e) {
-          console.error("Lecture profils impossible", e);
+      } catch (e) {
+          console.error("Erreur de liste", e);
       }
     }
 
     function fillDuplicateSelect(){
-      const sel = $("cFrom"); sel.textContent = "";
+      const sel = $("cFrom"); 
+      if(!sel) return;
+      sel.textContent = "";
       Array.from(profilesCache.values()).sort((a,b)=>(a.displayName||a.key).localeCompare(b.displayName||b.key)).forEach(p=>{
           const opt = document.createElement("option"); opt.value = p.key; opt.textContent = `${p.displayName || p.key} (${p.key})`; sel.appendChild(opt);
         });
@@ -1115,6 +1140,13 @@
           el("div",{style:"display:flex;flex-wrap:wrap;gap:10px"}, r.options.map(o=> 
               el("div",{class:"tag"},[ o.text, unlocked ? el("i",{class:"fa-solid fa-xmark", style:"margin-left:10px;cursor:pointer;", onClick:()=>{ r.options=r.options.filter(x=>x.id!==o.id); scheduleCloudSave(); renderApp(); }}) : null ])
           ))
+        ]),
+        el("div",{class:"panel"},[
+          el("div",{style:"font-weight:900;margin-bottom:10px"},["Historique"]),
+          el("div",{style:"display:flex;flex-direction:column;gap:8px"}, (r.history||[]).slice(0,12).map(h=>{
+            const d = new Date(h.at);
+            return el("div",{style:"display:flex;gap:10px;align-items:center;flex-wrap:wrap"},[ el("span",{class:"chip"},[d.toLocaleString()]), el("span",{style:"color:#bbb"},[h.text]) ]);
+          }))
         ])
       ]);
     }
