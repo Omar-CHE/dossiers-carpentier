@@ -18,10 +18,16 @@
       --focus:0 0 0 3px rgba(212,175,55,.35);
       --shadow: 0 40px 120px rgba(0,0,0,1);
     }
-    *{box-sizing:border-box;margin:0;padding:0}
+
+    *{
+        box-sizing:border-box;
+        margin:0;
+        padding:0;
+    }
     
     body{
-      height:100vh; overflow:hidden;
+      height:100vh; 
+      overflow:hidden;
       font-family:Montserrat,system-ui;
       color:var(--text);
       background:
@@ -29,20 +35,36 @@
         url('fond.png') center/cover fixed;
     }
     
-    button, input, textarea, select{font-family:inherit}
-    :focus-visible{outline:none;box-shadow:var(--focus);border-radius:12px}
-    a{color:var(--gold)}
+    button, input, textarea, select{
+        font-family:inherit;
+    }
+
+    :focus-visible{
+        outline:none;
+        box-shadow:var(--focus);
+        border-radius:12px;
+    }
+
+    a {
+        color:var(--gold); 
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
 
     .logo-main {
-      height: 60px; 
+      height: 90px; 
       width: auto;
-      max-width: 250px;
+      max-width: 300px;
       object-fit: contain; 
       display: block;
       filter: drop-shadow(0 0 10px rgba(212,175,55, 0.5));
     }
+
     .logo-sidebar {
-      height: 40px; 
+      height: 80px; 
       width: auto;
       max-width: 200px;
       object-fit: contain; 
@@ -72,6 +94,27 @@
     .btn.danger{border-color:rgba(231,76,60,.55);background:rgba(231,76,60,.08);color:#ffbdb7}
     .btn.small{padding:8px 10px;font-size:11px;border-radius:12px}
     .btn:disabled{opacity:.45;cursor:not-allowed}
+
+    /* ======= CREDIT STYLE ======= */
+    .credit-landing {
+      position: fixed;
+      bottom: 20px;
+      right: 30px;
+      font-family: "Share Tech Mono";
+      font-size: 13px;
+      color: var(--muted);
+      letter-spacing: 1px;
+      z-index: 10;
+    }
+    .credit-landing a {
+      color: var(--gold);
+      font-weight: bold;
+      text-decoration: none;
+    }
+    .credit-landing a:hover {
+        text-decoration: underline;
+    }
+
     .input{
       width:100%;
       background:#07070a;
@@ -106,7 +149,10 @@
       padding:22px;
       overflow:auto;
     }
-    .landingWrap{width:min(1280px, 98vw)}
+    .landingWrap{
+        width:min(1280px, 98vw); 
+        position: relative;
+    }
     .hero{
       border:1px solid #1f1f26;
       background:
@@ -430,6 +476,11 @@
 
   <section id="landing">
     <div class="landingWrap">
+      
+      <div class="credit-landing">
+        Développé par <a href="https://www.twitch.tv/ruubix" target="_blank">Ruubix</a>
+      </div>
+      
       <div class="hero">
         <div class="heroInner">
           <div class="heroTop">
@@ -490,7 +541,7 @@
         <div id="tabsNav"></div>
 
         <div class="sbBottom">
-          <button class="sbBtn logout" id="back"><i class="fa-solid fa-power-off"></i> Retour accueil</button>
+          <button class="sbBtn logout" id="back"><i class="fa-solid fa-house"></i> Retour accueil</button>
         </div>
       </aside>
 
@@ -719,53 +770,37 @@
       cur[parts[parts.length-1]] = value;
     }
 
-    // ====== FONCTION POUR COMPRESSER ET CONVERTIR LES IMAGES EN BASE64 ======
     window.processImageUpload = function(file, callback) {
       if(!file) return;
       if(file.type.indexOf('image') === -1) return toast("Ce n'est pas une image.");
-      if(file.size > 10 * 1024 * 1024) return toast("Fichier trop lourd (max 10Mo)"); 
       
-      toast("Compression de l'image...");
+      toast("Chargement...");
       const reader = new FileReader();
       reader.onload = (e) => {
         const img = new Image();
         img.onload = () => {
           const canvas = document.createElement("canvas");
-          const MAX_SIZE = 600; // Résolution max pour économiser la base de données
+          const MAX_SIZE = 600;
           let width = img.width;
           let height = img.height;
-
-          if (width > height) {
-            if (width > MAX_SIZE) {
-              height *= MAX_SIZE / width;
-              width = MAX_SIZE;
-            }
-          } else {
-            if (height > MAX_SIZE) {
-              width *= MAX_SIZE / height;
-              height = MAX_SIZE;
-            }
+          if (width > height) { 
+              if (width > MAX_SIZE) { 
+                  height *= MAX_SIZE / width; width = MAX_SIZE; 
+              } 
+          } else { 
+              if (height > MAX_SIZE) { 
+                  width *= MAX_SIZE / height; height = MAX_SIZE; 
+              } 
           }
-          canvas.width = width;
-          canvas.height = height;
-          const ctx = canvas.getContext("2d");
-          ctx.drawImage(img, 0, 0, width, height);
-          
-          // Compression en JPEG qualité 60%
+          canvas.width = width; canvas.height = height;
+          const ctx = canvas.getContext("2d"); ctx.drawImage(img, 0, 0, width, height);
           const dataUrl = canvas.toDataURL("image/jpeg", 0.6);
-          
-          // Taille approximative en octets du base64
-          const sizeInBytes = Math.round((dataUrl.length - 22) * 3 / 4);
-          if(sizeInBytes > 300000) { 
-             toast("Attention: Image encore un peu lourde.");
-          }
           callback(dataUrl);
         };
         img.src = e.target.result;
       };
       reader.readAsDataURL(file);
     }
-    // =========================================================================
 
     const PIN_HARRY = "15122004";
     const PIN_SEYA  = "11111110";
@@ -788,6 +823,7 @@
       ],
       data: {
         identite: { fullName: name, age: "", birthdate: "", birthplace: "", origins: "", role: "", faction: "GRANDLINE", voice: "", phys: "", sign: "" },
+        hrp: { pseudo: "", twitch: "" },
         stats: [ { id:uid(), label:"Courage", val:50 }, { id:uid(), label:"Charisme", val:50 }, { id:uid(), label:"Endurance", val:50 } ],
         lore: { sections: [] }, goals: { court: [], long: [] }, roulette: { options: [], history: [] }, timeline: { events: [] }, relations: { nodes: [], list: [] },
         custom_note: { html:"<p>Écris ton lore, tes scènes, tes secrets…</p>" }, custom_canvas: { strokes:[], background:"#0a0a0d" },
@@ -804,6 +840,7 @@
         origins:"Franco-Algérien", role:"Chef de famille (précaire) / Faux Caïd", faction:"PARIS RP",
         voice:"Voix très aiguë, zéro virilité.", phys:"1m75 (plutôt frêle)", sign:"Moustache taillée (pour paraître plus vieux)."
       };
+      p.data.hrp = { pseudo: "Ruubix", twitch: "https://www.twitch.tv/ruubix" };
       p.data.stats = [
         { id:uid(), label:"Courage (Froid & Calculé)", val:5 }, { id:uid(), label:"Survie / Instinct", val:95 },
         { id:uid(), label:"Sincérité (panique)", val:100 }, { id:uid(), label:"Dévouement (Seya)", val:100 }
@@ -828,6 +865,7 @@
         origins:"Franco-Algérienne", role:"Petite sœur surprotégée", faction:"PARIS RP",
         voice:"Voix très aiguë, parle sans filtre.", phys:"Petite, souvent cachée derrière Harry", sign:"Regard fuyant, hyperactive."
       };
+      p.data.hrp = { pseudo: "", twitch: "" };
       p.data.stats = [
         { id:uid(), label:"Naïveté", val:100 }, { id:uid(), label:"Émotivité", val:100 },
         { id:uid(), label:"Jalousie", val:100 }, { id:uid(), label:"Dévouement (Harry)", val:100 }
@@ -852,10 +890,10 @@
     let uidAuth = null;
 
     onAuthStateChanged(auth, (user)=>{
-      if(user){
-        uidAuth = user.uid;
-        $("viewerChip").innerHTML = `<i class="fa-solid fa-user"></i> uid:${uidAuth.slice(0,6)}…`;
-        $("cloudState").textContent = "ON";
+      if(user){ 
+          uidAuth = user.uid; 
+          $("viewerChip").innerHTML = `<i class="fa-solid fa-user"></i> uid:${uidAuth.slice(0,6)}…`; 
+          $("cloudState").textContent = "ON"; 
       }
     });
 
@@ -865,24 +903,24 @@
     const profilesCol = collection(db, "profiles");
 
     async function ensureBaseProfilesExist(){
-      const hRef = doc(db, "profiles", "harry");
-      const sRef = doc(db, "profiles", "seya");
+      const hRef = doc(db, "profiles", "harry"); const sRef = doc(db, "profiles", "seya");
       const [hSnap, sSnap] = await Promise.all([getDoc(hRef), getDoc(sRef)]);
-      if(!hSnap.exists()) await setDoc(hRef, harryProfile());
+      if(!hSnap.exists()) await setDoc(hRef, harryProfile()); 
       if(!sSnap.exists()) await setDoc(sRef, seyaProfile());
     }
     await ensureBaseProfilesExist();
 
     let profilesCache = new Map(); 
-    let activeKey = null;
-    let activeProfile = null;
-    let unlocked = false;
+    let activeKey = null; 
+    let activeProfile = null; 
+    let unlocked = false; 
     let unsubscribeActive = null;
 
     let saveTimer = null;
-    function setSaveState(text){
-      $("saveChip").innerHTML = `<i class="fa-solid fa-floppy-disk"></i> ${text}`;
+    function setSaveState(text){ 
+        $("saveChip").innerHTML = `<i class="fa-solid fa-floppy-disk"></i> ${text}`; 
     }
+
     function scheduleCloudSave(){
       if(!unlocked) return;
       setSaveState("Saving…");
@@ -892,10 +930,10 @@
           activeProfile.updatedAt = Date.now();
           await setDoc(doc(db, "profiles", activeKey), activeProfile, { merge:true });
           setSaveState("Saved");
-        }catch(e){
-          console.error(e);
-          setSaveState("Error");
-          toast("Erreur cloud (console)");
+        }catch(e){ 
+            console.error(e); 
+            setSaveState("Error"); 
+            toast("Erreur cloud (console)"); 
         }
       }, 350);
     }
@@ -904,15 +942,14 @@
       unlocked = on;
       document.body.classList.toggle("edit", unlocked);
       $("modeChip").className = "chip " + (unlocked ? "edit" : "ro");
-      $("modeChip").innerHTML = unlocked
-        ? '<i class="fa-solid fa-pen"></i> ÉDITION'
-        : '<i class="fa-solid fa-eye"></i> LECTURE';
-      
-      const imgInput = $("imgUrl");
+      $("modeChip").innerHTML = unlocked ? '<i class="fa-solid fa-pen"></i> ÉDITION' : '<i class="fa-solid fa-eye"></i> LECTURE';
+      const imgInput = $("imgUrl"); 
       if(imgInput) imgInput.disabled = !unlocked;
     }
 
-    function modal(el, show){ el.classList.toggle("show", !!show); }
+    function modal(el, show){ 
+        el.classList.toggle("show", !!show); 
+    }
 
     function storageInfo(){
       const obj = Array.from(profilesCache.values());
@@ -923,150 +960,122 @@
     async function refreshProfilesList(){
       const qy = query(profilesCol, orderBy("updatedAt", "desc"), limit(50));
       const snap = await getDocs(qy);
-
       profilesCache.clear();
-      snap.forEach(d=>{
-        profilesCache.set(d.id, d.data());
+      snap.forEach(d=>{ 
+          profilesCache.set(d.id, d.data()); 
       });
-
-      renderLanding();
-      storageInfo();
+      renderLanding(); 
+      storageInfo(); 
       fillDuplicateSelect();
     }
 
     function fillDuplicateSelect(){
-      const sel = $("cFrom");
+      const sel = $("cFrom"); 
       sel.textContent = "";
-      Array.from(profilesCache.values())
-        .sort((a,b)=>(a.displayName||a.key).localeCompare(b.displayName||b.key))
-        .forEach(p=>{
-          const opt = document.createElement("option");
-          opt.value = p.key;
-          opt.textContent = `${p.displayName || p.key} (${p.key})`;
+      Array.from(profilesCache.values()).sort((a,b)=>(a.displayName||a.key).localeCompare(b.displayName||b.key)).forEach(p=>{
+          const opt = document.createElement("option"); 
+          opt.value = p.key; 
+          opt.textContent = `${p.displayName || p.key} (${p.key})`; 
           sel.appendChild(opt);
         });
       if(sel.options.length) sel.value = "harry";
     }
 
     function renderLanding(){
-      const list = $("list");
-      list.textContent = "";
+      const list = $("list"); list.textContent = "";
       const q = ($("q").value||"").trim().toLowerCase();
-
-      const arr = Array.from(profilesCache.values())
-        .sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0));
-
+      const arr = Array.from(profilesCache.values()).sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0));
       for(const p of arr){
         const hay = `${p.displayName||""} ${p.key||""} ${(p.data?.identite?.role||"")} ${(p.meta?.tags||[]).join(" ")}`.toLowerCase();
         if(q && !hay.includes(q)) continue;
-
-        const card = document.createElement("div");
+        
+        const card = document.createElement("div"); 
         card.className = "card";
-
-        const row = document.createElement("div");
+        
+        const row = document.createElement("div"); 
         row.className = "row";
-
-        const av = document.createElement("div");
+        
+        const av = document.createElement("div"); 
         av.className = "avatar";
-        const img = document.createElement("img");
-        img.src = p.meta?.img || "";
+        const img = document.createElement("img"); 
+        img.src = p.meta?.img || ""; 
         img.onerror = ()=> img.style.opacity = '0';
         av.appendChild(img);
-
+        
         const info = document.createElement("div");
-        const name = document.createElement("div");
-        name.className = "name";
+        const name = document.createElement("div"); 
+        name.className = "name"; 
         name.textContent = p.displayName || p.key;
-        const role = document.createElement("div");
-        role.className = "role";
+        
+        const role = document.createElement("div"); 
+        role.className = "role"; 
         role.textContent = p.data?.identite?.role || "";
-        info.appendChild(name);
+        
+        info.appendChild(name); 
         info.appendChild(role);
-
-        row.appendChild(av);
+        
+        row.appendChild(av); 
         row.appendChild(info);
-
-        const badges = document.createElement("div");
+        
+        const badges = document.createElement("div"); 
         badges.className = "badges";
-        const bPublic = document.createElement("span");
-        bPublic.className = "badge public";
-        bPublic.textContent = "PUBLIC (READ)";
+        
+        const bPublic = document.createElement("span"); 
+        bPublic.className = "badge public"; 
+        bPublic.textContent = "PUBLIC (READ)"; 
         badges.appendChild(bPublic);
-
-        const bCloud = document.createElement("span");
-        bCloud.className = "badge cloud";
-        bCloud.textContent = "CLOUD";
-        badges.appendChild(bCloud);
-
-        const bPin = document.createElement("span");
-        bPin.className = "badge pin";
-        bPin.textContent = "EDIT PIN";
-        badges.appendChild(bPin);
-
-        const actions = document.createElement("div");
+        
+        const actions = document.createElement("div"); 
         actions.className = "actions";
-
-        const openBtn = document.createElement("button");
-        openBtn.className = "btn primary";
-        openBtn.innerHTML = '<i class="fa-solid fa-folder-open"></i> Ouvrir (lecture)';
+        
+        const openBtn = document.createElement("button"); 
+        openBtn.className = "btn primary"; 
+        openBtn.innerHTML = '<i class="fa-solid fa-folder-open"></i> Ouvrir';
         openBtn.addEventListener("click", ()=>openProfile(p.key));
-
+        
         actions.appendChild(openBtn);
-
-        card.appendChild(row);
-        card.appendChild(badges);
+        
+        card.appendChild(row); 
+        card.appendChild(badges); 
         card.appendChild(actions);
-
         list.appendChild(card);
-      }
-
-      if(!list.childElementCount){
-        const empty = document.createElement("div");
-        empty.className = "panel";
-        empty.style.color = "#777";
-        empty.textContent = "Aucun dossier trouvé.";
-        list.appendChild(empty);
       }
     }
 
     function openProfile(key){
-      activeKey = key;
-      unlocked = false;
+      activeKey = key; 
+      unlocked = false; 
       setEditMode(false);
-
-      $("landing").style.display = "none";
+      
+      $("landing").style.display = "none"; 
       $("app").style.display = "flex";
-
+      
       if(unsubscribeActive) unsubscribeActive();
-
+      
       const ref = doc(db, "profiles", key);
       unsubscribeActive = onSnapshot(ref, (snap)=>{
-        if(!snap.exists()){
-          toast("Profil introuvable");
-          return;
-        }
-        const newData = snap.data();
-        
-        if (unlocked && activeProfile && newData.updatedAt <= activeProfile.updatedAt) {
+        if(!snap.exists()){ 
+            toast("Profil introuvable"); 
             return; 
         }
-
-        activeProfile = newData;
-        profilesCache.set(key, activeProfile);
+        const newData = snap.data();
+        if (unlocked && activeProfile && newData.updatedAt <= activeProfile.updatedAt) return;
+        activeProfile = newData; 
+        profilesCache.set(key, activeProfile); 
         renderApp();
       });
     }
 
     function backToLanding(){
-      if(unsubscribeActive) unsubscribeActive();
-      unsubscribeActive = null;
-      activeKey = null;
-      activeProfile = null;
-      unlocked = false;
+      if(unsubscribeActive) unsubscribeActive(); 
+      unsubscribeActive = null; 
+      activeKey = null; 
+      activeProfile = null; 
+      unlocked = false; 
       setEditMode(false);
-
-      $("app").style.display = "none";
-      $("landing").style.display = "flex";
+      
+      $("app").style.display = "none"; 
+      $("landing").style.display = "flex"; 
       refreshProfilesList();
     }
 
@@ -1078,33 +1087,32 @@
     }
 
     function renderTabsNav(){
-      const nav = $("tabsNav");
+      const nav = $("tabsNav"); 
       nav.textContent = "";
-
       const tabs = visibleTabsForViewer();
       
-      if(currentTabId !== "__tabs_settings__" && !tabs.find(t=>t.id===currentTabId) && tabs.length) {
-        currentTabId = tabs[0].id;
+      if(currentTabId !== "__tabs_settings__" && !tabs.find(t=>t.id===currentTabId) && tabs.length) { 
+          currentTabId = tabs[0].id; 
       }
-
+      
       for(const t of tabs){
-        const btn = document.createElement("button");
+        const btn = document.createElement("button"); 
         btn.className = "sbBtn" + (t.id===currentTabId ? " active" : "");
         btn.innerHTML = `<i class="fa-solid ${t.icon||"fa-folder"}"></i> ${t.title}`;
-        btn.addEventListener("click", ()=>{
-          currentTabId = t.id;
-          renderApp();
+        btn.addEventListener("click", ()=>{ 
+            currentTabId = t.id; 
+            renderApp(); 
         });
         nav.appendChild(btn);
       }
-
+      
       if(unlocked){
-        const s = document.createElement("button");
+        const s = document.createElement("button"); 
         s.className = "sbBtn" + (currentTabId === "__tabs_settings__" ? " active" : "");
         s.innerHTML = `<i class="fa-solid fa-gear"></i> Onglets (config)`;
-        s.addEventListener("click", ()=>{
-          currentTabId = "__tabs_settings__";
-          renderApp();
+        s.addEventListener("click", ()=>{ 
+            currentTabId = "__tabs_settings__"; 
+            renderApp(); 
         });
         nav.appendChild(s);
       }
@@ -1117,10 +1125,10 @@
       $("sbPublic").innerHTML = `<i class="fa-solid fa-globe"></i> Public (lecture)`;
     }
 
-    function renderApp(){
-      renderAppHeader();
-      renderTabsNav();
-      renderTabContent();
+    function renderApp(){ 
+        renderAppHeader(); 
+        renderTabsNav(); 
+        renderTabContent(); 
     }
 
     function el(tag, attrs={}, children=[]){
@@ -1134,9 +1142,9 @@
         else if(k.startsWith("on") && typeof v==="function") node.addEventListener(k.slice(2).toLowerCase(), v);
         else node.setAttribute(k, v);
       }
-      for(const c of children){
-        if(typeof c === "string") node.appendChild(document.createTextNode(c));
-        else if(c) node.appendChild(c);
+      for(const c of children){ 
+          if(typeof c === "string") node.appendChild(document.createTextNode(c)); 
+          else if(c) node.appendChild(c); 
       }
       return node;
     }
@@ -1145,48 +1153,45 @@
       const d = el("div", { class:"editable", tabindex:"0" });
       d.innerHTML = value || "";
       d.contentEditable = unlocked ? "true" : "false";
-      d.addEventListener("blur", ()=>{
-        if(!unlocked) return;
-        onCommit(d.innerHTML.trim());
+      d.addEventListener("blur", ()=>{ 
+          if(!unlocked) return; 
+          onCommit(d.innerHTML.trim()); 
       });
-      d.addEventListener("keydown", (e)=>{
-        if(!unlocked) return;
-        if(e.key==="Enter"){
-          e.preventDefault();
-          d.blur();
-        }
+      d.addEventListener("keydown", (e)=>{ 
+          if(!unlocked) return; 
+          if(e.key==="Enter"){ e.preventDefault(); d.blur(); } 
       });
       return d;
     }
 
     function renderTabContent(){
-      const root = $("tabContent");
+      const root = $("tabContent"); 
       root.textContent = "";
-
-      if(currentTabId === "__tabs_settings__"){
-        root.appendChild(renderTabsSettings());
-        return;
+      
+      if(currentTabId === "__tabs_settings__"){ 
+          root.appendChild(renderTabsSettings()); 
+          return; 
       }
-
+      
       const tab = (activeProfile.tabs||[]).find(t=>t.id===currentTabId);
-      if(!tab){
-        root.appendChild(el("div",{class:"panel"},["Onglet introuvable."]));
-        return;
+      if(!tab){ 
+          root.appendChild(el("div",{class:"panel"},["Onglet introuvable."])); 
+          return; 
       }
-
+      
       if(!tab.visiblePublic && !unlocked){
-        root.appendChild(el("div",{class:"panel"},[
-          el("div",{style:"font-weight:900;margin-bottom:6px"},["Onglet privé"]),
-          el("div",{class:"muted",style:"line-height:1.7"},["Le propriétaire a masqué cet onglet au public."])
-        ]));
+        root.appendChild(el("div",{class:"panel"},[ 
+            el("div",{style:"font-weight:900;margin-bottom:6px"},["Onglet privé"]), 
+            el("div",{class:"muted",style:"line-height:1.7"},["Le propriétaire a masqué cet onglet au public."]) 
+        ])); 
         return;
       }
-
-      root.appendChild(el("div",{class:"sectionTitle"},[
-        el("span",{html:tab.title}),
-        el("span",{class:"ref"},[tab.type.toUpperCase()])
+      
+      root.appendChild(el("div",{class:"sectionTitle"},[ 
+          el("span",{html:tab.title}), 
+          el("span",{class:"ref"},[tab.type.toUpperCase()]) 
       ]));
-
+      
       const type = tab.type;
       if(type==="identite") root.appendChild(renderIdentite());
       else if(type==="stats") root.appendChild(renderStats());
@@ -1203,91 +1208,81 @@
 
     function renderIdentite(){
       const idt = activeProfile.data?.identite || {};
+      const hrp = activeProfile.data?.hrp || { pseudo: "", twitch: "" };
+      
       const wrap = el("div",{class:"grid2"},[
         el("div",{class:"panel"},[
           el("div",{style:"display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;"},[
             el("div",{class:"fieldLabel", style:"margin:0;"},["Photo du profil"]),
             unlocked ? el("button", {class:"btn small primary", onClick:()=> {
-              const fi = document.createElement('input');
-              fi.type = 'file';
+              const fi = document.createElement('input'); 
+              fi.type = 'file'; 
               fi.accept = 'image/*';
               fi.onchange = (e) => window.processImageUpload(e.target.files[0], (base64) => {
-                const input = $("imgUrl");
+                const input = $("imgUrl"); 
                 const preview = $("imgPreview");
-                input.value = base64;
+                input.value = base64; 
                 activeProfile.meta.img = base64;
                 if(preview) { preview.src = base64; preview.style.opacity = '1'; }
-                scheduleCloudSave();
+                scheduleCloudSave(); 
                 toast("Image uploadée !");
               });
               fi.click();
-            }}, [el("i",{class:"fa-solid fa-upload"})," Parcourir (PC)"]) : null
+            }}, [el("i",{class:"fa-solid fa-upload"})," Parcourir"]) : null
           ]),
-          el("input",{class:"input", id:"imgUrl", placeholder:"URL ou import PC...", value: idt.img || activeProfile.meta?.img || ""}),
+          
+          el("input",{class:"input", id:"imgUrl", placeholder:"URL ou import PC...", value: activeProfile.meta?.img || ""}),
+          
           el("div",{class:"muted",style:"margin-top:8px; line-height:1.5; font-size:11px;"},[
-              "Comment faire ? Collez ici un lien web direct vers une image (ex: https://lien.com/image.png) ou utilisez le bouton 'Parcourir (PC)' pour importer directement un fichier de votre ordinateur."
+              "Comment faire ? Collez ici un lien web direct ou utilisez le bouton 'Parcourir'."
           ]),
-          el("div",{style:"margin-top:12px;display:flex;gap:12px;align-items:center;flex-wrap:wrap"},[
+          
+          el("div",{style:"margin-top:12px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap"},[
             el("div",{class:"avatar",style:"width:92px;height:92px"},[
               el("img",{id:"imgPreview", src: activeProfile.meta?.img || "", onError: (e) => e.target.style.opacity = '0' })
             ])
           ])
         ]),
+        
         el("div",{},[
+          // SECTION RP
           el("div",{class:"panel"},[
-            el("div",{class:"fieldLabel"},["Nom complet"]),
-            editableDiv(idt.fullName, (v)=>{ deepSet(activeProfile,"data.identite.fullName",v); scheduleCloudSave(); })
-          ]),
-          el("div",{class:"panel"},[
-            el("div",{class:"fieldLabel"},["Âge"]),
-            editableDiv(idt.age, (v)=>{ deepSet(activeProfile,"data.identite.age",v); scheduleCloudSave(); })
-          ]),
-          el("div",{class:"panel"},[
-            el("div",{class:"fieldLabel"},["Date de naissance"]),
-            editableDiv(idt.birthdate, (v)=>{ deepSet(activeProfile,"data.identite.birthdate",v); scheduleCloudSave(); })
-          ]),
-          el("div",{class:"panel"},[
-            el("div",{class:"fieldLabel"},["Lieu de naissance"]),
-            editableDiv(idt.birthplace, (v)=>{ deepSet(activeProfile,"data.identite.birthplace",v); scheduleCloudSave(); })
-          ]),
-          el("div",{class:"panel"},[
-            el("div",{class:"fieldLabel"},["Origines"]),
-            editableDiv(idt.origins, (v)=>{ deepSet(activeProfile,"data.identite.origins",v); scheduleCloudSave(); })
-          ]),
-          el("div",{class:"panel"},[
-            el("div",{class:"fieldLabel"},["Rôle / Job"]),
-            editableDiv(idt.role, (v)=>{ deepSet(activeProfile,"data.identite.role",v); scheduleCloudSave(); })
-          ]),
-          el("div",{class:"panel"},[
-            el("div",{class:"fieldLabel"},["Physique"]),
-            editableDiv(idt.phys, (v)=>{ deepSet(activeProfile,"data.identite.phys",v); scheduleCloudSave(); })
-          ]),
-          el("div",{class:"panel"},[
-            el("div",{class:"fieldLabel"},["Signe distinctif"]),
-            editableDiv(idt.sign, (v)=>{ deepSet(activeProfile,"data.identite.sign",v); scheduleCloudSave(); })
-          ]),
-          el("div",{class:"panel"},[
-            el("div",{class:"fieldLabel"},["Voix"]),
+            el("div",{class:"fieldLabel", style:"font-weight:900; color:var(--gold); border-bottom:1px solid #222; padding-bottom:5px; margin-bottom:15px;"},["SECTION RP"]),
+            el("div",{class:"fieldLabel"},["Nom complet"]), 
+            editableDiv(idt.fullName, (v)=>{ deepSet(activeProfile,"data.identite.fullName",v); scheduleCloudSave(); }),
+            
+            el("div",{class:"fieldLabel", style:"margin-top:10px;"},["Âge"]), 
+            editableDiv(idt.age, (v)=>{ deepSet(activeProfile,"data.identite.age",v); scheduleCloudSave(); }),
+            
+            el("div",{class:"fieldLabel", style:"margin-top:10px;"},["Lieu de naissance"]), 
+            editableDiv(idt.birthplace, (v)=>{ deepSet(activeProfile,"data.identite.birthplace",v); scheduleCloudSave(); }),
+            
+            el("div",{class:"fieldLabel", style:"margin-top:10px;"},["Job"]), 
+            editableDiv(idt.role, (v)=>{ deepSet(activeProfile,"data.identite.role",v); scheduleCloudSave(); }),
+            
+            el("div",{class:"fieldLabel", style:"margin-top:10px;"},["Physique"]), 
+            editableDiv(idt.phys, (v)=>{ deepSet(activeProfile,"data.identite.phys",v); scheduleCloudSave(); }),
+            
+            el("div",{class:"fieldLabel", style:"margin-top:10px;"},["Voix"]), 
             editableDiv(idt.voice, (v)=>{ deepSet(activeProfile,"data.identite.voice",v); scheduleCloudSave(); })
+          ]),
+          
+          // SECTION HRP
+          el("div",{class:"panel", style:"margin-top:20px;"},[
+            el("div",{class:"fieldLabel", style:"font-weight:900; color:var(--ok); border-bottom:1px solid #222; padding-bottom:5px; margin-bottom:15px;"},["SECTION HRP"]),
+            
+            el("div",{class:"fieldLabel"},["Votre pseudo"]),
+            editableDiv(hrp.pseudo, (v)=>{ deepSet(activeProfile,"data.hrp.pseudo",v); scheduleCloudSave(); }),
+            
+            el("div",{class:"fieldLabel", style:"margin-top:10px;"},["Lien Twitch"]),
+            unlocked 
+              ? el("input",{class:"input", value: hrp.twitch || "", placeholder:"https://twitch.tv/...", onInput:(e)=>{ deepSet(activeProfile,"data.hrp.twitch", e.target.value); scheduleCloudSave(); }})
+              : (hrp.twitch 
+                  ? el("div",{style:"margin-top:5px;"},[ el("a", {href: hrp.twitch, target:"_blank", class:"btn small", style:"background:rgba(145,70,255,0.2); color:#a970ff; border-color:#9146ff;"},[el("i",{class:"fa-brands fa-twitch"}), " Twitch"]) ]) 
+                  : el("div",{class:"muted", style:"font-style:italic; font-size:12px;"},["Aucun Twitch renseigné"]))
           ])
         ])
       ]);
-
-      setTimeout(()=>{
-        const input = $("imgUrl");
-        const preview = $("imgPreview");
-        if(!input || !preview) return;
-        preview.onerror = ()=> preview.style.opacity = '0';
-        input.disabled = !unlocked;
-        input.addEventListener("input", ()=>{
-          if(!unlocked) return;
-          const url = input.value.trim();
-          activeProfile.meta.img = url;
-          preview.src = url;
-          preview.style.opacity = '1';
-          scheduleCloudSave();
-        });
-      },0);
 
       return wrap;
     }
@@ -1297,42 +1292,29 @@
       const box = el("div",{class:"panel"},[
         el("div",{style:"display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px"},[
           el("div",{style:"font-weight:900"},["Stats (0-100)"]),
-          unlocked ? el("button",{class:"btn small primary", onClick:()=>{
-            stats.push({id:uid(), label:"Nouvelle stat", val:50});
-            deepSet(activeProfile,"data.stats",stats);
-            scheduleCloudSave();
-            renderApp();
+          unlocked ? el("button",{class:"btn small primary", onClick:()=>{ 
+              stats.push({id:uid(), label:"Nouvelle stat", val:50}); 
+              scheduleCloudSave(); 
+              renderApp(); 
           }},[el("i",{class:"fa-solid fa-plus"})," Ajouter"]) : el("span",{class:"chip ro"},["Lecture"])
         ]),
         el("div",{}, stats.map(s=>{
-          const stat = el("div",{class:"stat"},[
-            el("div",{class:"statTop"},[
-              el("span",{html: unlocked ? `<span class="kbd">drag</span> ${s.label}` : s.label}),
-              el("span",{},[String(s.val)+"%"])
-            ]),
-            el("div",{class:"bar"},[
-              el("div",{class:"fill", style:`width:${Math.max(0,Math.min(100,Number(s.val)||0))}%`})
-            ])
+          const stat = el("div",{class:"stat"},[ 
+              el("div",{class:"statTop"},[ 
+                  el("span",{html: s.label}), 
+                  el("span",{},[String(s.val)+"%"]) 
+              ]), 
+              el("div",{class:"bar"},[ 
+                  el("div",{class:"fill", style:`width:${s.val}%`}) 
+              ]) 
           ]);
-
+          
           if(unlocked){
-            const controls = el("div",{style:"display:flex;gap:10px;flex-wrap:wrap;margin:8px 0 0"},[
-              el("input",{class:"input", value:s.label, style:"max-width:320px", onInput:(e)=>{
-                s.label = e.target.value;
-                scheduleCloudSave();
-              }}),
-              el("input",{class:"input", type:"number", min:"0", max:"100", value:String(s.val), style:"max-width:140px", onInput:(e)=>{
-                s.val = Number(e.target.value||0);
-                scheduleCloudSave();
-                renderApp();
-              }}),
-              el("button",{class:"btn small danger", onClick:()=>{
-                deepSet(activeProfile,"data.stats", stats.filter(x=>x.id!==s.id));
-                scheduleCloudSave();
-                renderApp();
-              }},[el("i",{class:"fa-solid fa-trash"})," Suppr"])
-            ]);
-            stat.appendChild(controls);
+            stat.appendChild(el("div",{style:"display:flex;gap:10px;margin-top:8px;"},[
+              el("input",{class:"input", value:s.label, onInput:(e)=>{ s.label=e.target.value; scheduleCloudSave(); }}),
+              el("input",{class:"input", type:"number", value:s.val, style:"max-width:80px", onInput:(e)=>{ s.val=e.target.value; scheduleCloudSave(); renderApp(); }}),
+              el("button",{class:"btn small danger", onClick:()=>{ deepSet(activeProfile,"data.stats", stats.filter(x=>x.id!==s.id)); scheduleCloudSave(); renderApp(); }},[el("i",{class:"fa-solid fa-trash"})])
+            ]));
           }
           return stat;
         }))
@@ -1340,828 +1322,137 @@
       return box;
     }
 
-    function renderLore(){
-      const lore = activeProfile.data?.lore?.sections || [];
-      const root = el("div",{},[
-        el("div",{class:"panel"},[
-          el("div",{style:"display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px"},[
-            el("div",{style:"font-weight:900"},["Sections d’histoire"]),
-            unlocked ? el("button",{class:"btn small primary", onClick:()=>{
-              lore.unshift({id:uid(), title:"Nouvelle section", text:"", date:""});
-              deepSet(activeProfile,"data.lore.sections", lore);
-              scheduleCloudSave();
-              renderApp();
-            }},[el("i",{class:"fa-solid fa-plus"})," Ajouter"]) : el("span",{class:"chip ro"},["Lecture"])
-          ]),
-          el("div",{class:"grid3"}, lore.map(sec=>{
-            const card = el("div",{class:"panel", style:"margin:0"},[
-              el("div",{style:"display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px"},[
-                el("div",{style:"font-weight:900;color:var(--gold)"},[sec.title]),
-                unlocked ? el("button",{class:"btn small danger", onClick:()=>{
-                  deepSet(activeProfile,"data.lore.sections", lore.filter(x=>x.id!==sec.id));
-                  scheduleCloudSave();
-                  renderApp();
-                }},[el("i",{class:"fa-solid fa-trash"})]) : null
-              ]),
-              unlocked ? el("input",{class:"input", value:sec.title, onInput:(e)=>{ sec.title=e.target.value; scheduleCloudSave(); }}) : null,
-              unlocked ? el("input",{class:"input", value:sec.date||"", placeholder:"date (optionnel)", style:"margin-top:10px", onInput:(e)=>{ sec.date=e.target.value; scheduleCloudSave(); }}) : null,
-              el("div",{class:"muted",style:"font-size:12px;margin:10px 0 8px"},["Texte"]),
-              unlocked
-                ? el("textarea",{class:"input", style:"min-height:160px;font-family:Montserrat;font-size:14px;line-height:1.7", onInput:(e)=>{ sec.text=e.target.value; scheduleCloudSave(); }},[])
-                : el("div",{style:"color:#bbb;line-height:1.8"},[sec.text||""])
-            ]);
-
-            if(unlocked){
-              card.querySelector("textarea").value = sec.text || "";
-            }
-            return card;
-          }))
-        ])
-      ]);
-      return root;
-    }
-
-    function renderGoals(){
-      const goals = activeProfile.data?.goals || {court:[], long:[]};
-
-      const column = (title, key)=> {
-        const list = goals[key] || [];
-        const col = el("div",{class:"panel"},[
-          el("div",{style:"display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px"},[
-            el("div",{style:"font-weight:900;color:var(--gold)"},[title]),
-            unlocked ? el("button",{class:"btn small primary", onClick:()=>{
-              list.unshift({id:uid(), text:"Nouvel objectif", done:false});
-              goals[key]=list;
-              deepSet(activeProfile,"data.goals",goals);
-              scheduleCloudSave();
-              renderApp();
-            }},[el("i",{class:"fa-solid fa-plus"})," Ajouter"]) : null
-          ]),
-          el("div",{}, list.map(g=>{
-            const item = el("div",{class:"timelineItem"},[
-              el("div",{style:"display:flex;gap:10px;align-items:center;justify-content:space-between"},[
-                el("div",{style:`flex:1;color:#ddd;${g.done?"text-decoration:line-through;opacity:.7":""}`},[g.text]),
-                unlocked ? el("div",{style:"display:flex;gap:8px"},[
-                  el("button",{class:"btn small", onClick:()=>{
-                    g.done=!g.done;
-                    scheduleCloudSave();
-                    renderApp();
-                  }},[el("i",{class:"fa-solid fa-square-check"}),""]),
-                  el("button",{class:"btn small danger", onClick:()=>{
-                    goals[key]=list.filter(x=>x.id!==g.id);
-                    deepSet(activeProfile,"data.goals",goals);
-                    scheduleCloudSave();
-                    renderApp();
-                  }},[el("i",{class:"fa-solid fa-trash"})])
-                ]) : null
-              ]),
-              unlocked ? el("input",{class:"input", value:g.text, style:"margin-top:10px;font-family:Montserrat", onInput:(e)=>{ g.text=e.target.value; scheduleCloudSave(); }}) : null
-            ]);
-            return item;
-          }))
-        ]);
-        return col;
-      };
-
-      return el("div",{class:"grid2"},[
-        column("Court terme","court"),
-        column("Long terme","long")
-      ]);
-    }
-
-    function pickWeighted(options){
-      const pool = [];
-      for(const o of options){
-        const w = Math.max(1, Number(o.weight||1));
-        for(let i=0;i<w;i++) pool.push(o);
-      }
-      return pool[Math.floor(Math.random()*pool.length)];
-    }
-
     function renderRoulette(){
       const r = activeProfile.data?.roulette || {options:[],history:[]};
-
       const result = el("div",{class:"result", id:"rr"},["EN ATTENTE…"]);
       const btnSpin = el("button",{class:"btn primary", onClick:()=>{
         if(!r.options.length) return toast("Aucune option");
-        result.classList.add("spin");
-        let c=0;
-        const it = setInterval(()=>{
-          result.textContent = r.options[Math.floor(Math.random()*r.options.length)].text;
-          if(c++>14){
-            clearInterval(it);
-            const chosen = pickWeighted(r.options);
-            result.classList.remove("spin");
-            result.textContent = ">> " + chosen.text + " <<";
-            r.history.unshift({at:Date.now(), text:chosen.text});
-            r.history = r.history.slice(0,50);
-            deepSet(activeProfile,"data.roulette", r);
-            scheduleCloudSave();
-            renderApp();
-          }
+        let c=0; 
+        const it = setInterval(()=>{ 
+            result.textContent = r.options[Math.floor(Math.random()*r.options.length)].text; 
+            if(c++>14){ 
+                clearInterval(it); 
+                const chosen = r.options[Math.floor(Math.random()*r.options.length)]; 
+                result.textContent = ">> " + chosen.text + " <<"; 
+                r.history.unshift({at:Date.now(), text:chosen.text}); 
+                scheduleCloudSave(); 
+                renderApp(); 
+            } 
         }, 90);
       }},[el("i",{class:"fa-solid fa-dice"})," Lancer"]);
-
-      const optsBox = el("div",{class:"panel"},[
-        el("div",{style:"display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px"},[
-          el("div",{style:"font-weight:900"},["Options (poids)"]),
-          unlocked ? el("button",{class:"btn small primary", onClick:()=>{
-            r.options.unshift({id:uid(), text:"Nouvelle action", weight:1});
-            deepSet(activeProfile,"data.roulette",r);
-            scheduleCloudSave();
-            renderApp();
-          }},[el("i",{class:"fa-solid fa-plus"})," Ajouter"]) : null
-        ]),
-        el("div",{style:"display:flex;flex-wrap:wrap;gap:10px"}, r.options.map(o=>{
-          const chip = el("div",{class:"tag"},[`${o.text}  x${o.weight||1}`]);
-          if(unlocked){
-            chip.style.display="flex";
-            chip.style.alignItems="center";
-            chip.style.gap="10px";
-            chip.appendChild(el("button",{class:"btn small", onClick:()=>{
-              const w = prompt("Poids (1..20)", String(o.weight||1));
-              if(w===null) return;
-              o.weight = Math.min(20, Math.max(1, Number(w)||1));
-              scheduleCloudSave();
-              renderApp();
-            }},[el("i",{class:"fa-solid fa-weight-hanging"})]));
-            chip.appendChild(el("button",{class:"btn small danger", onClick:()=>{
-              r.options = r.options.filter(x=>x.id!==o.id);
-              deepSet(activeProfile,"data.roulette",r);
-              scheduleCloudSave();
-              renderApp();
-            }},[el("i",{class:"fa-solid fa-trash"})]));
-          }
-          return chip;
-        }))
-      ]);
-
-      const hist = el("div",{class:"panel"},[
-        el("div",{style:"font-weight:900;margin-bottom:10px"},["Historique"]),
-        el("div",{style:"display:flex;flex-direction:column;gap:8px"}, (r.history||[]).slice(0,12).map(h=>{
-          const d = new Date(h.at);
-          return el("div",{style:"display:flex;gap:10px;align-items:center;flex-wrap:wrap"},[
-            el("span",{class:"chip"},[d.toLocaleString()]),
-            el("span",{style:"color:#bbb"},[h.text])
-          ]);
-        }))
-      ]);
-
+      
       return el("div",{},[
         el("p", {class:"muted", style:"margin-bottom: 15px; font-size: 13px; font-style: italic;"}, ["Utilisez cet outil pour des choix aléatoires ou de type roulette pour les réactions de votre personnage."]),
+        el("div",{class:"panel"},[ result, el("div",{style:"margin-top:12px;display:flex;justify-content:center"},[btnSpin]) ]),
         el("div",{class:"panel"},[
-          result,
-          el("div",{style:"margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center"},[
-            btnSpin
-          ])
-        ]),
-        optsBox,
-        hist
-      ]);
-    }
-
-    function renderTimeline(){
-      const t = activeProfile.data?.timeline || {events:[]};
-      const events = t.events || [];
-
-      const root = el("div",{class:"panel"},[
-        el("div",{style:"display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px"},[
-          el("div",{style:"font-weight:900"},["Timeline RP"]),
-          unlocked ? el("button",{class:"btn small primary", onClick:()=>{
-            events.unshift({id:uid(), at:Date.now(), title:"Nouvel événement", text:"", tags:["PARIS RP"]});
-            deepSet(activeProfile,"data.timeline.events", events);
-            scheduleCloudSave();
-            renderApp();
-          }},[el("i",{class:"fa-solid fa-plus"})," Ajouter"]) : null
-        ]),
-        el("div",{style:"display:flex;flex-direction:column;gap:12px"}, events.map(ev=>{
-          const date = new Date(ev.at || Date.now());
-          const item = el("div",{class:"timelineItem"},[
-            el("div",{class:"tlHead"},[
-              el("div",{style:"font-weight:900;color:var(--gold)"},[ev.title]),
-              el("span",{class:"chip"},[date.toLocaleString()])
-            ]),
-            el("div",{style:"color:#bbb;line-height:1.8;margin-top:8px"},[ev.text || ""]),
-            el("div",{class:"tagRow"}, (ev.tags||[]).map(tag=>el("span",{class:"tag"},[tag])))
-          ]);
-
-          if(unlocked){
-            item.appendChild(el("div",{style:"margin-top:10px;display:grid;gap:10px"},[
-              el("input",{class:"input", value:ev.title, onInput:(e)=>{ ev.title=e.target.value; scheduleCloudSave(); }}),
-              el("textarea",{class:"input", style:"min-height:120px;font-family:Montserrat;font-size:14px;line-height:1.7", onInput:(e)=>{ ev.text=e.target.value; scheduleCloudSave(); }},[]),
-              el("input",{class:"input", value:(ev.tags||[]).join(", "), placeholder:"tags séparés par virgule", onInput:(e)=>{
-                ev.tags = e.target.value.split(",").map(x=>x.trim()).filter(Boolean);
-                scheduleCloudSave();
-                renderApp();
-              }}),
-              el("div",{style:"display:flex;justify-content:flex-end"},[
-                el("button",{class:"btn small danger", onClick:()=>{
-                  deepSet(activeProfile,"data.timeline.events", events.filter(x=>x.id!==ev.id));
-                  scheduleCloudSave();
-                  renderApp();
-                }},[el("i",{class:"fa-solid fa-trash"})," Suppr"])
-              ])
-            ]));
-            item.querySelector("textarea").value = ev.text || "";
-          }
-
-          return item;
-        }))
-      ]);
-      return root;
-    }
-
-    function renderRelations(){
-      const rel = activeProfile.data?.relations || {list:[]};
-      const list = rel.list || [];
-
-      const root = el("div",{class:"panel"},[
-        el("div",{style:"display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px"},[
-          el("div",{style:"font-weight:900"},["Relations"]),
-          unlocked ? el("button",{class:"btn small primary", onClick:()=>{
-            list.unshift({id:uid(), name:"Nouveau contact", tag:"Neutre", note:"", img:""});
-            deepSet(activeProfile,"data.relations.list", list);
-            scheduleCloudSave();
-            renderApp();
-          }},[el("i",{class:"fa-solid fa-plus"})," Ajouter"]) : null
-        ]),
-        el("div",{class:"grid3"}, list.map(r=>{
-          const tagColor = r.tag==="Allié" ? "rgba(46,204,113,.25)" : r.tag==="Ennemi" ? "rgba(231,76,60,.25)" : "rgba(180,180,180,.15)";
-          const card = el("div",{class:"panel", style:"margin:0"},[
-            el("div",{style:"display:flex;gap:12px;align-items:center"},[
-              el("div",{class:"avatar",style:"width:54px;height:54px;border-color:rgba(212,175,55,.45)"},[
-                el("img",{src:r.img||"", onError:(e)=>{ e.target.style.opacity = '0'; }})
-              ]),
-              el("div",{},[
-                el("div",{style:"font-weight:900"},[r.name]),
-                el("span",{class:"tag", style:`border-color:${tagColor}`},[r.tag])
-              ])
-            ]),
-            el("div",{style:"margin-top:10px;color:#bbb;line-height:1.7"},[r.note||""])
-          ]);
-
-          if(unlocked){
-            card.appendChild(el("div",{style:"margin-top:10px;display:grid;gap:10px"},[
-              el("input",{class:"input", value:r.name, onInput:(e)=>{ r.name=e.target.value; scheduleCloudSave(); }}),
-              el("select",{class:"input", onChange:(e)=>{ r.tag=e.target.value; scheduleCloudSave(); renderApp(); }},[
-                el("option",{value:"Allié"},["Allié"]),
-                el("option",{value:"Ennemi"},["Ennemi"]),
-                el("option",{value:"Neutre"},["Neutre"])
-              ]),
-              // BOUTON IMPORT IMAGE CONTACT
-              el("div", {style:"display:flex; gap:10px; align-items:center;"}, [
-                el("input",{class:"input", style:"flex:1;", value:r.img||"", placeholder:"image url ou import...", onInput:(e)=>{ r.img=e.target.value; scheduleCloudSave(); renderApp(); }}),
-                el("button", {class:"btn small", onClick:()=> {
-                  const fi = document.createElement('input');
-                  fi.type = 'file'; fi.accept = 'image/*';
-                  fi.onchange = (e) => window.processImageUpload(e.target.files[0], (base64) => {
-                    r.img = base64;
-                    scheduleCloudSave();
-                    renderApp();
-                    toast("Image contact ajoutée");
-                  });
-                  fi.click();
-                }}, [el("i",{class:"fa-solid fa-upload"})])
-              ]),
-              el("textarea",{class:"input", style:"min-height:90px;font-family:Montserrat;font-size:14px;line-height:1.7", onInput:(e)=>{ r.note=e.target.value; scheduleCloudSave(); }},[]),
-              el("div",{style:"display:flex;justify-content:flex-end"},[
-                el("button",{class:"btn small danger", onClick:()=>{
-                  deepSet(activeProfile,"data.relations.list", list.filter(x=>x.id!==r.id));
-                  scheduleCloudSave();
-                  renderApp();
-                }},[el("i",{class:"fa-solid fa-trash"})," Suppr"])
-              ])
-            ]));
-            card.querySelector("textarea").value = r.note || "";
-            card.querySelector("select").value = r.tag || "Neutre";
-          }
-
-          return card;
-        }))
-      ]);
-
-      return root;
-    }
-
-    function renderCustomNote(){
-      const n = activeProfile.data?.custom_note || {html:""};
-      return el("div",{class:"panel"},[
-        el("div",{style:"display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px"},[
-          el("div",{style:"font-weight:900"},["Carnet (rich text)"]),
-          el("span",{class:"chip"},["Tu peux écrire librement"])
-        ]),
-        editableDivBlock(n.html, (html)=>{
-          deepSet(activeProfile,"data.custom_note.html", html);
-          scheduleCloudSave();
-        })
-      ]);
-    }
-
-    function editableDivBlock(html, onCommit){
-      const d = el("div",{class:"editable", style:"min-height:240px"});
-      d.innerHTML = html || "";
-      d.contentEditable = unlocked ? "true" : "false";
-      d.addEventListener("blur", ()=>{
-        if(!unlocked) return;
-        onCommit(d.innerHTML.trim());
-      });
-      return d;
-    }
-
-    function renderCustomCanvas(){
-      const st = activeProfile.data?.custom_canvas || {strokes:[], background:"#0a0a0d"};
-
-      const wrap = el("div",{},[
-        el("div",{class:"panel"},[
-          el("div",{style:"display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px"},[
-            el("div",{style:"font-weight:900"},["Dessin (Canvas)"]),
-            el("div",{style:"display:flex;gap:10px;flex-wrap:wrap;align-items:center"},[
-              el("span",{class:"chip"},["Public: " + (isTabPublic("custom2") ? "oui" : "non")]),
-              unlocked ? el("button",{class:"btn small", onClick:()=>exportCanvasPNG()},[el("i",{class:"fa-solid fa-file-image"})," PNG"]) : null,
-              unlocked ? el("button",{class:"btn small danger", onClick:()=>{
-                st.strokes = [];
-                deepSet(activeProfile,"data.custom_canvas", st);
-                scheduleCloudSave();
-                renderApp();
-              }},[el("i",{class:"fa-solid fa-eraser"})," Clear"]) : null
-            ])
+          el("div",{style:"display:flex;justify-content:space-between;margin-bottom:10px;"},[
+              el("div",{style:"font-weight:900"},["Options"]), 
+              unlocked ? el("button",{class:"btn small primary", onClick:()=>{ r.options.push({id:uid(), text:"Nouvelle action"}); scheduleCloudSave(); renderApp(); }},["+"]) : null 
           ]),
-          el("div",{class:"canvasWrap"},[
-            el("canvas",{id:"cvs"})
-          ]),
-          unlocked ? el("div",{style:"display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;align-items:center"},[
-            el("label",{class:"chip"},["Couleur"]),
-            el("input",{id:"penColor", type:"color", value:"#d4af37"}),
-            el("label",{class:"chip"},["Taille"]),
-            el("input",{id:"penSize", type:"range", min:"1", max:"18", value:"4"})
-          ]) : el("div",{class:"muted",style:"margin-top:10px"},["Lecture seule"])
+          el("div",{style:"display:flex;flex-wrap:wrap;gap:10px"}, r.options.map(o=> 
+              el("div",{class:"tag"},[
+                  o.text, 
+                  unlocked ? el("i",{class:"fa-solid fa-xmark", style:"margin-left:10px;cursor:pointer;", onClick:()=>{ r.options=r.options.filter(x=>x.id!==o.id); scheduleCloudSave(); renderApp(); }}) : null
+              ])
+          ))
         ])
       ]);
-
-      setTimeout(()=>initCanvas(st), 0);
-      return wrap;
-    }
-
-    function initCanvas(st){
-      const canvas = $("cvs");
-      if(!canvas) return;
-
-      const ctx = canvas.getContext("2d");
-      function resize(){
-        const rect = canvas.getBoundingClientRect();
-        const dpr = window.devicePixelRatio || 1;
-        canvas.width = Math.floor(rect.width * dpr);
-        canvas.height = Math.floor(rect.height * dpr);
-        ctx.setTransform(dpr,0,0,dpr,0,0);
-        redraw();
-      }
-
-      function redraw(){
-        const rect = canvas.getBoundingClientRect();
-        ctx.clearRect(0,0,rect.width,rect.height);
-        ctx.fillStyle = st.background || "#0a0a0d";
-        ctx.fillRect(0,0,rect.width,rect.height);
-
-        for(const s of (st.strokes||[])){
-          ctx.strokeStyle = s.color;
-          ctx.lineWidth = s.size;
-          ctx.lineCap = "round";
-          ctx.lineJoin = "round";
-          ctx.beginPath();
-          for(let i=0;i<s.points.length;i++){
-            const p = s.points[i];
-            if(i===0) ctx.moveTo(p.x, p.y);
-            else ctx.lineTo(p.x, p.y);
-          }
-          ctx.stroke();
-        }
-      }
-
-      window.addEventListener("resize", resize, {passive:true});
-      resize();
-
-      if(!unlocked){
-        canvas.style.cursor = "not-allowed";
-        return;
-      }
-
-      let drawing = false;
-      let cur = null;
-
-      const getPoint = (e)=>{
-        const rect = canvas.getBoundingClientRect();
-        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-        return { x: clientX - rect.left, y: clientY - rect.top };
-      };
-
-      const colorEl = $("penColor");
-      const sizeEl = $("penSize");
-
-      const start = (e)=>{
-        drawing = true;
-        const p = getPoint(e);
-        cur = { id: uid(), color: colorEl?.value || "#d4af37", size: Number(sizeEl?.value||4), points:[p] };
-        st.strokes = st.strokes || [];
-        st.strokes.push(cur);
-        redraw();
-        e.preventDefault();
-      };
-      const move = (e)=>{
-        if(!drawing || !cur) return;
-        cur.points.push(getPoint(e));
-        redraw();
-        e.preventDefault();
-      };
-      const end = ()=>{
-        drawing = false;
-        cur = null;
-        deepSet(activeProfile,"data.custom_canvas", st);
-        scheduleCloudSave();
-      };
-
-      canvas.addEventListener("pointerdown", start);
-      canvas.addEventListener("pointermove", move);
-      window.addEventListener("pointerup", end);
-
-      canvas.addEventListener("touchstart", start, {passive:false});
-      canvas.addEventListener("touchmove", move, {passive:false});
-      window.addEventListener("touchend", end);
-    }
-
-    function exportCanvasPNG(){
-      const canvas = $("cvs");
-      if(!canvas) return;
-      const a = document.createElement("a");
-      a.download = `canvas_${activeKey}.png`;
-      a.href = canvas.toDataURL("image/png");
-      a.click();
-    }
-
-    function renderCustomBoard(){
-      const b = activeProfile.data?.custom_board || {columns:[]};
-      const cols = b.columns || [];
-
-      const root = el("div",{class:"panel"},[
-        el("div",{style:"display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px"},[
-          el("div",{style:"font-weight:900"},["Tableau (Kanban RP)"]),
-          unlocked ? el("button",{class:"btn small primary", onClick:()=>{
-            cols.push({id:uid(), title:"Nouvelle colonne", cards:[]});
-            deepSet(activeProfile,"data.custom_board.columns", cols);
-            scheduleCloudSave();
-            renderApp();
-          }},[el("i",{class:"fa-solid fa-plus"})," Colonne"]) : null
-        ]),
-        el("div",{class:"grid3"}, cols.map(col=>{
-          const cards = col.cards || [];
-          const box = el("div",{class:"panel", style:"margin:0"},[
-            el("div",{style:"display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px"},[
-              el("div",{style:"font-weight:900;color:var(--gold)"},[col.title]),
-              unlocked ? el("button",{class:"btn small danger", onClick:()=>{
-                deepSet(activeProfile,"data.custom_board.columns", cols.filter(x=>x.id!==col.id));
-                scheduleCloudSave();
-                renderApp();
-              }},[el("i",{class:"fa-solid fa-trash"})]) : null
-            ]),
-            unlocked ? el("input",{class:"input", value:col.title, onInput:(e)=>{ col.title=e.target.value; scheduleCloudSave(); }}) : null,
-            unlocked ? el("button",{class:"btn small primary", style:"margin-top:10px", onClick:()=>{
-              cards.unshift({id:uid(), text:"Nouvelle carte"});
-              col.cards = cards;
-              scheduleCloudSave();
-              renderApp();
-            }},[el("i",{class:"fa-solid fa-plus"})," Carte"]) : null,
-            el("div",{style:"display:flex;flex-direction:column;gap:10px;margin-top:10px"}, cards.map(cd=>{
-              const item = el("div",{class:"timelineItem"},[
-                el("div",{style:"display:flex;justify-content:space-between;gap:10px;align-items:center"},[
-                  el("div",{style:"flex:1;color:#ddd"},[cd.text]),
-                  unlocked ? el("button",{class:"btn small danger", onClick:()=>{
-                    col.cards = cards.filter(x=>x.id!==cd.id);
-                    scheduleCloudSave();
-                    renderApp();
-                  }},[el("i",{class:"fa-solid fa-trash"})]) : null
-                ])
-              ]);
-              if(unlocked){
-                item.appendChild(el("input",{class:"input", value:cd.text, style:"margin-top:10px;font-family:Montserrat", onInput:(e)=>{ cd.text=e.target.value; scheduleCloudSave(); }}));
-              }
-              return item;
-            }))
-          ]);
-          return box;
-        }))
-      ]);
-      return root;
-    }
-
-    function isTabPublic(tabId){
-      const t = (activeProfile.tabs||[]).find(x=>x.id===tabId);
-      return !!t?.visiblePublic;
     }
 
     function renderTabsSettings(){
       const tabs = activeProfile.tabs || [];
-
-      const root = el("div",{},[
-        el("div",{class:"sectionTitle"},[
-          el("span",{},["Onglets — Configuration"]),
-          el("span",{class:"ref"},["customizable"])
+      return el("div",{},[
+        el("div",{class:"sectionTitle"},[ 
+            el("span",{},["Onglets — Configuration"]), 
+            el("span",{class:"ref"},["customizable"]) 
         ]),
         el("div",{class:"panel"},[
-          el("div",{class:"muted",style:"line-height:1.7;margin-bottom:12px"},[
-            "Ici tu peux renommer, masquer (enabled), et choisir la visibilité publique de chaque onglet."
-          ]),
           el("div",{style:"display:flex;flex-direction:column;gap:12px"}, tabs.map((t,idx)=>{
-            const row = el("div",{class:"timelineItem"},[
-              el("div",{style:"display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap"},[
-                el("div",{style:"font-weight:900;color:var(--gold)"},[`${idx+1}. ${t.title}`]),
-                el("span",{class:"chip"},[t.type])
+            return el("div",{class:"timelineItem"},[
+              el("div",{style:"display:flex;justify-content:space-between;"},[ 
+                  el("div",{style:"font-weight:900;color:var(--gold)"},[t.title]), 
+                  el("span",{class:"chip"},[t.type]) 
               ]),
               el("div",{style:"display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px"},[
-                el("div",{},[
-                  el("div",{class:"fieldLabel"},["Titre"]),
-                  el("input",{class:"input", value:t.title, onInput:(e)=>{ t.title=e.target.value; scheduleCloudSave(); renderTabsNav(); }})
-                ]),
-                el("div",{},[
-                  el("div",{class:"fieldLabel"},["Icône (FontAwesome, ex: fa-scroll)"]),
-                  el("input",{class:"input", value:t.icon||"", onInput:(e)=>{ t.icon=e.target.value; scheduleCloudSave(); renderTabsNav(); }})
-                ])
+                el("input",{class:"input", value:t.title, onInput:(e)=>{ t.title=e.target.value; scheduleCloudSave(); renderTabsNav(); }}),
+                el("input",{class:"input", value:t.icon||"", onInput:(e)=>{ t.icon=e.target.value; scheduleCloudSave(); renderTabsNav(); }})
               ]),
-              el("div",{style:"display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;align-items:center"},[
-                el("label",{class:"switch"},[
-                  el("input",{type:"checkbox", checked:!!t.enabled, onChange:(e)=>{ t.enabled=e.target.checked; scheduleCloudSave(); renderTabsNav(); }}),
-                  el("div",{class:"slider"}),
-                  el("span",{},["Activé"])
-                ]),
-                el("label",{class:"switch"},[
-                  el("input",{type:"checkbox", checked:!!t.visiblePublic, onChange:(e)=>{ t.visiblePublic=e.target.checked; scheduleCloudSave(); renderTabsNav(); }}),
-                  el("div",{class:"slider"}),
-                  el("span",{},["Public (lecture)"])
-                ])
-              ]),
-              el("div",{style:"display:flex;justify-content:flex-end;gap:10px;margin-top:12px;flex-wrap:wrap"},[
-                el("button",{class:"btn small", disabled: idx===0, onClick:()=>{
-                  const x = tabs[idx-1]; tabs[idx-1]=tabs[idx]; tabs[idx]=x;
-                  deepSet(activeProfile,"tabs",tabs);
-                  scheduleCloudSave(); renderApp();
-                }},[el("i",{class:"fa-solid fa-arrow-up"}),""]),
-                el("button",{class:"btn small", disabled: idx===tabs.length-1, onClick:()=>{
-                  const x = tabs[idx+1]; tabs[idx+1]=tabs[idx]; tabs[idx]=x;
-                  deepSet(activeProfile,"tabs",tabs);
-                  scheduleCloudSave(); renderApp();
-                }},[el("i",{class:"fa-solid fa-arrow-down"}),""])
+              el("div",{style:"display:flex;gap:14px;margin-top:10px;"},[
+                el("label",{class:"switch"},[ el("input",{type:"checkbox", checked:!!t.enabled, onChange:(e)=>{ t.enabled=e.target.checked; scheduleCloudSave(); renderTabsNav(); }}), el("div",{class:"slider"}), el("span",{},["Activé"]) ]),
+                el("label",{class:"switch"},[ el("input",{type:"checkbox", checked:!!t.visiblePublic, onChange:(e)=>{ t.visiblePublic=e.target.checked; scheduleCloudSave(); renderTabsNav(); }}), el("div",{class:"slider"}), el("span",{},["Public"]) ])
               ])
             ]);
-            return row;
           }))
         ])
       ]);
-      return root;
     }
 
-    function openUnlockModal(){
-      $("uPin").value = "";
-      modal($("mUnlock"), true);
-      setTimeout(()=> $("uPin").focus(), 50);
+    function openUnlockModal(){ 
+        $("uPin").value = ""; 
+        modal($("mUnlock"), true); 
     }
-
+    
     function unlock(){
       const pin = ($("uPin").value || "").trim();
-      const p = activeProfile;
-
-      if(p.key==="harry" && pin !== PIN_HARRY) return toast("PIN incorrect");
-      if(p.key==="seya"  && pin !== PIN_SEYA)  return toast("PIN incorrect");
-
-      if(p.key!=="harry" && p.key!=="seya"){
-        const expected = p.security?.pinHash || "";
-        if(expected){
-          if(hashPin(pin) !== expected) return toast("PIN incorrect");
-        } else {
-          if(!pin) return toast("Choisis un PIN");
-          p.security.pinHash = hashPin(pin);
-          scheduleCloudSave();
-          toast("PIN enregistré");
-        }
-      }
-
-      unlocked = true;
-      setEditMode(true);
-      modal($("mUnlock"), false);
-      toast("Édition activée");
+      if(activeProfile.key==="harry" && pin !== PIN_HARRY) return toast("PIN incorrect");
+      if(activeProfile.key==="seya"  && pin !== PIN_SEYA)  return toast("PIN incorrect");
+      if(activeProfile.key!=="harry" && activeProfile.key!=="seya" && activeProfile.security.pinHash && hashPin(pin) !== activeProfile.security.pinHash) return toast("PIN incorrect");
+      unlocked = true; 
+      setEditMode(true); 
+      modal($("mUnlock"), false); 
+      toast("Édition activée"); 
       renderApp();
     }
-
-    function lock(){
-      unlocked = false;
-      setEditMode(false);
-      toast("Verrouillé");
-      renderApp();
+    
+    function lock(){ 
+        unlocked = false; 
+        setEditMode(false); 
+        toast("Verrouillé"); 
+        renderApp(); 
     }
-
-    function openCreateModal(){
-      modal($("mCreate"), true);
-      $("cName").value = "";
-      $("cKey").value = "";
-      $("cImg").value = "";
-      $("cPin").value = "";
-      fillDuplicateSelect();
-      $("cFrom").value = "harry";
+    
+    function openCreateModal(){ 
+        modal($("mCreate"), true); 
+        fillDuplicateSelect(); 
     }
-
+    
     async function createProfile(){
-      const name = ($("cName").value || "").trim() || "Visiteur";
-      const key = slugify(($("cKey").value || "").trim() || name);
-      const img = ($("cImg").value || "").trim();
+      const name = ($("cName").value || "").trim() || "Dossier"; 
+      const key = slugify(($("cKey").value || "").trim() || name); 
       const pin = ($("cPin").value || "").trim();
-      const from = $("cFrom").value;
-
-      if(pin.length < 4 || pin.length > 8) return toast("PIN 4-8 chiffres");
-
-      const ref = doc(db, "profiles", key);
-      const exists = await getDoc(ref);
-      if(exists.exists()) return toast("ID déjà pris (change la clé)");
-
-      const base = profilesCache.get(from) || harryProfile();
-      const p = JSON.parse(JSON.stringify(base)); 
+      if(pin.length < 4) return toast("PIN trop court");
       
-      p.key = key;
-      p.displayName = name;
-      p.data.identite.fullName = name;
-      p.public = true;
-      p.meta = p.meta || {};
-      p.meta.img = img || p.meta.img || "";
-      p.meta.ref = "";
-      p.security = p.security || {};
-      p.security.fixedPin = false;
+      const ref = doc(db, "profiles", key); 
+      const exists = await getDoc(ref); 
+      if(exists.exists()) return toast("ID déjà pris");
+      
+      const p = defaultProfile(key, name); 
       p.security.pinHash = hashPin(pin);
-      p.updatedAt = Date.now();
-
-      p.data.timeline.events = [];
-      p.data.goals.court = [];
-      p.data.goals.long = [];
-      p.data.roulette.history = [];
-
-      await setDoc(ref, p);
-      toast("Profil créé (cloud)");
-      modal($("mCreate"), false);
+      
+      await setDoc(ref, p); 
+      toast("Profil créé !"); 
+      modal($("mCreate"), false); 
       await refreshProfilesList();
     }
 
-    function exportActive(){
-      const json = JSON.stringify(activeProfile, null, 2);
-      const blob = new Blob([json], {type:"application/json"});
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = `profil_${activeProfile.key}_${new Date().toISOString().slice(0,10)}.json`;
-      a.click();
-      setTimeout(()=>URL.revokeObjectURL(a.href), 1200);
-      toast("Export OK");
-    }
-
-    async function importActive(){
-      if(!unlocked) return toast("Déverrouille d'abord");
-      try{
-        const raw = ($("importJson").value||"").trim();
-        const obj = JSON.parse(raw);
-        if(!obj.key || obj.key !== activeKey) return toast("Le JSON doit correspondre à ce profil");
-        activeProfile = obj;
-        await setDoc(doc(db,"profiles",activeKey), activeProfile, {merge:false});
-        modal($("mImport"), false);
-        toast("Import OK");
-      }catch(e){
-        alert("JSON invalide: " + e.message);
-      }
-    }
-
-    function printProfile(){
-      const w = window.open("", "_blank");
-      const p = activeProfile;
-      const name = p.displayName || p.key;
-      const idt = p.data?.identite || {};
-      const lore = p.data?.lore?.sections || [];
-      const timeline = p.data?.timeline?.events || [];
-
-      const idtHtml = `
-        <p><strong>Nom complet :</strong> ${idt.fullName||""}</p>
-        <p><strong>Âge :</strong> ${idt.age||""}</p>
-        <p><strong>Naissance :</strong> ${idt.birthdate||""} à ${idt.birthplace||""}</p>
-        <p><strong>Origines :</strong> ${idt.origins||""}</p>
-        <p><strong>Rôle :</strong> ${idt.role||""}</p>
-        <p><strong>Physique :</strong> ${idt.phys||""} - ${idt.sign||""}</p>
-        <p><strong>Voix :</strong> ${idt.voice||""}</p>
-      `;
-
-      const loreHtml = lore.map(s => `<h3>${escapeHtml(s.title)}</h3><p>${escapeHtml(s.text)}</p>`).join('');
-      const tlHtml = timeline.map(e => `<li><strong>${new Date(e.at).toLocaleDateString()} - ${escapeHtml(e.title)}:</strong> ${escapeHtml(e.text)}</li>`).join('');
-
-      w.document.write(`
-        <html><head><title>${name} — Dossier RP</title>
-        <style>
-          body{font-family:'Segoe UI', Arial, sans-serif; padding:40px; color:#111; line-height:1.6;}
-          h1{margin:0 0 5px; font-size:32px; border-bottom:2px solid #000; padding-bottom:10px; text-transform:uppercase;}
-          h2{margin-top:30px; font-size:20px; color:#333; border-bottom:1px solid #ccc; padding-bottom:5px; text-transform:uppercase;}
-          h3{margin-top:20px; font-size:16px; color:#555;}
-          .stamp{position:fixed; top:30px; right:40px; border:3px solid #d00; color:#d00; padding:10px 15px; transform:rotate(8deg); font-weight:900; font-size:18px; border-radius:4px;}
-          .ref{color:#666; font-family:monospace; margin-bottom:30px;}
-          p{margin:8px 0;}
-          ul{padding-left:20px;}
-          li{margin-bottom:10px;}
-        </style></head><body>
-        <div class="stamp">GRANDLINE // CONFIDENTIEL</div>
-        <h1>DOSSIER : ${escapeHtml(name)}</h1>
-        <div class="ref">REF: ${escapeHtml(p.meta?.ref||"INCONNUE")} | EXPORT OFFICIEL PARIS RP</div>
-        
-        <h2>1. Identité Civile</h2>
-        ${idtHtml}
-
-        <h2>2. Histoire et Rapports</h2>
-        ${loreHtml || "<p>Aucune donnée d'histoire.</p>"}
-
-        <h2>3. Chronologie (Timeline)</h2>
-        <ul>${tlHtml || "<li>Aucun événement enregistré.</li>"}</ul>
-        
-        <script>setTimeout(() => window.print(), 500);<\/script>
-        </body></html>
-      `);
-      w.document.close();
-    }
-
-    function escapeHtml(s){
-      return String(s ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");
-    }
-
-    // ====== INITIALISATION DU BOUTON GALERIE ======
-    window.addPhoto = function() {
-      const url = document.getElementById('galleryUrl').value;
-      if(!url) return;
-      
-      let photos = activeProfile.data.photos || [];
-      photos.push({ id: uid(), url: url });
-      deepSet(activeProfile, "data.photos", photos);
-      
-      scheduleCloudSave();
-      renderApp();
-      closeModal('modalGallery');
-      toast("Photo ajoutée !");
-    };
-
-    $("btnUploadGallery").addEventListener("click", ()=>{
-      const fi = document.createElement('input');
-      fi.type = 'file'; fi.accept = 'image/*';
-      fi.onchange = (e) => window.processImageUpload(e.target.files[0], (base64) => {
-        $("galleryUrl").value = base64;
-        toast("Image prête ! Cliquez sur Ajouter.");
-      });
-      fi.click();
-    });
-    // ===============================================
-
     $("q").addEventListener("input", renderLanding);
     $("btnCreate").addEventListener("click", openCreateModal);
-    $("btnHelp").addEventListener("click", ()=>modal($("mHelp"), true));
-    $("hOk").addEventListener("click", ()=>modal($("mHelp"), false));
-
-    $("cCancel").addEventListener("click", ()=>modal($("mCreate"), false));
     $("cOk").addEventListener("click", createProfile);
-
     $("back").addEventListener("click", backToLanding);
-
     $("unlock").addEventListener("click", openUnlockModal);
     $("lock").addEventListener("click", lock);
-
-    $("uCancel").addEventListener("click", ()=>modal($("mUnlock"), false));
     $("uOk").addEventListener("click", unlock);
-
+    $("uCancel").addEventListener("click", ()=>modal($("mUnlock"), false));
+    $("cCancel").addEventListener("click", ()=>modal($("mCreate"), false));
     $("tools").addEventListener("click", ()=>modal($("mTools"), true));
     $("tClose").addEventListener("click", ()=>modal($("mTools"), false));
-    $("export").addEventListener("click", exportActive);
-    $("importOpen").addEventListener("click", ()=>modal($("mImport"), true));
-    $("iCancel").addEventListener("click", ()=>modal($("mImport"), false));
-    $("iOk").addEventListener("click", importActive);
-    $("print").addEventListener("click", printProfile);
-
+    $("export").addEventListener("click", ()=>toast("Export JSON..."));
+    
     $("deleteProfileBtn").addEventListener("click", async ()=>{
-      if(!unlocked) return toast("Déverrouille le profil d'abord");
-      if(activeKey === "harry" || activeKey === "seya") return toast("Impossible de supprimer les profils de base");
-      
-      if(confirm("ATTENTION: Veux-tu vraiment supprimer DÉFINITIVEMENT ce profil du Cloud ? (Action irréversible)")){
-        try {
-          await deleteDoc(doc(db, "profiles", activeKey));
-          toast("Profil supprimé !");
-          modal($("mTools"), false);
-          backToLanding();
-        } catch(e) {
-          console.error(e);
-          toast("Erreur de suppression");
-        }
-      }
-    });
-
-    document.addEventListener("keydown", (e)=>{
-      if(e.key==="/" && document.activeElement?.tagName!=="INPUT" && document.activeElement?.tagName!=="TEXTAREA"){
-        e.preventDefault(); $("q").focus();
-      }
-      if(e.key==="Escape"){
-        [$("mCreate"),$("mUnlock"),$("mTools"),$("mImport"),$("mHelp"), $("modalGallery")].forEach(m=>m.classList.remove("show"));
+      if(!unlocked) return toast("Déverrouille d'abord");
+      if(confirm("Supprimer définitivement ?")){ 
+          await deleteDoc(doc(db, "profiles", activeKey)); 
+          backToLanding(); 
       }
     });
 
