@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
   <title>PARIS RP — DOSSIERS</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@600&family=Montserrat:wght@300;400;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
@@ -57,7 +57,7 @@
     .logo-main {
       height: 90px; 
       width: auto;
-      max-width: 300px;
+      max-width: 100%;
       object-fit: contain; 
       display: block;
       filter: drop-shadow(0 0 10px rgba(212,175,55, 0.5));
@@ -135,6 +135,7 @@
       border:1px solid #1a1a20;
       color:#bbb;
       user-select:none;
+      white-space: nowrap;
     }
     .chip.ro{border-color:rgba(52,152,219,.25); color:#b7e2ff}
     .chip.edit{border-color:rgba(212,175,55,.28); color:#ffe7a1}
@@ -264,12 +265,17 @@
       overflow:hidden;
       display:flex;
       box-shadow:var(--shadow);
+      position: relative;
     }
+    
+    /* === MENU LATÉRAL === */
     .sidebar{
       width:320px;
       background:#07070a;
       border-right:1px solid #1f1f26;
       display:flex; flex-direction:column;
+      transition: left 0.3s ease;
+      z-index: 1000;
     }
     .sbHead{
       padding:22px 16px;
@@ -293,7 +299,6 @@
       display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:12px;
     }
     
-    /* === CORRECTION BUG SCROLL MENU LATERALE === */
     #tabsNav {
       flex: 1;
       overflow-y: auto;
@@ -301,7 +306,6 @@
     }
     #tabsNav::-webkit-scrollbar { width: 5px; }
     #tabsNav::-webkit-scrollbar-thumb { background: #1f1f26; border-radius: 10px; }
-    /* =========================================== */
 
     .sbBtn{
       border:none;
@@ -326,7 +330,8 @@
 
     .main{
       flex:1;
-      overflow:auto;
+      overflow-y:auto;
+      overflow-x:hidden;
       padding:22px 34px;
     }
     .topbar{
@@ -338,6 +343,10 @@
       backdrop-filter: blur(10px);
       display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;
     }
+    
+    #mobileMenuBtn { display: none; } /* Caché sur PC */
+    .sidebar-overlay { display: none; } /* Caché sur PC */
+
     .sectionTitle{
       font-family:"Playfair Display",serif;
       font-size:40px;
@@ -353,13 +362,60 @@
     
     #imgPreview { object-fit: cover; object-position: center; }
 
+    /* ========================================= */
+    /* ======== ADAPTATION POUR MOBILE ========= */
+    /* ========================================= */
     @media (max-width: 1100px){
       .grid2{grid-template-columns:1fr}
-      .sidebar{width:270px}
-      .main{padding:18px}
-      .topbar{margin:-18px -18px 14px; padding:12px 18px}
       .search{min-width:unset}
     }
+
+    @media (max-width: 768px) {
+      .appShell { padding: 0; }
+      .app { border-radius: 0; border: none; flex-direction: column; }
+      
+      /* Le menu se cache à gauche */
+      .sidebar { 
+        position: fixed; 
+        top: 0; 
+        left: -320px; /* Caché */
+        height: 100%; 
+        width: 280px; 
+        box-shadow: var(--shadow);
+      }
+      .sidebar.open { left: 0; } /* Visible */
+      
+      /* L'ombre derrière le menu quand il est ouvert */
+      .sidebar-overlay {
+        display: none; 
+        position: fixed; inset: 0; 
+        background: rgba(0,0,0,0.6); 
+        z-index: 999; 
+        backdrop-filter: blur(3px);
+      }
+      .sidebar-overlay.open { display: block; }
+      
+      /* Bouton Hamburger */
+      #mobileMenuBtn { display: inline-flex !important; }
+      
+      .topbar { margin: 0; padding: 12px 18px; border-radius: 0 0 18px 18px; }
+      .main { padding: 18px; }
+      
+      .grid3, .formGrid { grid-template-columns: 1fr; }
+      
+      /* Polices adaptées */
+      .brandTitle { font-size: 38px; }
+      .sectionTitle { font-size: 28px; }
+      
+      /* Anti-zoom iOS (force la police à 16px minimum dans les cases) */
+      .input, .editable, textarea, select { font-size: 16px !important; }
+      
+      .modal { padding: 10px; }
+      .modalBox { padding: 14px; max-height: 90vh; overflow-y: auto; }
+      
+      .credit-landing { bottom: 10px; right: 10px; font-size: 11px; }
+    }
+    /* ========================================= */
 
     .fieldLabel{color:#9a9a9a; font-size:12px; margin-bottom:8px}
     .editable{
@@ -537,6 +593,9 @@
 
   <section id="app" class="appShell">
     <div class="app">
+      
+      <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
       <aside class="sidebar">
         <div class="sbHead">
           <img src="logo.png" alt="Logo" class="logo-sidebar" onerror="this.style.display='none'">
@@ -558,15 +617,16 @@
       <main class="main">
         <div class="topbar">
           <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
-            <span class="chip ro" id="modeChip"><i class="fa-solid fa-eye"></i> LECTURE</span>
+            <button class="btn small" id="mobileMenuBtn"><i class="fa-solid fa-bars"></i></button>
+            <span class="chip ro" id="modeChip"><i class="fa-solid fa-eye"></i> <span class="hide-mobile">LECTURE</span></span>
             <span class="chip"><i class="fa-solid fa-user"></i> <span id="activeName"></span></span>
-            <span class="chip ok"><i class="fa-solid fa-cloud"></i> Firebase</span>
+            <span class="chip ok hide-mobile"><i class="fa-solid fa-cloud"></i> Firebase</span>
             <span class="chip" id="saveChip"><i class="fa-solid fa-floppy-disk"></i> Idle</span>
           </div>
           <div style="display:flex;gap:10px;flex-wrap:wrap">
-            <button class="btn small primary" id="unlock"><i class="fa-solid fa-lock"></i> Déverrouiller</button>
-            <button class="btn small" id="lock"><i class="fa-solid fa-lock-open"></i> Verrouiller</button>
-            <button class="btn small" id="tools"><i class="fa-solid fa-screwdriver-wrench"></i> Outils</button>
+            <button class="btn small primary" id="unlock"><i class="fa-solid fa-lock"></i> <span class="hide-mobile">Déverrouiller</span></button>
+            <button class="btn small" id="lock"><i class="fa-solid fa-lock-open"></i> <span class="hide-mobile">Verrouiller</span></button>
+            <button class="btn small" id="tools"><i class="fa-solid fa-screwdriver-wrench"></i> <span class="hide-mobile">Outils</span></button>
           </div>
         </div>
 
@@ -742,7 +802,6 @@
 
     const $ = (id)=>document.getElementById(id);
 
-    // Variables globales
     let currentRouletteResult = "EN ATTENTE…"; 
 
     function toast(msg){
@@ -1131,6 +1190,11 @@
         btn.addEventListener("click", ()=>{ 
             currentTabId = t.id; 
             currentRouletteResult = "EN ATTENTE…"; 
+            
+            // Ferme le menu sur mobile
+            document.querySelector(".sidebar").classList.remove("open");
+            $("sidebarOverlay").classList.remove("open");
+            
             renderApp(); 
         });
         nav.appendChild(btn);
@@ -1142,6 +1206,11 @@
         s.innerHTML = `<i class="fa-solid fa-gear"></i> Onglets (config)`;
         s.addEventListener("click", ()=>{ 
             currentTabId = "__tabs_settings__"; 
+            
+            // Ferme le menu sur mobile
+            document.querySelector(".sidebar").classList.remove("open");
+            $("sidebarOverlay").classList.remove("open");
+            
             renderApp(); 
         });
         nav.appendChild(s);
@@ -1907,7 +1976,20 @@
       return root;
     }
 
-    // === FONCTIONS GLOBALES (Modal, Déverrouillage) ===
+    // === FONCTIONS GLOBALES (Modal, Menu Mobile) ===
+    
+    // Gérer l'ouverture du menu latéral sur mobile
+    $("mobileMenuBtn").addEventListener("click", () => {
+        document.querySelector(".sidebar").classList.add("open");
+        $("sidebarOverlay").classList.add("open");
+    });
+    
+    // Fermer le menu si on clique sur le fond sombre
+    $("sidebarOverlay").addEventListener("click", () => {
+        document.querySelector(".sidebar").classList.remove("open");
+        $("sidebarOverlay").classList.remove("open");
+    });
+
     function openUnlockModal(){ $("uPin").value = ""; modal($("mUnlock"), true); }
     
     function unlock(){
