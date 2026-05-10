@@ -310,7 +310,7 @@
     <nav class="sidebar">
       <div class="sidebar-header">
         <h2 id="ui-sidebar-name">CARPENTIER O.S</h2>
-        <p>v5.0.1 SYSTEM // PUBLIC VIEW</p>
+        <p>v5.0.2 SYSTEM // PUBLIC VIEW</p>
       </div>
 
       <div class="nav-links">
@@ -607,11 +607,8 @@
       window.addEventListener("unhandledrejection", (e)=> showFatal("UnhandledPromiseRejection\n" + (e?.reason?.message || String(e?.reason))));
     })();
 
-    /***********************
-     * Storage
-     ***********************/
-    const STORAGE_NS = "carpentierOS:v501";
-    const EDIT_SESSION_NS = "carpentierOS:v501:editSession"; // per browser session
+    const STORAGE_NS = "carpentierOS:v502";
+    const EDIT_SESSION_NS = "carpentierOS:v502:editSession";
 
     const isStructuredCloneSupported = typeof structuredClone === "function";
     const clone = (obj) => isStructuredCloneSupported ? structuredClone(obj) : JSON.parse(JSON.stringify(obj));
@@ -620,7 +617,6 @@
       const rnd = (typeof crypto !== "undefined" && crypto.getRandomValues) ? crypto.getRandomValues(new Uint32Array(2)) : [Date.now(), Math.random()*1e9];
       return "id_" + rnd[0].toString(16) + rnd[1].toString(16);
     }
-
     function escapeHtml(s){ return String(s ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;"); }
     function escapeAttr(s){ return escapeHtml(s).replaceAll('"','&quot;'); }
 
@@ -631,85 +627,34 @@
         displayName:"HARRY",
         meta:{ sidebar:"HARRY O.S", refId:"HC-151204", psyRef:"SYNDROME CHIHUAHUA", loreRef:"L'EST PARISIEN", img:"photo harry.png" }, // IMAGE_HARRY
         pinHash:"",
-        identity:{
-          fullName:"CARPENTIER Harry",
-          age:"21 ans (15/12/2004)",
-          birthplace:"Paris 19ème (Hôpital Robert Debré)",
-          origins:"Franco-Algérien (Mère DZ : Myriam)",
-          role:"Chef de famille (précaire) / Faux Caïd",
-          phys:"1m75 (Plutôt frêle)",
-          sign:"Moustache taillée (pour paraître plus vieux).",
-          voice:"Voix extrêmement aiguë de naissance, zéro virilité."
-        },
-        psy:{
-          psy1:"Harry est l'incarnation même du <strong>Chihuahua</strong> : il aboie très fort, essaie d'intimider avec un argot de banlieue, mais fuit dès que la menace devient réelle. Il est terrifié par la violence physique et perd tous ses moyens sous la pression.",
-          psy2:"Sa plus grande faiblesse est son <strong>honnêteté pathologique</strong> : incapable de mentir sous le stress, il finit par tout avouer."
-        },
-        stats:[
-          { id: uid(), label:"Courage (Froid & Calculé)", val:5 },
-          { id: uid(), label:"Lâcheté / Survie", val:95 },
-          { id: uid(), label:"Sincérité (Stress-induced honesty)", val:100 },
-          { id: uid(), label:"Dévouement pour Seya", val:100 }
-        ],
-        lore:{
-          sections:[
-            { id: uid(), title:"Les Origines : Le 19ème Arrondissement", text:"Harry est né et a grandi dans les barres d'HLM du 19ème arrondissement de Paris. Son père a disparu, sa mère Myriam s'est tuée à la tâche." },
-            { id: uid(), title:"Le Drame de Seya", text:"À la naissance de sa petite sœur Seya, une anoxie lui laisse un retard mental. La vie d'Harry a changé : il est devenu son garde du corps inefficace et son seul repère." },
-            { id: uid(), title:"L'Arrivée à Paris RP", text:"Myriam est décédée. Menacés d'expulsion, Harry a pris Seya et a décidé de tenter sa chance dans le grand bain de GrandLine." }
-          ]
-        },
+        identity:{ fullName:"CARPENTIER Harry", age:"21 ans (15/12/2004)", birthplace:"Paris 19ème (Hôpital Robert Debré)", origins:"Franco-Algérien (Mère DZ : Myriam)", role:"Chef de famille (précaire) / Faux Caïd", phys:"1m75 (Plutôt frêle)", sign:"Moustache taillée (pour paraître plus vieux).", voice:"Voix extrêmement aiguë de naissance, zéro virilité." },
+        psy:{ psy1:"Harry est l'incarnation même du <strong>Chihuahua</strong> : il aboie très fort, essaie d'intimider avec un argot de banlieue, mais fuit dès que la menace devient réelle. Il est terrifié par la violence physique et perd tous ses moyens sous la pression.", psy2:"Sa plus grande faiblesse est son <strong>honnêteté pathologique</strong> : incapable de mentir sous le stress, il finit par tout avouer." },
+        stats:[ { id: uid(), label:"Courage (Froid & Calculé)", val:5 }, { id: uid(), label:"Lâcheté / Survie", val:95 }, { id: uid(), label:"Sincérité (Stress-induced honesty)", val:100 }, { id: uid(), label:"Dévouement pour Seya", val:100 } ],
+        lore:{ sections:[ { id: uid(), title:"Les Origines : Le 19ème Arrondissement", text:"Harry est né et a grandi dans les barres d'HLM du 19ème arrondissement de Paris. Son père a disparu, sa mère Myriam s'est tuée à la tâche." }, { id: uid(), title:"Le Drame de Seya", text:"À la naissance de sa petite sœur Seya, une anoxie lui laisse un retard mental. La vie d'Harry a changé : il est devenu son garde du corps inefficace et son seul repère." }, { id: uid(), title:"L'Arrivée à Paris RP", text:"Myriam est décédée. Menacés d'expulsion, Harry a pris Seya et a décidé de tenter sa chance dans le grand bain de GrandLine." } ] },
         goals:[],
         journal:""
       },
-
       seya: {
         key:"seya",
         public:true,
         displayName:"SEYA",
         meta:{ sidebar:"SEYA O.S", refId:"SC-19", psyRef:"L'ÉPINE ATTACHANTE", loreRef:"L'EST PARISIEN", img:"photo seya.png" }, // IMAGE_SEYA
         pinHash:"",
-        identity:{
-          fullName:"CARPENTIER Seya",
-          age:"19 ans",
-          birthplace:"Paris 19ème",
-          origins:"Franco-Algérienne",
-          role:"Petite sœur surprotégée",
-          phys:"Petite, souvent cachée derrière son frère",
-          sign:"Regard fuyant, souvent perdue ou hyperactive.",
-          voice:"Voix très aiguë, parle très fort et sans filtre."
-        },
-        psy:{
-          psy1:"À cause d'une anoxie, Seya a un <strong>retard mental</strong>. Elle vit le monde comme une enfant : elle est extrêmement spontanée, n'a aucun filtre social et dit ce qu'elle pense sans réaliser les conséquences.",
-          psy2:"Elle est d'une <strong>jalousie maladive</strong>. Si quelqu'un (surtout une fille) s'approche de son frère, elle peut faire des crises mémorables. Elle fait confiance aveuglément aux mauvaises personnes."
-        },
-        stats:[
-          { id: uid(), label:"Naïveté & Vulnérabilité", val:100 },
-          { id: uid(), label:"Émotivité (Pleurs/Rires intenses)", val:100 },
-          { id: uid(), label:"Jalousie (Dès qu'on approche Harry)", val:100 },
-          { id: uid(), label:"Dévouement pour Harry", val:100 }
-        ],
-        lore:{
-          sections:[
-            { id: uid(), title:"Une enfance dans l'ombre", text:"Pour Seya, le 19ème n'était pas un enfer mais un terrain de jeu bruyant. Elle n'a jamais compris la dureté de la vie de sa mère ni les sacrifices de son frère." },
-            { id: uid(), title:"L'Ancre Harry", text:"Harry est son Dieu, son héros absolu. Elle ne se rend pas du tout compte qu'il est lâche. Pour elle, c'est le roi de Paris." },
-            { id: uid(), title:"L'objectif à GrandLine", text:"Elle suit son frère partout. Son but ? Se faire des amis bizarres, et surtout prouver à Harry qu'elle est 'une grande' et qu'elle peut l'aider." }
-          ]
-        },
+        identity:{ fullName:"CARPENTIER Seya", age:"19 ans", birthplace:"Paris 19ème", origins:"Franco-Algérienne", role:"Petite sœur surprotégée", phys:"Petite, souvent cachée derrière son frère", sign:"Regard fuyant, souvent perdue ou hyperactive.", voice:"Voix très aiguë, parle très fort et sans filtre." },
+        psy:{ psy1:"À cause d'une anoxie, Seya a un <strong>retard mental</strong>. Elle vit le monde comme une enfant : elle est extrêmement spontanée, n'a aucun filtre social et dit ce qu'elle pense sans réaliser les conséquences.", psy2:"Elle est d'une <strong>jalousie maladive</strong>. Si quelqu'un (surtout une fille) s'approche de son frère, elle peut faire des crises mémorables. Elle fait confiance aveuglément aux mauvaises personnes." },
+        stats:[ { id: uid(), label:"Naïveté & Vulnérabilité", val:100 }, { id: uid(), label:"Émotivité (Pleurs/Rires intenses)", val:100 }, { id: uid(), label:"Jalousie (Dès qu'on approche Harry)", val:100 }, { id: uid(), label:"Dévouement pour Harry", val:100 } ],
+        lore:{ sections:[ { id: uid(), title:"Une enfance dans l'ombre", text:"Pour Seya, le 19ème n'était pas un enfer mais un terrain de jeu bruyant. Elle n'a jamais compris la dureté de la vie de sa mère ni les sacrifices de son frère." }, { id: uid(), title:"L'Ancre Harry", text:"Harry est son Dieu, son héros absolu. Elle ne se rend pas du tout compte qu'il est lâche. Pour elle, c'est le roi de Paris." }, { id: uid(), title:"L'objectif à GrandLine", text:"Elle suit son frère partout. Son but ? Se faire des amis bizarres, et surtout prouver à Harry qu'elle est 'une grande' et qu'elle peut l'aider." } ] },
         goals:[],
         journal:""
       }
     };
 
-    const defaultState = { version:501, profiles: defaultProfiles };
-
+    const defaultState = { version:502, profiles: defaultProfiles };
     let state = loadState();
     let activeKey = null;
     let editUnlocked = false;
     let saveT = null;
 
-    /***********************
-     * Toast / modal
-     ***********************/
     function notify(msg){
       const t = document.getElementById("toast");
       if(!t) return;
@@ -717,14 +662,8 @@
       t.classList.add("show");
       setTimeout(()=>t.classList.remove("show"), 1600);
     }
-    function openModal(id){
-      const el = document.getElementById(id);
-      if(el) el.classList.add("active");
-    }
-    function closeModal(id){
-      const el = document.getElementById(id);
-      if(el) el.classList.remove("active");
-    }
+    function openModal(id){ document.getElementById(id)?.classList.add("active"); }
+    function closeModal(id){ document.getElementById(id)?.classList.remove("active"); }
 
     function setSaveChip(mode="ok"){
       const chip = document.getElementById("ui-save-chip");
@@ -751,9 +690,6 @@
       if(journal) journal.readOnly = !editUnlocked;
     }
 
-    /***********************
-     * Storage
-     ***********************/
     function loadState(){
       try{
         const raw = localStorage.getItem(STORAGE_NS);
@@ -762,45 +698,29 @@
           return clone(defaultState);
         }
         const parsed = JSON.parse(raw);
-        const merged = {
-          ...clone(defaultState),
-          ...parsed,
-          profiles: { ...clone(defaultState.profiles), ...(parsed.profiles||{}) }
-        };
+        const merged = { ...clone(defaultState), ...parsed, profiles: { ...clone(defaultState.profiles), ...(parsed.profiles||{}) } };
         if(!merged.profiles.harry) merged.profiles.harry = clone(defaultProfiles.harry);
         if(!merged.profiles.seya) merged.profiles.seya = clone(defaultProfiles.seya);
         return merged;
-      }catch(e){
+      }catch{
         localStorage.setItem(STORAGE_NS, JSON.stringify(defaultState));
         return clone(defaultState);
       }
     }
-
     function saveState(){ localStorage.setItem(STORAGE_NS, JSON.stringify(state)); }
-
     function scheduleSave(){
       setSaveChip("busy");
       clearTimeout(saveT);
-      saveT = setTimeout(()=>{
-        saveState();
-        setSaveChip("ok");
-      }, 250);
+      saveT = setTimeout(()=>{ saveState(); setSaveChip("ok"); }, 250);
     }
 
-    /***********************
-     * Edit session per profile
-     ***********************/
     function loadEditSession(){
-      try{
-        const raw = sessionStorage.getItem(EDIT_SESSION_NS);
-        return raw ? JSON.parse(raw) : {};
-      }catch{ return {}; }
+      try{ return JSON.parse(sessionStorage.getItem(EDIT_SESSION_NS) || "{}"); }catch{ return {}; }
     }
     function saveEditSession(obj){ sessionStorage.setItem(EDIT_SESSION_NS, JSON.stringify(obj)); }
     function isProfileUnlocked(key){
       const s = loadEditSession();
-      const exp = s?.[key]?.exp || 0;
-      return Date.now() < exp;
+      return Date.now() < (s?.[key]?.exp || 0);
     }
     function setProfileUnlocked(key, minutes=45){
       const s = loadEditSession();
@@ -813,13 +733,6 @@
       saveEditSession(s);
     }
 
-    /***********************
-     * Helpers
-     ***********************/
-    function storageInfo(){
-      const bytes = new Blob([JSON.stringify(state)]).size;
-      return (bytes/1024).toFixed(1) + " KB local";
-    }
     function slugify(s){
       return (s||"")
         .toLowerCase()
@@ -847,16 +760,15 @@
 
     function profile(){ return state.profiles[activeKey]; }
 
-    /***********************
-     * Render login
-     ***********************/
+    function storageInfo(){
+      const bytes = new Blob([JSON.stringify(state)]).size;
+      return (bytes/1024).toFixed(1) + " KB local";
+    }
+
     function renderLogin(){
-      const st = document.getElementById("login-storage");
-      if(st) st.innerText = storageInfo();
+      document.getElementById("login-storage")?.innerText = storageInfo();
 
-      const qEl = document.getElementById("login-search");
-      const q = (qEl?.value || "").trim().toLowerCase();
-
+      const q = (document.getElementById("login-search")?.value || "").trim().toLowerCase();
       const profiles = Object.values(state.profiles)
         .sort((a,b)=> (b.public===true)-(a.public===true) || (a.displayName||a.key).localeCompare(b.displayName||b.key));
 
@@ -873,7 +785,6 @@
         const locked = (p.key==="harry" || p.key==="seya" || !!p.pinHash) ? `<span class="badge locked" style="right:92px">PIN</span>` : "";
         const img = p.meta?.img || "";
         const role = p.identity?.role || "";
-
         const canDelete = (!p.public && p.key!=="harry" && p.key!=="seya");
 
         return `
@@ -897,87 +808,54 @@
         `;
       }).join("") || `<div style="color:#777">Aucun profil.</div>`;
 
-      // Wire profile card clicks safely
       container.querySelectorAll("[data-open-profile]").forEach(card=>{
-        card.addEventListener("click", (e)=>{
-          const target = e.target;
-          // avoid card open when clicking action buttons
-          if(target.closest("button")) return;
-          login(card.getAttribute("data-open-profile"));
-        });
-        card.addEventListener("keydown", (e)=>{
-          if(e.key==="Enter") login(card.getAttribute("data-open-profile"));
-        });
+        card.addEventListener("click", (e)=>{ if(e.target.closest("button")) return; login(card.getAttribute("data-open-profile")); });
+        card.addEventListener("keydown", (e)=>{ if(e.key==="Enter") login(card.getAttribute("data-open-profile")); });
       });
-
       container.querySelectorAll("[data-dup]").forEach(btn=>{
-        btn.addEventListener("click", (e)=>{
-          e.stopPropagation();
-          openDuplicateModal(btn.getAttribute("data-dup"));
-        });
+        btn.addEventListener("click", (e)=>{ e.stopPropagation(); openDuplicateModal(btn.getAttribute("data-dup")); });
       });
       container.querySelectorAll("[data-del]").forEach(btn=>{
-        btn.addEventListener("click", (e)=>{
-          e.stopPropagation();
-          deleteProfile(btn.getAttribute("data-del"));
-        });
+        btn.addEventListener("click", (e)=>{ e.stopPropagation(); deleteProfile(btn.getAttribute("data-del")); });
       });
 
-      // Populate duplicate select (SAFE)
       const sel = document.getElementById("newDuplicateFrom");
       if(sel){
-        sel.innerHTML = profiles
-          .map(p=>`<option value="${escapeAttr(p.key)}">${escapeHtml(p.displayName||p.key)} (${p.key})</option>`)
-          .join("");
+        sel.innerHTML = profiles.map(p=>`<option value="${escapeAttr(p.key)}">${escapeHtml(p.displayName||p.key)} (${p.key})</option>`).join("");
       }
     }
 
-    /***********************
-     * Login / logout
-     ***********************/
     function login(key){
       activeKey = key;
       editUnlocked = isProfileUnlocked(activeKey);
 
       const loginScreen = document.getElementById("login-screen");
-      if(loginScreen){
-        loginScreen.style.opacity = "0";
-        setTimeout(()=>{
-          loginScreen.style.display = "none";
-          const app = document.getElementById("main-app");
-          if(app) app.style.display = "flex";
-          // default tab
-          selectTab("profil");
-          hydrateUI();
-        }, 350);
-      }
+      loginScreen.style.opacity = "0";
+      setTimeout(()=>{
+        loginScreen.style.display = "none";
+        document.getElementById("main-app").style.display = "flex";
+        selectTab("profil");
+        hydrateUI();
+      }, 350);
     }
 
     function logout(){
       activeKey = null;
       editUnlocked = false;
-      const app = document.getElementById("main-app");
-      if(app) app.style.display="none";
+      document.getElementById("main-app").style.display="none";
       const ls = document.getElementById("login-screen");
-      if(ls){
-        ls.style.display="flex";
-        setTimeout(()=>ls.style.opacity="1", 20);
-      }
+      ls.style.display="flex";
+      setTimeout(()=>ls.style.opacity="1", 20);
       renderLogin();
     }
 
     function selectTab(id){
       document.querySelectorAll(".tab-section").forEach(s=>s.classList.remove("active"));
       document.querySelectorAll(".nav-btn[data-tab]").forEach(b=>b.classList.remove("active"));
-      const sec = document.getElementById(id);
-      if(sec) sec.classList.add("active");
-      const btn = document.querySelector(`.nav-btn[data-tab="${CSS.escape(id)}"]`);
-      if(btn) btn.classList.add("active");
+      document.getElementById(id)?.classList.add("active");
+      document.querySelector(`.nav-btn[data-tab="${CSS.escape(id)}"]`)?.classList.add("active");
     }
 
-    /***********************
-     * Hydrate UI
-     ***********************/
     function setField(elId, path, allowHtml=false){
       const el = document.getElementById(elId);
       if(!el) return;
@@ -986,29 +864,15 @@
     }
 
     function hydrateUI(){
-      if(!profile()) return;
+      document.getElementById("ui-sidebar-name").innerText = profile().meta?.sidebar || "DOSSIER";
+      document.getElementById("ui-active-profile").innerText = profile().displayName || profile().key;
+      document.getElementById("ui-ref-id").innerText = profile().meta?.refId || "-";
+      document.getElementById("ui-subref").innerText = profile().meta?.refId || "";
+      document.getElementById("ui-psy-ref").innerText = profile().meta?.psyRef || "";
+      document.getElementById("ui-lore-ref").innerText = profile().meta?.loreRef || "";
 
-      // header
-      const sb = document.getElementById("ui-sidebar-name");
-      if(sb) sb.innerText = profile().meta?.sidebar || "DOSSIER";
-      const ap = document.getElementById("ui-active-profile");
-      if(ap) ap.innerText = profile().displayName || profile().key;
+      document.getElementById("ui-photo").src = profile().meta?.img || "";
 
-      const ref = document.getElementById("ui-ref-id");
-      if(ref) ref.innerText = profile().meta?.refId || "-";
-      const sub = document.getElementById("ui-subref");
-      if(sub) sub.innerText = profile().meta?.refId || "";
-
-      const pr = document.getElementById("ui-psy-ref");
-      if(pr) pr.innerText = profile().meta?.psyRef || "";
-      const lr = document.getElementById("ui-lore-ref");
-      if(lr) lr.innerText = profile().meta?.loreRef || "";
-
-      // image
-      const img = document.getElementById("ui-photo");
-      if(img) img.src = profile().meta?.img || "";
-
-      // identity fields
       setField("ui-full-name", "identity.fullName");
       setField("ui-age", "identity.age");
       setField("ui-birthplace", "identity.birthplace");
@@ -1018,57 +882,41 @@
       setField("ui-sign", "identity.sign");
       setField("ui-voice", "identity.voice");
 
-      // psy
       setField("ui-psy1", "psy.psy1", true);
       setField("ui-psy2", "psy.psy2", true);
 
-      // stats
       const stats = document.getElementById("ui-stats-container");
-      if(stats){
-        stats.innerHTML = (profile().stats||[]).map(s=>{
-          return `<div style="margin-bottom:10px">
-            <div style="display:flex;justify-content:space-between;color:#9a9a9a;font-size:12px;margin-bottom:6px">
-              <span>${escapeHtml(s.label)}</span><span>${s.val}%</span>
-            </div>
-            <div style="height:8px;background:#08080a;border:1px solid #1a1a20;border-radius:999px;overflow:hidden">
-              <div style="height:100%;width:${s.val}%;background:var(--gold)"></div>
-            </div>
-          </div>`;
-        }).join("") || `<div style="color:#777">Aucune stat.</div>`;
-      }
-
-      // lore
-      const lore = document.getElementById("lore-container");
-      if(lore){
-        lore.innerHTML = (profile().lore?.sections||[]).map(sec=>`
-          <div style="margin-bottom:18px">
-            <div class="card-title" style="margin-bottom:8px">${escapeHtml(sec.title)}</div>
-            <div style="color:#bbb;line-height:1.8">${escapeHtml(sec.text)}</div>
+      stats.innerHTML = (profile().stats||[]).map(s=>`
+        <div style="margin-bottom:10px">
+          <div style="display:flex;justify-content:space-between;color:#9a9a9a;font-size:12px;margin-bottom:6px">
+            <span>${escapeHtml(s.label)}</span><span>${s.val}%</span>
           </div>
-        `).join("") || `<div style="color:#777">Aucune section.</div>`;
-      }
+          <div style="height:8px;background:#08080a;border:1px solid #1a1a20;border-radius:999px;overflow:hidden">
+            <div style="height:100%;width:${s.val}%;background:var(--gold)"></div>
+          </div>
+        </div>
+      `).join("") || `<div style="color:#777">Aucune stat.</div>`;
 
-      // goals
+      const lore = document.getElementById("lore-container");
+      lore.innerHTML = (profile().lore?.sections||[]).map(sec=>`
+        <div style="margin-bottom:18px">
+          <div class="card-title" style="margin-bottom:8px">${escapeHtml(sec.title)}</div>
+          <div style="color:#bbb;line-height:1.8">${escapeHtml(sec.text)}</div>
+        </div>
+      `).join("") || `<div style="color:#777">Aucune section.</div>`;
+
       renderGoals();
 
-      // journal
       const journal = document.getElementById("journal-input");
-      if(journal){
-        journal.value = profile().journal || "";
-        journal.oninput = ()=>{
-          if(!editUnlocked) return;
-          profile().journal = journal.value;
-          scheduleSave();
-        };
-      }
+      journal.value = profile().journal || "";
+      journal.oninput = ()=>{
+        if(!editUnlocked) return;
+        profile().journal = journal.value;
+        scheduleSave();
+      };
 
-      // meta modal preload
       preloadMetaModal();
-
-      // wire inline fields
       wireInlineFields();
-
-      // apply edit mode
       setModeChip();
       notify(editUnlocked ? "ÉDITION DÉVERROUILLÉE" : "LECTURE SEULE");
     }
@@ -1078,35 +926,25 @@
         el.onblur = ()=>{
           if(!editUnlocked) return;
           const path = el.dataset.path;
-          if(!path) return;
-          const html = el.innerHTML.trim();
-          setPath(profile(), path, html);
+          setPath(profile(), path, el.innerHTML.trim());
           scheduleSave();
           notify("SAUVEGARDÉ");
         };
         el.onkeydown = (e)=>{
           if(!editUnlocked) return;
-          if(e.key==="Enter"){
-            e.preventDefault();
-            el.blur();
-          }
+          if(e.key==="Enter"){ e.preventDefault(); el.blur(); }
         };
       });
     }
 
-    /***********************
-     * Unlock / lock
-     ***********************/
     function openUnlock(){
-      const pin = document.getElementById("unlockPin");
-      if(pin) pin.value="";
+      document.getElementById("unlockPin").value="";
       openModal("modalUnlock");
-      setTimeout(()=>pin?.focus(), 50);
+      setTimeout(()=>document.getElementById("unlockPin").focus(), 50);
     }
 
     function unlockEditing(){
-      if(!profile()) return;
-      const pin = (document.getElementById("unlockPin")?.value || "").trim();
+      const pin = (document.getElementById("unlockPin").value || "").trim();
       const k = profile().key;
 
       if(k==="harry"){
@@ -1125,7 +963,6 @@
           }
         }
       }
-
       editUnlocked = true;
       setProfileUnlocked(activeKey, 45);
       closeModal("modalUnlock");
@@ -1135,43 +972,34 @@
 
     function lockEditing(){
       editUnlocked = false;
-      if(activeKey) clearProfileUnlocked(activeKey);
+      clearProfileUnlocked(activeKey);
       setModeChip();
       notify("ÉDITION VERROUILLÉE");
     }
 
-    /***********************
-     * Meta modal
-     ***********************/
     function preloadMetaModal(){
-      if(!profile()) return;
-      const s = document.getElementById("editSidebar"); if(s) s.value = profile().meta?.sidebar || "";
-      const r = document.getElementById("editRef"); if(r) r.value = profile().meta?.refId || "";
-      const p = document.getElementById("editPsyRef"); if(p) p.value = profile().meta?.psyRef || "";
-      const l = document.getElementById("editLoreRef"); if(l) l.value = profile().meta?.loreRef || "";
-      const i = document.getElementById("editImg"); if(i) i.value = profile().meta?.img || "";
+      document.getElementById("editSidebar").value = profile().meta?.sidebar || "";
+      document.getElementById("editRef").value = profile().meta?.refId || "";
+      document.getElementById("editPsyRef").value = profile().meta?.psyRef || "";
+      document.getElementById("editLoreRef").value = profile().meta?.loreRef || "";
+      document.getElementById("editImg").value = profile().meta?.img || "";
     }
 
     function saveMeta(){
       if(!editUnlocked) return notify("Déverrouille pour modifier");
-      if(!profile()) return;
-
       profile().meta = profile().meta || {};
-      profile().meta.sidebar = (document.getElementById("editSidebar")?.value || "").trim();
-      profile().meta.refId = (document.getElementById("editRef")?.value || "").trim();
-      profile().meta.psyRef = (document.getElementById("editPsyRef")?.value || "").trim();
-      profile().meta.loreRef = (document.getElementById("editLoreRef")?.value || "").trim();
-      profile().meta.img = (document.getElementById("editImg")?.value || "").trim();
-
+      profile().meta.sidebar = document.getElementById("editSidebar").value.trim();
+      profile().meta.refId = document.getElementById("editRef").value.trim();
+      profile().meta.psyRef = document.getElementById("editPsyRef").value.trim();
+      profile().meta.loreRef = document.getElementById("editLoreRef").value.trim();
+      profile().meta.img = document.getElementById("editImg").value.trim();
       scheduleSave();
       closeModal("modalEditMeta");
       hydrateUI();
       notify("PROFIL MIS À JOUR");
     }
 
-    /***********************
-     * Goals
-     ***********************/
+    // ✅ FIXED renderGoals (no invalid assignment)
     function renderGoals(){
       const container = document.getElementById("goal-container");
       if(!container || !profile()) return;
@@ -1190,8 +1018,14 @@
             <button class="btn small danger" data-goal-del="${escapeAttr(g.id)}" ${editUnlocked?"":"disabled"}>
               <i class="fa-solid fa-trash"></i>
             </button>
-          </div>`;
-        (g.type==="court" ? htmlCourt : htmlLong) += item;
+          </div>
+        `;
+
+        if (g.type === "court") {
+          htmlCourt += item;
+        } else {
+          htmlLong += item;
+        }
       });
 
       container.innerHTML = htmlCourt + `</div>` + htmlLong + `</div>`;
@@ -1206,20 +1040,19 @@
 
     function addGoal(){
       if(!editUnlocked) return notify("Déverrouille pour modifier");
-      const text = (document.getElementById("goalInput")?.value || "").trim();
+      const text = document.getElementById("goalInput").value.trim();
       if(!text) return;
-      const type = (document.getElementById("goalType")?.value || "court");
+      const type = document.getElementById("goalType").value;
 
       profile().goals = profile().goals || [];
       profile().goals.push({ id: uid(), text, type, done:false });
 
-      const gi = document.getElementById("goalInput"); if(gi) gi.value="";
+      document.getElementById("goalInput").value="";
       scheduleSave();
       closeModal("modalGoal");
       renderGoals();
       notify("OBJECTIF AJOUTÉ");
     }
-
     function toggleGoal(id){
       if(!editUnlocked) return;
       profile().goals = (profile().goals||[]).map(g=> g.id===id ? ({...g, done:!g.done}) : g);
@@ -1233,33 +1066,23 @@
       renderGoals();
     }
 
-    /***********************
-     * Profile create/duplicate/delete
-     ***********************/
     function openDuplicateModal(fromKey){
       openModal("modalCreateProfile");
       const base = state.profiles[fromKey];
-
-      const dn = document.getElementById("newDisplayName");
-      const nk = document.getElementById("newKey");
-      const na = document.getElementById("newAvatar");
-      const np = document.getElementById("newPin");
-      const sel = document.getElementById("newDuplicateFrom");
-
-      if(dn) dn.value = (base?.displayName ? base.displayName + " Copy" : "Nouveau profil");
-      if(nk) nk.value = slugify((base?.displayName || base?.key || "profil") + "-copy");
-      if(na) na.value = base?.meta?.img || "";
-      if(np) np.value = "";
-      if(sel) sel.value = fromKey;
+      document.getElementById("newDisplayName").value = (base?.displayName ? base.displayName + " Copy" : "Nouveau profil");
+      document.getElementById("newKey").value = slugify((base?.displayName || base?.key || "profil") + "-copy");
+      document.getElementById("newAvatar").value = base?.meta?.img || "";
+      document.getElementById("newPin").value = "";
+      document.getElementById("newDuplicateFrom").value = fromKey;
     }
 
     function createProfile(){
-      const displayName = (document.getElementById("newDisplayName")?.value || "").trim() || "Visiteur";
-      const keyRaw = (document.getElementById("newKey")?.value || "").trim();
+      const displayName = document.getElementById("newDisplayName").value.trim() || "Visiteur";
+      const keyRaw = document.getElementById("newKey").value.trim();
       const key = slugify(keyRaw || displayName);
-      const avatar = (document.getElementById("newAvatar")?.value || "").trim();
-      const pin = (document.getElementById("newPin")?.value || "").trim();
-      const from = (document.getElementById("newDuplicateFrom")?.value || "harry");
+      const avatar = document.getElementById("newAvatar").value.trim();
+      const pin = (document.getElementById("newPin").value || "").trim();
+      const from = document.getElementById("newDuplicateFrom").value;
 
       if(state.profiles[key]) return notify("Clé déjà utilisée. Change la clé.");
 
@@ -1298,36 +1121,21 @@
       notify("SUPPRIMÉ");
     }
 
-    function deleteActiveProfile(){
-      if(!activeKey) return;
-      if(profile()?.public) return notify("Impossible (profil public)");
-      const k = activeKey;
-      closeModal("modalProfileTools");
-      logout();
-      deleteProfile(k);
-    }
-
-    /***********************
-     * Export / import
-     ***********************/
     function exportProfile(){
       if(!profile()) return;
-      const p = profile();
-      const json = JSON.stringify(p, null, 2);
-
+      const json = JSON.stringify(profile(), null, 2);
       const blob = new Blob([json], {type:"application/json"});
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
-      a.download = `profil_${p.key}_${new Date().toISOString().slice(0,10)}.json`;
+      a.download = `profil_${profile().key}_${new Date().toISOString().slice(0,10)}.json`;
       a.click();
       setTimeout(()=>URL.revokeObjectURL(a.href), 1200);
-
       notify("EXPORT OK");
     }
 
     function importProfile(){
       try{
-        const raw = (document.getElementById("importJson")?.value || "").trim();
+        const raw = document.getElementById("importJson").value.trim();
         const obj = JSON.parse(raw);
         if(!obj.key) throw new Error("JSON doit contenir .key");
         state.profiles[obj.key] = obj;
@@ -1340,55 +1148,50 @@
       }
     }
 
-    /***********************
-     * Wire UI events (no inline onclick)
-     ***********************/
+    function deleteActiveProfile(){
+      if(!activeKey) return;
+      if(profile()?.public) return notify("Impossible (profil public)");
+      const k = activeKey;
+      closeModal("modalProfileTools");
+      logout();
+      deleteProfile(k);
+    }
+
     function wire(){
-      // modals open
-      document.getElementById("btn-open-create")?.addEventListener("click", ()=>openModal("modalCreateProfile"));
-      document.getElementById("btn-open-import")?.addEventListener("click", ()=>openModal("modalImportProfile"));
-      document.getElementById("btn-open-import-2")?.addEventListener("click", ()=>openModal("modalImportProfile"));
-      document.getElementById("btn-open-help")?.addEventListener("click", ()=>openModal("modalHelp"));
+      document.getElementById("btn-open-create").addEventListener("click", ()=>openModal("modalCreateProfile"));
+      document.getElementById("btn-open-import").addEventListener("click", ()=>openModal("modalImportProfile"));
+      document.getElementById("btn-open-import-2").addEventListener("click", ()=>openModal("modalImportProfile"));
+      document.getElementById("btn-open-help").addEventListener("click", ()=>openModal("modalHelp"));
 
-      document.getElementById("btn-logout")?.addEventListener("click", logout);
+      document.getElementById("btn-logout").addEventListener("click", logout);
 
-      // tabs
       document.querySelectorAll(".nav-btn[data-tab]").forEach(btn=>{
         btn.addEventListener("click", ()=>selectTab(btn.getAttribute("data-tab")));
       });
 
-      // top actions
-      document.getElementById("btn-unlock")?.addEventListener("click", openUnlock);
-      document.getElementById("btn-do-unlock")?.addEventListener("click", unlockEditing);
-      document.getElementById("btn-lock")?.addEventListener("click", lockEditing);
+      document.getElementById("btn-unlock").addEventListener("click", openUnlock);
+      document.getElementById("btn-do-unlock").addEventListener("click", unlockEditing);
+      document.getElementById("btn-lock").addEventListener("click", lockEditing);
 
-      document.getElementById("btn-tools")?.addEventListener("click", ()=>openModal("modalProfileTools"));
+      document.getElementById("btn-tools").addEventListener("click", ()=>openModal("modalProfileTools"));
+      document.getElementById("btn-edit-meta").addEventListener("click", ()=>openModal("modalEditMeta"));
+      document.getElementById("btn-save-meta").addEventListener("click", saveMeta);
 
-      // meta
-      document.getElementById("btn-edit-meta")?.addEventListener("click", ()=>openModal("modalEditMeta"));
-      document.getElementById("btn-save-meta")?.addEventListener("click", saveMeta);
+      document.getElementById("btn-open-goal").addEventListener("click", ()=>openModal("modalGoal"));
+      document.getElementById("btn-add-goal").addEventListener("click", addGoal);
 
-      // goals
-      document.getElementById("btn-open-goal")?.addEventListener("click", ()=>openModal("modalGoal"));
-      document.getElementById("btn-add-goal")?.addEventListener("click", addGoal);
+      document.getElementById("btn-do-create").addEventListener("click", createProfile);
 
-      // create profile
-      document.getElementById("btn-do-create")?.addEventListener("click", createProfile);
+      document.getElementById("btn-export").addEventListener("click", exportProfile);
+      document.getElementById("btn-do-import").addEventListener("click", importProfile);
+      document.getElementById("btn-delete-active").addEventListener("click", deleteActiveProfile);
 
-      // tools export/import/delete
-      document.getElementById("btn-export")?.addEventListener("click", exportProfile);
-      document.getElementById("btn-do-import")?.addEventListener("click", importProfile);
-      document.getElementById("btn-delete-active")?.addEventListener("click", deleteActiveProfile);
-
-      // close modals
       document.querySelectorAll("[data-close]").forEach(btn=>{
         btn.addEventListener("click", ()=>closeModal(btn.getAttribute("data-close")));
       });
 
-      // search
-      document.getElementById("login-search")?.addEventListener("input", renderLogin);
+      document.getElementById("login-search").addEventListener("input", renderLogin);
 
-      // keyboard shortcuts
       document.addEventListener("keydown", (e)=>{
         if(e.key==="/" && document.activeElement?.tagName!=="INPUT" && document.activeElement?.tagName!=="TEXTAREA"){
           e.preventDefault();
@@ -1400,12 +1203,8 @@
       });
     }
 
-    /***********************
-     * Init
-     ***********************/
     wire();
     renderLogin();
   </script>
 </body>
 </html>
-```
