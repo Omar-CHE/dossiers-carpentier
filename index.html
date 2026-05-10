@@ -1,736 +1,521 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SST SYSTEM | DOSSIERS</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>DOSSIERS — SST SYSTEM</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,400&family=Montserrat:wght@300;400;600;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Montserrat:wght@300;400;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
     :root{
-      --bg-color:#040406; --panel-bg:#0c0c10; --panel-light:#14141a;
-      --gold:#D4AF37; --gold-dim:rgba(212,175,55,.15);
-      --text-main:#ececec; --text-muted:#8a8a8a;
-      --danger:#e74c3c; --success:#2ecc71; --info:#3498db;
+      --bg:#040406; --panel:#0c0c10; --panel2:#14141a;
+      --gold:#D4AF37; --goldDim:rgba(212,175,55,.14);
+      --text:#ededed; --muted:#8a8a8a;
       --border:1px solid #1f1f26;
-      --focus: 0 0 0 3px rgba(212,175,55,.35);
+      --danger:#e74c3c; --ok:#2ecc71; --info:#3498db;
+      --focus:0 0 0 3px rgba(212,175,55,.35);
     }
-
     *{box-sizing:border-box;margin:0;padding:0}
     body{
-      background:radial-gradient(circle at 50% 0%, #111118 0%, #040406 75%);
-      background-color:var(--bg-color);
-      color:var(--text-main);
-      font-family:'Montserrat',sans-serif;
-      display:flex;justify-content:center;align-items:center;
-      height:100vh;overflow:hidden;
+      height:100vh; overflow:hidden;
+      font-family:Montserrat,system-ui;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 50% 0%, #111118 0%, #040406 75%),
+        var(--bg);
     }
-
+    button, input{
+      font-family:inherit;
+    }
+    :focus-visible{outline:none;box-shadow:var(--focus);border-radius:12px}
     a{color:var(--gold)}
-    :focus-visible{outline:none; box-shadow: var(--focus); border-radius:10px}
 
-    ::-webkit-scrollbar{width:6px}
-    ::-webkit-scrollbar-track{background:var(--bg-color)}
-    ::-webkit-scrollbar-thumb{background:#333;border-radius:10px}
-    ::-webkit-scrollbar-thumb:hover{background:var(--gold)}
-
-    /* LOGIN */
-    #login-screen{
-      position:fixed;inset:0;z-index:9999;
-      display:flex;flex-direction:column;align-items:center;justify-content:center;
-      transition:.5s;
-      background:radial-gradient(circle at 50% 0%, #111118 0%, #040406 75%);
-      padding:22px;
+    /* Layout */
+    .screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:20px}
+    .wrap{width:min(1200px, 98vw)}
+    .title{
+      font-family:"Playfair Display",serif;
+      color:var(--gold);
+      letter-spacing:5px;
+      font-size:46px;
+      text-align:center;
+      margin-bottom:10px;
+      text-shadow:0 10px 50px rgba(0,0,0,.8);
     }
-    .login-title{
-      font-family:'Playfair Display',serif;color:var(--gold);
-      font-size:44px;letter-spacing:4px;margin-bottom:10px;text-align:center;
-    }
-    .login-subtitle{
-      font-family:'Share Tech Mono';color:var(--text-muted);font-size:13px;letter-spacing:2px;
-      margin-bottom:22px;text-align:center;
+    .subtitle{
+      font-family:"Share Tech Mono";
+      color:var(--muted);
+      text-align:center;
+      letter-spacing:2px;
+      font-size:13px;
+      margin-bottom:20px;
     }
 
-    .login-toolbar{
-      width:min(1100px, 96vw);
-      display:flex;gap:10px;flex-wrap:wrap;justify-content:center;
-      margin-bottom:18px;
-    }
-    .search{
-      display:flex;align-items:center;gap:10px;
-      background:#0a0a0d;border:1px solid #1a1a20;border-radius:999px;padding:10px 14px;
-      min-width:min(520px, 92vw);
-    }
-    .search input{flex:1;background:transparent;border:none;color:#ddd;font-family:'Share Tech Mono';font-size:12px}
-    .kbd{font-family:'Share Tech Mono';font-size:11px;color:#999;border:1px solid #2a2a33;border-bottom-width:3px;border-radius:8px;padding:2px 8px;background:#0a0a0d}
-
-    .profiles-container{
-      width:min(1200px, 98vw);
-      display:grid;
-      grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));
-      gap:16px;
-    }
-    .profile-card{
-      background:linear-gradient(180deg, rgba(20,20,26,.95), rgba(12,12,16,.9));
-      border:1px solid #1f1f26;
-      border-radius:14px;
-      padding:18px;
-      cursor:pointer;
-      transition:.25s;
-      position:relative;
-      overflow:hidden;
-      min-height: 160px;
-    }
-    .profile-card:hover{border-color:rgba(212,175,55,.7); transform:translateY(-4px); box-shadow:0 18px 40px rgba(0,0,0,.55)}
-    .profile-top{display:flex; gap:14px; align-items:center}
-    .profile-pic{
-      width:70px;height:70px;border-radius:50%;
-      border:2px solid #26262f;overflow:hidden;background:#000;flex-shrink:0;
-    }
-    .profile-pic img{width:100%;height:100%;object-fit:cover}
-    .profile-name{font-weight:900; font-size:16px; color:#fff; letter-spacing:1px}
-    .profile-role{font-size:12px;color:var(--text-muted); margin-top:4px; line-height:1.4}
-    .badge{
-      position:absolute; top:12px; right:12px;
-      font-family:'Share Tech Mono'; font-size:11px;
-      padding:6px 10px; border-radius:999px;
-      border:1px solid #25252f;
-      background:#0a0a0d; color:#bbb;
-    }
-    .badge.public{border-color:rgba(52,152,219,.35); color:#a6d6ff}
-    .badge.local{border-color:rgba(46,204,113,.25); color:#b6f3cd}
-    .badge.locked{border-color:rgba(231,76,60,.25); color:#ffb7ae}
-
-    .card-actions{
-      display:flex;gap:10px;flex-wrap:wrap;
-      margin-top:14px;
-    }
-
-    /* BUTTONS */
+    /* Buttons / Inputs */
     .btn{
       display:inline-flex; align-items:center; gap:10px;
-      border-radius:12px; cursor:pointer;
-      padding:10px 14px;
+      border-radius:14px;
       border:1px solid #2a2a33;
       background:#0a0a0d;
       color:#ddd;
+      padding:10px 14px;
+      cursor:pointer;
       font-weight:800;
       font-size:12px;
-      text-transform:uppercase;
       letter-spacing:1px;
+      text-transform:uppercase;
       transition:.2s;
     }
-    .btn:hover{border-color:#4a4a55; color:#fff}
-    .btn.primary{border-color:rgba(212,175,55,.9); background:rgba(212,175,55,.12); color:var(--gold)}
-    .btn.primary:hover{background:rgba(212,175,55,.22)}
-    .btn.danger{border-color:rgba(231,76,60,.5); background:rgba(231,76,60,.08); color:#ffb1aa}
-    .btn.danger:hover{background:rgba(231,76,60,.14)}
-    .btn.small{padding:8px 10px; font-size:11px; border-radius:10px}
-    .btn:disabled{opacity:.45; cursor:not-allowed}
-
-    /* APP */
-    .app-container{
-      width:98vw;height:95vh;max-width:1850px;
-      background:rgba(12,12,16,.92);
-      border:1px solid #1f1f26;
-      border-radius:14px;
-      box-shadow:0 40px 110px rgba(0,0,0,1);
-      display:none; overflow:hidden; position:relative; opacity:0;
-      animation:fadeInApp .45s forwards;
-    }
-    @keyframes fadeInApp{to{opacity:1}}
-
-    .sidebar{width:310px;background:#07070a;border-right:1px solid #1f1f26;display:flex;flex-direction:column}
-    .sidebar-header{padding:26px 18px;text-align:center;border-bottom:1px solid #1f1f26}
-    .sidebar-header h2{font-family:'Playfair Display',serif;color:var(--gold);font-size:20px;letter-spacing:2px}
-    .sidebar-header p{font-size:9px;font-family:'Share Tech Mono';color:var(--text-muted);letter-spacing:3px;margin-top:8px}
-
-    .nav-links{display:flex;flex-direction:column;padding:10px 0;flex:1;overflow-y:auto}
-    .nav-btn{
-      background:transparent;border:none;color:var(--text-muted);
-      padding:14px 18px;text-align:left;
-      font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;
-      cursor:pointer;transition:.2s;display:flex;align-items:center;gap:12px;border-left:3px solid transparent;
-    }
-    .nav-btn i{font-size:16px;width:20px}
-    .nav-btn:hover{background:rgba(255,255,255,.03);color:var(--text-main)}
-    .nav-btn.active{background:linear-gradient(90deg,var(--gold-dim) 0%,transparent 100%);color:var(--gold);border-left:3px solid var(--gold)}
-    .nav-btn.bottom{margin-top:auto;border-top:1px solid #1f1f26}
-    .nav-btn.logout{color:#ffb1aa}
-    .nav-btn.logout:hover{background:rgba(231,76,60,.09); color:#ffd2cd}
-
-    .main-content{flex:1;overflow-y:auto;padding:28px 44px}
-
-    .topbar{
-      position:sticky; top:0; z-index:20;
-      background:linear-gradient(180deg, rgba(12,12,16,.96), rgba(12,12,16,.70));
-      backdrop-filter: blur(10px);
-      border-bottom:1px solid #1f1f26;
-      padding:12px 44px;
-      margin:-28px -44px 22px;
-      display:flex; align-items:center; justify-content:space-between;
-      gap:12px; flex-wrap:wrap;
-    }
-    .chip{
-      display:inline-flex; align-items:center; gap:10px;
-      font-family:'Share Tech Mono'; font-size:11px; color:#bbb;
-      background:#0a0a0d; border:1px solid #1a1a20;
-      padding:6px 10px; border-radius:999px;
-    }
-    .chip.ok{border-color:rgba(46,204,113,.25); color:#b6f3cd}
-    .chip.ro{border-color:rgba(52,152,219,.25); color:#a6d6ff}
-    .chip.edit{border-color:rgba(212,175,55,.30); color:#ffe7a1}
-
-    .tab-section{display:none; animation:slideUp .35s ease-out forwards}
-    .tab-section.active{display:block}
-    @keyframes slideUp{from{opacity:0; transform:translateY(18px)} to{opacity:1; transform:translateY(0)}}
-
-    .section-title{
-      font-family:'Playfair Display',serif;
-      font-size:42px; color:#fff;
-      margin-bottom:20px; padding-bottom:14px;
-      border-bottom:1px solid #1a1a20;
-      display:flex; justify-content:space-between; align-items:flex-end; gap:12px; flex-wrap:wrap;
-    }
-    .section-title .ref{font-family:'Share Tech Mono'; font-size:13px; color:rgba(212,175,55,.8); opacity:.75}
-
-    .grid-2{display:grid; grid-template-columns:1fr 1fr; gap:18px}
-    .card{background:rgba(20,20,26,.92); border:1px solid #1f1f26; border-radius:14px; padding:20px; margin-bottom:16px}
-    .card-title{
-      font-size:11px; color:rgba(212,175,55,.9);
-      text-transform:uppercase; letter-spacing:3px;
-      margin-bottom:14px;
-      display:flex; justify-content:space-between; align-items:center; gap:10px;
-    }
-
-    .profile-img-container{width:100%; height:380px; border-radius:14px; overflow:hidden; border:1px solid #1a1a20; background:#050507}
-    .profile-img-container img{width:100%; height:100%; object-fit:cover; object-position:top}
-
-    /* Editable fields */
-    .field{
-      display:inline-block;
-      padding:4px 8px;
-      border-radius:10px;
-      border:1px dashed transparent;
-      min-height:22px;
-      transition:.15s;
-    }
-    body.edit-unlocked .field{border-color:#2a2a33; cursor:text}
-    body.edit-unlocked .field:hover{border-color:rgba(212,175,55,.35)}
-    .field[contenteditable="true"]:focus{background:#0a0a0d; border-color:rgba(212,175,55,.7)}
-
-    /* Toast */
-    #toast{position:fixed; bottom:36px; left:50%; transform:translateX(-50%) translateY(120px); opacity:0;
-      background:var(--gold); color:#000; padding:12px 18px; border-radius:999px; font-weight:900; font-size:13px; z-index:9999; transition:.35s;
-    }
-    #toast.show{transform:translateX(-50%) translateY(0); opacity:1}
-
-    /* Modals */
-    .modal{display:none; position:fixed; inset:0; z-index:2000; background:rgba(0,0,0,.88); backdrop-filter:blur(8px); padding:18px; align-items:center; justify-content:center}
-    .modal.active{display:flex}
-    .modal-content{
-      width:min(820px, 98vw);
-      background:rgba(20,20,26,.96);
-      border:1px solid rgba(212,175,55,.65);
-      border-radius:16px;
-      padding:20px;
-    }
-    .modal-content h3{font-family:'Playfair Display'; color:var(--gold); font-size:24px; margin-bottom:10px}
-    .form-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px}
-    .form-group{margin-bottom:10px}
-    .form-group label{display:block; font-size:11px; text-transform:uppercase; letter-spacing:1px; color:#888; margin-bottom:8px}
-    .form-group input, .form-group select, .form-group textarea{
+    .btn:hover{border-color:#4a4a55;color:#fff}
+    .btn.primary{border-color:rgba(212,175,55,.9);background:var(--goldDim);color:var(--gold)}
+    .btn.primary:hover{background:rgba(212,175,55,.20)}
+    .btn.danger{border-color:rgba(231,76,60,.55);background:rgba(231,76,60,.08);color:#ffbdb7}
+    .btn:disabled{opacity:.45;cursor:not-allowed}
+    .input{
       width:100%;
       background:#07070a;
       border:1px solid #222;
       color:#fff;
-      padding:12px;
-      border-radius:12px;
-      font-family:'Montserrat';
-    }
-    .form-group textarea{min-height:100px; resize:vertical}
-    .modal-actions{display:flex; justify-content:flex-end; gap:10px; margin-top:12px; flex-wrap:wrap}
-
-    /* Error banner */
-    #fatal-error{
-      display:none;
-      position:fixed; left:18px; right:18px; top:18px; z-index:3000;
-      background:rgba(231,76,60,.15);
-      border:1px solid rgba(231,76,60,.45);
-      color:#ffd2cd;
-      padding:14px 16px;
+      padding:12px 14px;
       border-radius:14px;
-      font-family:'Share Tech Mono';
+      font-family:"Share Tech Mono";
       font-size:12px;
-      line-height:1.6;
-      white-space:pre-wrap;
     }
-    #fatal-error strong{color:#fff}
 
-    @media (max-width: 1000px){
-      .grid-2{grid-template-columns:1fr}
-      .sidebar{width:260px}
-      .main-content{padding:22px 18px}
-      .topbar{padding:12px 18px; margin:-22px -18px 18px}
+    /* Login list */
+    .toolbar{
+      display:flex;gap:10px;flex-wrap:wrap;justify-content:center;
+      margin-bottom:16px;
     }
+    .search{
+      display:flex; align-items:center; gap:10px;
+      border:1px solid #1a1a20; background:#0a0a0d;
+      padding:10px 14px;border-radius:999px;
+      min-width:min(560px, 95vw);
+    }
+    .search input{border:none;background:transparent;color:#ddd;flex:1;font-family:"Share Tech Mono";font-size:12px}
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));
+      gap:16px;
+    }
+    .card{
+      border:1px solid #1f1f26;
+      background:linear-gradient(180deg, rgba(20,20,26,.95), rgba(12,12,16,.9));
+      border-radius:16px;
+      padding:16px;
+      transition:.2s;
+    }
+    .card:hover{border-color:rgba(212,175,55,.65); transform:translateY(-3px); box-shadow:0 18px 40px rgba(0,0,0,.6)}
+    .row{display:flex; gap:12px; align-items:center}
+    .avatar{width:64px;height:64px;border-radius:50%;background:#000;border:2px solid #26262f;overflow:hidden;flex-shrink:0}
+    .avatar img{width:100%;height:100%;object-fit:cover}
+    .name{font-weight:900;color:#fff;font-size:16px}
+    .role{color:var(--muted);font-size:12px;line-height:1.4;margin-top:4px}
+    .badges{display:flex; gap:8px; margin-top:10px; flex-wrap:wrap}
+    .badge{
+      font-family:"Share Tech Mono";
+      font-size:11px;
+      padding:6px 10px;
+      border-radius:999px;
+      background:#0a0a0d;
+      border:1px solid #25252f;
+      color:#bbb;
+    }
+    .badge.public{border-color:rgba(52,152,219,.28); color:#b7e2ff}
+    .badge.local{border-color:rgba(46,204,113,.22); color:#c7f6d7}
+    .badge.pin{border-color:rgba(231,76,60,.22); color:#ffd0cb}
+    .actions{display:flex; gap:10px; margin-top:12px; flex-wrap:wrap}
+
+    /* App */
+    #app{display:none}
+    .appShell{
+      position:fixed; inset:0;
+      display:flex;
+      padding:18px;
+    }
+    .app{
+      width:100%;
+      border:1px solid #1f1f26;
+      background:rgba(12,12,16,.92);
+      border-radius:16px;
+      overflow:hidden;
+      display:flex;
+      box-shadow:0 40px 110px rgba(0,0,0,1);
+    }
+    .sidebar{
+      width:300px;
+      background:#07070a;
+      border-right:1px solid #1f1f26;
+      display:flex; flex-direction:column;
+    }
+    .sbHead{
+      padding:22px 16px;
+      text-align:center;
+      border-bottom:1px solid #1f1f26;
+    }
+    .sbHead h2{
+      font-family:"Playfair Display",serif;
+      color:var(--gold);
+      letter-spacing:2px;
+      font-size:20px;
+    }
+    .sbHead p{
+      margin-top:8px;
+      font-family:"Share Tech Mono";
+      color:var(--muted);
+      letter-spacing:3px;
+      font-size:9px;
+    }
+    .sbBtn{
+      border:none;
+      background:transparent;
+      color:var(--muted);
+      padding:14px 16px;
+      text-align:left;
+      cursor:pointer;
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:1.4px;
+      font-size:12px;
+      display:flex; align-items:center; gap:12px;
+      border-left:3px solid transparent;
+    }
+    .sbBtn:hover{background:rgba(255,255,255,.03); color:var(--text)}
+    .sbBtn.active{background:linear-gradient(90deg,var(--goldDim),transparent); color:var(--gold); border-left:3px solid var(--gold)}
+    .sbBottom{margin-top:auto; border-top:1px solid #1f1f26}
+    .sbBtn.logout{color:#ffbdb7}
+    .sbBtn.logout:hover{background:rgba(231,76,60,.10); color:#ffe1de}
+
+    .main{
+      flex:1;
+      overflow:auto;
+      padding:22px 34px;
+    }
+    .topbar{
+      position:sticky; top:0; z-index:10;
+      margin:-22px -34px 18px;
+      padding:12px 34px;
+      border-bottom:1px solid #1f1f26;
+      background:linear-gradient(180deg, rgba(12,12,16,.97), rgba(12,12,16,.70));
+      backdrop-filter: blur(10px);
+      display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;
+    }
+    .chip{
+      display:inline-flex; align-items:center; gap:10px;
+      font-family:"Share Tech Mono";
+      font-size:11px;
+      padding:6px 10px;
+      border-radius:999px;
+      background:#0a0a0d;
+      border:1px solid #1a1a20;
+      color:#bbb;
+    }
+    .chip.ro{border-color:rgba(52,152,219,.25); color:#b7e2ff}
+    .chip.edit{border-color:rgba(212,175,55,.28); color:#ffe7a1}
+    .chip.ok{border-color:rgba(46,204,113,.22); color:#c7f6d7}
+
+    .sectionTitle{
+      font-family:"Playfair Display",serif;
+      font-size:40px;
+      border-bottom:1px solid #1a1a20;
+      padding-bottom:12px;
+      margin-bottom:18px;
+      display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;
+    }
+    .ref{font-family:"Share Tech Mono"; font-size:13px; color:rgba(212,175,55,.8); opacity:.8}
+    .panel{border:1px solid #1f1f26; background:rgba(20,20,26,.92); border-radius:16px; padding:18px; margin-bottom:14px}
+    .grid2{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+    @media (max-width: 1000px){ .grid2{grid-template-columns:1fr} .sidebar{width:260px} .main{padding:18px} .topbar{margin:-18px -18px 14px; padding:12px 18px} }
+
+    .fieldLabel{color:#9a9a9a; font-size:12px; margin-bottom:8px}
+    .editable{
+      padding:8px 10px;
+      border-radius:14px;
+      border:1px dashed transparent;
+      min-height: 40px;
+      line-height:1.6;
+      color:#ddd;
+    }
+    body.edit .editable{border-color:#2a2a33; cursor:text}
+    body.edit .editable:focus{background:#0a0a0d; border-color:rgba(212,175,55,.7); outline:none}
+
+    /* Modal */
+    .modal{display:none; position:fixed; inset:0; background:rgba(0,0,0,.88); backdrop-filter: blur(8px); z-index:50; padding:18px; align-items:center; justify-content:center}
+    .modal.show{display:flex}
+    .modalBox{
+      width:min(760px, 98vw);
+      border:1px solid rgba(212,175,55,.65);
+      background:rgba(20,20,26,.97);
+      border-radius:16px;
+      padding:18px;
+    }
+    .modalBox h3{font-family:"Playfair Display",serif; color:var(--gold); font-size:24px; margin-bottom:10px}
+    .formGrid{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+    .formGroup label{display:block; color:#888; font-size:11px; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px}
+    .formGroup textarea{min-height:100px; resize:vertical}
+    .modalActions{display:flex; justify-content:flex-end; gap:10px; margin-top:12px; flex-wrap:wrap}
+
+    /* Toast */
+    #toast{
+      position:fixed; bottom:30px; left:50%;
+      transform:translateX(-50%) translateY(100px);
+      opacity:0;
+      background:var(--gold); color:#000;
+      padding:12px 18px; border-radius:999px;
+      font-weight:900; font-size:13px;
+      transition:.35s;
+      z-index:100;
+    }
+    #toast.show{transform:translateX(-50%) translateY(0); opacity:1}
+
+    /* Debug indicator */
+    #js-ok{
+      position:fixed; top:14px; right:14px; z-index:999;
+      font-family:"Share Tech Mono";
+      font-size:11px;
+      padding:8px 10px;
+      border-radius:999px;
+      background:#0a0a0d;
+      border:1px solid rgba(46,204,113,.35);
+      color:#c7f6d7;
+      display:none;
+    }
+    #js-ok.show{display:block}
   </style>
 </head>
 <body>
 
-  <div id="fatal-error"></div>
+  <div id="js-ok">JS OK</div>
+  <div id="toast">OK</div>
 
-  <!-- LOGIN -->
-  <div id="login-screen" aria-label="Écran de sélection de profil">
-    <h1 class="login-title">DOSSIERS</h1>
-    <p class="login-subtitle">LECTURE PUBLIQUE // ÉDITION VERROUILLÉE PAR PIN</p>
+  <!-- LOGIN SCREEN -->
+  <div id="login" class="screen">
+    <div class="wrap">
+      <div class="title">DOSSIERS</div>
+      <div class="subtitle">LECTURE PUBLIQUE // ÉDITION VERROUILLÉE PAR PIN</div>
 
-    <div class="login-toolbar">
-      <div class="search" title="Recherche (/)">
-        <i class="fa-solid fa-magnifying-glass" style="color:#666"></i>
-        <input id="login-search" placeholder="Rechercher un profil (nom, rôle…)" />
-        <span class="kbd">/</span>
+      <div class="toolbar">
+        <div class="search">
+          <i class="fa-solid fa-magnifying-glass" style="color:#666"></i>
+          <input id="q" placeholder="Rechercher un profil (nom, rôle...)" />
+          <span style="font-family:'Share Tech Mono';color:#666;font-size:11px;border:1px solid #2a2a33;border-bottom-width:3px;border-radius:8px;padding:2px 8px;background:#0a0a0d">/</span>
+        </div>
+        <button class="btn primary" id="openCreate"><i class="fa-solid fa-user-plus"></i> Créer profil</button>
+        <button class="btn" id="openHelp"><i class="fa-solid fa-circle-info"></i> Aide</button>
       </div>
-      <button class="btn primary" id="btn-open-create"><i class="fa-solid fa-user-plus"></i> Créer profil</button>
-      <button class="btn" id="btn-open-import"><i class="fa-solid fa-file-import"></i> Import JSON</button>
-      <button class="btn" id="btn-open-help"><i class="fa-solid fa-circle-info"></i> Aide</button>
-    </div>
 
-    <div class="profiles-container" id="profiles"></div>
+      <div class="grid" id="list"></div>
 
-    <div style="margin-top:16px; width:min(1200px, 98vw); display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; color:#777; font-size:12px">
-      <div><span class="kbd">Tip</span> Clique un profil pour lire. Clique <strong>Déverrouiller</strong> dans l’app pour éditer.</div>
-      <div id="login-storage"></div>
+      <div style="margin-top:14px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;color:#777;font-size:12px">
+        <div><span style="font-family:'Share Tech Mono';border:1px solid #2a2a33;border-bottom-width:3px;border-radius:8px;padding:2px 8px;background:#0a0a0d;color:#999">Tip</span> Clique un profil pour lire. Déverrouille pour éditer.</div>
+        <div id="storage"></div>
+      </div>
     </div>
   </div>
 
   <!-- APP -->
-  <div class="app-container" id="main-app">
-    <nav class="sidebar">
-      <div class="sidebar-header">
-        <h2 id="ui-sidebar-name">CARPENTIER O.S</h2>
-        <p>v5.0.2 SYSTEM // PUBLIC VIEW</p>
-      </div>
-
-      <div class="nav-links">
-        <button class="nav-btn active" data-tab="profil"><i class="fa-solid fa-id-card"></i> 01. Identité</button>
-        <button class="nav-btn" data-tab="caractere"><i class="fa-solid fa-brain"></i> 02. Caractère</button>
-        <button class="nav-btn" data-tab="lore"><i class="fa-solid fa-scroll"></i> 03. Histoire (Lore)</button>
-        <button class="nav-btn" data-tab="objectifs"><i class="fa-solid fa-bullseye"></i> 04. Objectifs</button>
-        <button class="nav-btn" data-tab="journal"><i class="fa-solid fa-keyboard"></i> 05. Journal RP</button>
-
-        <button class="nav-btn bottom logout" id="btn-logout"><i class="fa-solid fa-power-off"></i> Retour profils</button>
-      </div>
-    </nav>
-
-    <main class="main-content">
-      <div class="topbar">
-        <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center">
-          <span class="chip ro" id="ui-mode-chip"><i class="fa-solid fa-eye"></i> LECTURE</span>
-          <span class="chip"><i class="fa-solid fa-user"></i> <span id="ui-active-profile"></span></span>
-          <span class="chip"><i class="fa-solid fa-fingerprint"></i> REF: <span id="ui-ref-id"></span></span>
-          <span class="chip ok" id="ui-save-chip"><i class="fa-solid fa-cloud"></i> OK</span>
+  <div id="app" class="appShell">
+    <div class="app">
+      <aside class="sidebar">
+        <div class="sbHead">
+          <h2 id="sbName">DOSSIER</h2>
+          <p>v6.0 // STABLE BUILD</p>
         </div>
-        <div style="display:flex; gap:10px; flex-wrap:wrap">
-          <button class="btn small primary" id="btn-unlock"><i class="fa-solid fa-lock"></i> Déverrouiller</button>
-          <button class="btn small" id="btn-lock"><i class="fa-solid fa-lock-open"></i> Verrouiller</button>
-          <button class="btn small" id="btn-tools"><i class="fa-solid fa-screwdriver-wrench"></i> Outils</button>
+
+        <button class="sbBtn active" data-tab="identite"><i class="fa-solid fa-id-card"></i> Identité</button>
+        <button class="sbBtn" data-tab="psy"><i class="fa-solid fa-brain"></i> Psycho</button>
+        <button class="sbBtn" data-tab="journal"><i class="fa-solid fa-keyboard"></i> Journal</button>
+
+        <div class="sbBottom">
+          <button class="sbBtn logout" id="back"><i class="fa-solid fa-power-off"></i> Retour profils</button>
         </div>
-      </div>
+      </aside>
 
-      <!-- IDENTITE -->
-      <section id="profil" class="tab-section active">
-        <div class="section-title"><span>Identité Civile</span><span class="ref" id="ui-subref"></span></div>
-
-        <div class="grid-2">
-          <div class="card" style="padding:10px;">
-            <div class="profile-img-container">
-              <img id="ui-photo" src="" alt="Profil">
-            </div>
-            <div style="display:flex; justify-content:flex-end; margin-top:10px">
-              <button class="btn small" id="btn-edit-meta"><i class="fa-solid fa-pen"></i> Photo / Réfs</button>
-            </div>
+      <main class="main">
+        <div class="topbar">
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+            <span class="chip ro" id="modeChip"><i class="fa-solid fa-eye"></i> LECTURE</span>
+            <span class="chip"><i class="fa-solid fa-user"></i> <span id="activeName"></span></span>
+            <span class="chip ok"><i class="fa-solid fa-cloud"></i> localStorage</span>
           </div>
-
-          <div style="display:flex; flex-direction:column; gap:16px">
-            <div class="card">
-              <div class="card-title">État Civil <span style="color:#777;font-size:12px;text-transform:none;letter-spacing:0">édition → déverrouiller</span></div>
-              <p style="margin-bottom:10px;"><strong>Nom complet :</strong> <span id="ui-full-name" class="field" data-path="identity.fullName"></span></p>
-              <p style="margin-bottom:10px;"><strong>Âge :</strong> <span id="ui-age" class="field" data-path="identity.age"></span></p>
-              <p style="margin-bottom:10px;"><strong>Lieu de naissance :</strong> <span id="ui-birthplace" class="field" data-path="identity.birthplace"></span></p>
-              <p style="margin-bottom:10px;"><strong>Origines :</strong> <span id="ui-origins" class="field" data-path="identity.origins"></span></p>
-              <p><strong>Situation :</strong> <span id="ui-role" class="field" data-path="identity.role"></span></p>
-            </div>
-
-            <div class="card">
-              <div class="card-title">Attributs Physiques</div>
-              <p style="margin-bottom:10px;"><strong>Apparence :</strong> <span id="ui-phys" class="field" data-path="identity.phys"></span></p>
-              <p style="margin-bottom:10px;"><strong>Signe distinctif :</strong> <span id="ui-sign" class="field" data-path="identity.sign"></span></p>
-              <p><strong>Particularité Vocale :</strong> <span id="ui-voice" class="field" data-path="identity.voice" style="color:var(--gold)"></span></p>
-            </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn small primary" id="unlock"><i class="fa-solid fa-lock"></i> Déverrouiller</button>
+            <button class="btn small" id="lock"><i class="fa-solid fa-lock-open"></i> Verrouiller</button>
           </div>
         </div>
-      </section>
 
-      <!-- CARACTERE -->
-      <section id="caractere" class="tab-section">
-        <div class="section-title"><span>Analyse Psychologique</span><span class="ref" id="ui-psy-ref"></span></div>
-
-        <div class="grid-2">
-          <div class="card">
-            <div class="card-title">Traits de Personnalité</div>
-            <div id="ui-stats-container" style="color:#bbb; line-height:1.6"></div>
+        <section id="tab-identite">
+          <div class="sectionTitle">
+            <span>Identité</span>
+            <span class="ref" id="ref"></span>
           </div>
-          <div class="card">
-            <div class="card-title">Description Psychologique</div>
-            <p id="ui-psy1" class="field" data-path="psy.psy1" style="color:#bbb; line-height:1.75"></p>
-            <p id="ui-psy2" class="field" data-path="psy.psy2" style="color:#bbb; line-height:1.75; margin-top:14px"></p>
+
+          <div class="grid2">
+            <div class="panel">
+              <div class="fieldLabel">Photo (URL ou fichier)</div>
+              <input id="img" class="input" placeholder="photo.png ou https://..." />
+              <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+                <div class="avatar" style="width:90px;height:90px">
+                  <img id="imgPreview" alt="preview">
+                </div>
+                <div style="color:#888;font-size:12px;line-height:1.6">
+                  Aperçu. Si image cassée, tu peux corriger l’URL.
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div class="panel">
+                <div class="fieldLabel">Nom complet</div>
+                <div id="fullName" class="editable" contenteditable="false"></div>
+              </div>
+              <div class="panel">
+                <div class="fieldLabel">Âge</div>
+                <div id="age" class="editable" contenteditable="false"></div>
+              </div>
+              <div class="panel">
+                <div class="fieldLabel">Rôle</div>
+                <div id="role" class="editable" contenteditable="false"></div>
+              </div>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <!-- LORE -->
-      <section id="lore" class="tab-section">
-        <div class="section-title"><span>Dossier Background</span><span class="ref" id="ui-lore-ref"></span></div>
-        <div class="card" id="lore-container"></div>
-      </section>
+        <section id="tab-psy" style="display:none">
+          <div class="sectionTitle">
+            <span>Psycho</span>
+            <span class="ref">editable</span>
+          </div>
+          <div class="panel">
+            <div class="fieldLabel">Description</div>
+            <div id="psy" class="editable" contenteditable="false"></div>
+          </div>
+        </section>
 
-      <!-- OBJECTIFS -->
-      <section id="objectifs" class="tab-section">
-        <div class="section-title"><span>Objectifs</span><button class="btn primary" id="btn-open-goal"><i class="fa-solid fa-plus"></i> Nouveau</button></div>
-        <div class="grid-2" id="goal-container"></div>
-      </section>
-
-      <!-- JOURNAL -->
-      <section id="journal" class="tab-section">
-        <div class="section-title"><span>Journal RP</span><span class="ref">autosave</span></div>
-        <div class="card" style="padding:0; border:none; background:transparent">
-          <textarea id="journal-input"
-            style="width:100%;height:62vh;background:#0a0a0d;border:1px solid #1a1a20;color:#ddd;padding:18px;border-radius:14px;resize:none;line-height:1.85;font-size:16px;"
-            placeholder="Cher journal..."></textarea>
-        </div>
-      </section>
-    </main>
+        <section id="tab-journal" style="display:none">
+          <div class="sectionTitle">
+            <span>Journal</span>
+            <span class="ref">autosave</span>
+          </div>
+          <div class="panel" style="padding:0;background:transparent;border:none">
+            <textarea id="journal" class="input" style="height:56vh; font-family:Montserrat; font-size:15px; line-height:1.8; padding:16px; border-radius:16px" placeholder="Cher journal..." readonly></textarea>
+          </div>
+        </section>
+      </main>
+    </div>
   </div>
 
   <!-- MODALS -->
-  <div class="modal" id="modalUnlock">
-    <div class="modal-content" role="dialog" aria-modal="true" aria-label="Déverrouillage édition">
-      <h3>Déverrouiller l’édition</h3>
-      <p style="color:#bbb; line-height:1.6; margin-bottom:12px">
-        Ce dossier est <strong>public en lecture</strong>. Pour modifier, entre le PIN du profil.
-      </p>
-      <div class="form-grid">
-        <div class="form-group" style="grid-column:1/-1">
-          <label>PIN</label>
-          <input id="unlockPin" inputmode="numeric" placeholder="ex: 1234" />
-        </div>
-      </div>
-      <div class="modal-actions">
-        <button class="btn" data-close="modalUnlock">Annuler</button>
-        <button class="btn primary" id="btn-do-unlock"><i class="fa-solid fa-key"></i> Déverrouiller</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal" id="modalCreateProfile">
-    <div class="modal-content" role="dialog" aria-modal="true" aria-label="Créer profil">
+  <div class="modal" id="mCreate">
+    <div class="modalBox">
       <h3>Créer un profil (visiteur)</h3>
-      <p style="color:#bbb; line-height:1.6; margin-bottom:12px">
-        Ce profil sera stocké <strong>dans ton navigateur</strong> (local). Tu peux lui mettre un PIN pour protéger l’édition.
+      <p style="color:#bbb;line-height:1.6;margin-bottom:12px">
+        Profil stocké dans ton navigateur. Optionnel : ajoute un PIN pour protéger l’édition.
       </p>
-      <div class="form-grid">
-        <div class="form-group">
-          <label>Nom du profil (affiché)</label>
-          <input id="newDisplayName" placeholder="Ex: Omar">
+
+      <div class="formGrid">
+        <div class="formGroup">
+          <label>Nom affiché</label>
+          <input id="cName" class="input" placeholder="Ex: Omar">
         </div>
-        <div class="form-group">
-          <label>Clé (slug, unique)</label>
-          <input id="newKey" placeholder="ex: omar" style="font-family:'Share Tech Mono'">
+        <div class="formGroup">
+          <label>Clé (unique)</label>
+          <input id="cKey" class="input" placeholder="ex: omar">
         </div>
-        <div class="form-group" style="grid-column:1/-1">
-          <label>Avatar (URL ou fichier)</label>
-          <input id="newAvatar" placeholder="ex: avatar.png ou https://...">
+        <div class="formGroup" style="grid-column:1/-1">
+          <label>Avatar URL (optionnel)</label>
+          <input id="cImg" class="input" placeholder="https://... ou avatar.png">
         </div>
-        <div class="form-group">
-          <label>PIN (optionnel, recommandé)</label>
-          <input id="newPin" inputmode="numeric" placeholder="ex: 4321">
+        <div class="formGroup">
+          <label>PIN (optionnel)</label>
+          <input id="cPin" class="input" inputmode="numeric" placeholder="1234">
         </div>
-        <div class="form-group">
+        <div class="formGroup">
           <label>Dupliquer depuis</label>
-          <select id="newDuplicateFrom"></select>
+          <select id="cFrom" class="input"></select>
         </div>
       </div>
-      <div class="modal-actions">
-        <button class="btn" data-close="modalCreateProfile">Annuler</button>
-        <button class="btn primary" id="btn-do-create"><i class="fa-solid fa-user-plus"></i> Créer</button>
+
+      <div class="modalActions">
+        <button class="btn" id="cCancel">Annuler</button>
+        <button class="btn primary" id="cOk"><i class="fa-solid fa-user-plus"></i> Créer</button>
       </div>
     </div>
   </div>
 
-  <div class="modal" id="modalEditMeta">
-    <div class="modal-content" role="dialog" aria-modal="true" aria-label="Modifier photo et références">
-      <h3>Profil — Photo & Références</h3>
-      <div class="form-grid">
-        <div class="form-group">
-          <label>Nom sidebar</label>
-          <input id="editSidebar" />
-        </div>
-        <div class="form-group">
-          <label>REF</label>
-          <input id="editRef" />
-        </div>
-        <div class="form-group">
-          <label>Réf psycho</label>
-          <input id="editPsyRef" />
-        </div>
-        <div class="form-group">
-          <label>Réf lore</label>
-          <input id="editLoreRef" />
-        </div>
-        <div class="form-group" style="grid-column:1/-1">
-          <label>Photo (URL/path)</label>
-          <input id="editImg" />
-        </div>
-      </div>
-      <div class="modal-actions">
-        <button class="btn" data-close="modalEditMeta">Fermer</button>
-        <button class="btn primary" id="btn-save-meta"><i class="fa-solid fa-floppy-disk"></i> Sauvegarder</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal" id="modalGoal">
-    <div class="modal-content" role="dialog" aria-modal="true" aria-label="Nouveau objectif">
-      <h3>Nouveau Objectif</h3>
-      <div class="form-grid">
-        <div class="form-group">
-          <label>Titre</label>
-          <input id="goalInput" placeholder="Ex: Acheter un scooter">
-        </div>
-        <div class="form-group">
-          <label>Type</label>
-          <select id="goalType">
-            <option value="court">Court terme</option>
-            <option value="long">Long terme</option>
-          </select>
-        </div>
-      </div>
-      <div class="modal-actions">
-        <button class="btn" data-close="modalGoal">Annuler</button>
-        <button class="btn primary" id="btn-add-goal"><i class="fa-solid fa-plus"></i> Ajouter</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal" id="modalProfileTools">
-    <div class="modal-content" role="dialog" aria-modal="true" aria-label="Outils profil">
-      <h3>Outils Profil</h3>
-      <div class="card" style="margin:0 0 12px">
-        <div class="card-title">Sauvegarde</div>
-        <div style="display:flex; gap:10px; flex-wrap:wrap">
-          <button class="btn" id="btn-export"><i class="fa-solid fa-file-export"></i> Export JSON</button>
-          <button class="btn" id="btn-open-import-2"><i class="fa-solid fa-file-import"></i> Import JSON</button>
-        </div>
-      </div>
-      <div class="card" style="margin:0 0 12px">
-        <div class="card-title">Profil visiteur</div>
-        <p style="color:#bbb; line-height:1.6; margin-bottom:10px">
-          Les profils visiteurs sont locaux à ton navigateur. Tu peux supprimer le tien ici.
-        </p>
-        <button class="btn danger" id="btn-delete-active"><i class="fa-solid fa-trash"></i> Supprimer ce profil</button>
-      </div>
-      <div class="modal-actions">
-        <button class="btn" data-close="modalProfileTools">Fermer</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal" id="modalImportProfile">
-    <div class="modal-content" role="dialog" aria-modal="true" aria-label="Import JSON">
-      <h3>Importer JSON</h3>
-      <p style="color:#bbb; line-height:1.6; margin-bottom:12px">
-        Import écrase le profil ciblé (selon le champ <code style="color:var(--gold)">key</code> du JSON).
+  <div class="modal" id="mUnlock">
+    <div class="modalBox">
+      <h3>Déverrouiller l’édition</h3>
+      <p style="color:#bbb;line-height:1.6;margin-bottom:12px">
+        Entre le PIN de ce profil. (Harry et Seya ont un PIN fixe.)
       </p>
-      <div class="form-group">
-        <label>Coller le JSON</label>
-        <textarea id="importJson"></textarea>
+      <div class="formGrid">
+        <div class="formGroup" style="grid-column:1/-1">
+          <label>PIN</label>
+          <input id="uPin" class="input" inputmode="numeric" placeholder="PIN...">
+        </div>
       </div>
-      <div class="modal-actions">
-        <button class="btn" data-close="modalImportProfile">Annuler</button>
-        <button class="btn primary" id="btn-do-import"><i class="fa-solid fa-file-import"></i> Importer</button>
+      <div class="modalActions">
+        <button class="btn" id="uCancel">Annuler</button>
+        <button class="btn primary" id="uOk"><i class="fa-solid fa-key"></i> Déverrouiller</button>
       </div>
     </div>
   </div>
 
-  <div class="modal" id="modalHelp">
-    <div class="modal-content" role="dialog" aria-modal="true" aria-label="Aide">
+  <div class="modal" id="mHelp">
+    <div class="modalBox">
       <h3>Aide</h3>
-      <div class="card" style="margin:0">
-        <div class="card-title">Lecture / édition</div>
-        <p style="color:#bbb; line-height:1.8">
-          - Tout le monde peut <strong>lire</strong> les profils publics (Harry/Seya).<br>
-          - Pour <strong>modifier</strong> : clique <em>Déverrouiller</em> et entre le PIN.<br>
-          - Les profils visiteurs peuvent être créés et modifiés dans ton navigateur.
-        </p>
+      <div class="panel" style="margin:0">
+        <div style="color:#bbb;line-height:1.8">
+          - Tout le monde peut lire les profils.<br>
+          - Pour modifier: Déverrouiller → PIN.<br>
+          - Les profils visiteurs sont locaux au navigateur.
+        </div>
       </div>
-      <div class="modal-actions">
-        <button class="btn primary" data-close="modalHelp">OK</button>
+      <div class="modalActions">
+        <button class="btn primary" id="hOk">OK</button>
       </div>
     </div>
   </div>
-
-  <div id="toast">OK</div>
 
   <script>
-    /***********************
-     * CONFIG PIN (fixe)
-     ***********************/
+    // Hard indicator that JS is running
+    document.getElementById("js-ok").classList.add("show");
+
+    /************ CONFIG PINS ************/
     const PIN_HARRY = "15122004";
     const PIN_SEYA  = "11111110";
 
-    /***********************
-     * Global error catcher (shows banner)
-     ***********************/
-    (function(){
-      function showFatal(msg){
-        const el = document.getElementById("fatal-error");
-        if(!el) return;
-        el.style.display = "block";
-        el.textContent =
-          "ERREUR JS — quelque chose a cassé l'app.\n\n" +
-          "Copie-colle ce message ici:\n" +
-          msg;
-      }
-      window.addEventListener("error", (e)=> showFatal((e?.message||"error") + (e?.filename ? ("\n" + e.filename + ":" + e.lineno + ":" + e.colno) : "")));
-      window.addEventListener("unhandledrejection", (e)=> showFatal("UnhandledPromiseRejection\n" + (e?.reason?.message || String(e?.reason))));
-    })();
+    /************ Storage ************/
+    const NS = "dossiers:v6";
+    const SESSION = "dossiers:v6:unlock";
 
-    const STORAGE_NS = "carpentierOS:v502";
-    const EDIT_SESSION_NS = "carpentierOS:v502:editSession";
+    const $ = (id)=>document.getElementById(id);
 
-    const isStructuredCloneSupported = typeof structuredClone === "function";
-    const clone = (obj) => isStructuredCloneSupported ? structuredClone(obj) : JSON.parse(JSON.stringify(obj));
+    function toast(msg){
+      const t = $("toast");
+      t.textContent = msg;
+      t.classList.add("show");
+      setTimeout(()=>t.classList.remove("show"), 1500);
+    }
+
+    function safeJsonParse(raw, fallback){
+      try{ return JSON.parse(raw); } catch { return fallback; }
+    }
 
     function uid(){
-      const rnd = (typeof crypto !== "undefined" && crypto.getRandomValues) ? crypto.getRandomValues(new Uint32Array(2)) : [Date.now(), Math.random()*1e9];
-      return "id_" + rnd[0].toString(16) + rnd[1].toString(16);
-    }
-    function escapeHtml(s){ return String(s ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;"); }
-    function escapeAttr(s){ return escapeHtml(s).replaceAll('"','&quot;'); }
-
-    const defaultProfiles = {
-      harry: {
-        key:"harry",
-        public:true,
-        displayName:"HARRY",
-        meta:{ sidebar:"HARRY O.S", refId:"HC-151204", psyRef:"SYNDROME CHIHUAHUA", loreRef:"L'EST PARISIEN", img:"photo harry.png" }, // IMAGE_HARRY
-        pinHash:"",
-        identity:{ fullName:"CARPENTIER Harry", age:"21 ans (15/12/2004)", birthplace:"Paris 19ème (Hôpital Robert Debré)", origins:"Franco-Algérien (Mère DZ : Myriam)", role:"Chef de famille (précaire) / Faux Caïd", phys:"1m75 (Plutôt frêle)", sign:"Moustache taillée (pour paraître plus vieux).", voice:"Voix extrêmement aiguë de naissance, zéro virilité." },
-        psy:{ psy1:"Harry est l'incarnation même du <strong>Chihuahua</strong> : il aboie très fort, essaie d'intimider avec un argot de banlieue, mais fuit dès que la menace devient réelle. Il est terrifié par la violence physique et perd tous ses moyens sous la pression.", psy2:"Sa plus grande faiblesse est son <strong>honnêteté pathologique</strong> : incapable de mentir sous le stress, il finit par tout avouer." },
-        stats:[ { id: uid(), label:"Courage (Froid & Calculé)", val:5 }, { id: uid(), label:"Lâcheté / Survie", val:95 }, { id: uid(), label:"Sincérité (Stress-induced honesty)", val:100 }, { id: uid(), label:"Dévouement pour Seya", val:100 } ],
-        lore:{ sections:[ { id: uid(), title:"Les Origines : Le 19ème Arrondissement", text:"Harry est né et a grandi dans les barres d'HLM du 19ème arrondissement de Paris. Son père a disparu, sa mère Myriam s'est tuée à la tâche." }, { id: uid(), title:"Le Drame de Seya", text:"À la naissance de sa petite sœur Seya, une anoxie lui laisse un retard mental. La vie d'Harry a changé : il est devenu son garde du corps inefficace et son seul repère." }, { id: uid(), title:"L'Arrivée à Paris RP", text:"Myriam est décédée. Menacés d'expulsion, Harry a pris Seya et a décidé de tenter sa chance dans le grand bain de GrandLine." } ] },
-        goals:[],
-        journal:""
-      },
-      seya: {
-        key:"seya",
-        public:true,
-        displayName:"SEYA",
-        meta:{ sidebar:"SEYA O.S", refId:"SC-19", psyRef:"L'ÉPINE ATTACHANTE", loreRef:"L'EST PARISIEN", img:"photo seya.png" }, // IMAGE_SEYA
-        pinHash:"",
-        identity:{ fullName:"CARPENTIER Seya", age:"19 ans", birthplace:"Paris 19ème", origins:"Franco-Algérienne", role:"Petite sœur surprotégée", phys:"Petite, souvent cachée derrière son frère", sign:"Regard fuyant, souvent perdue ou hyperactive.", voice:"Voix très aiguë, parle très fort et sans filtre." },
-        psy:{ psy1:"À cause d'une anoxie, Seya a un <strong>retard mental</strong>. Elle vit le monde comme une enfant : elle est extrêmement spontanée, n'a aucun filtre social et dit ce qu'elle pense sans réaliser les conséquences.", psy2:"Elle est d'une <strong>jalousie maladive</strong>. Si quelqu'un (surtout une fille) s'approche de son frère, elle peut faire des crises mémorables. Elle fait confiance aveuglément aux mauvaises personnes." },
-        stats:[ { id: uid(), label:"Naïveté & Vulnérabilité", val:100 }, { id: uid(), label:"Émotivité (Pleurs/Rires intenses)", val:100 }, { id: uid(), label:"Jalousie (Dès qu'on approche Harry)", val:100 }, { id: uid(), label:"Dévouement pour Harry", val:100 } ],
-        lore:{ sections:[ { id: uid(), title:"Une enfance dans l'ombre", text:"Pour Seya, le 19ème n'était pas un enfer mais un terrain de jeu bruyant. Elle n'a jamais compris la dureté de la vie de sa mère ni les sacrifices de son frère." }, { id: uid(), title:"L'Ancre Harry", text:"Harry est son Dieu, son héros absolu. Elle ne se rend pas du tout compte qu'il est lâche. Pour elle, c'est le roi de Paris." }, { id: uid(), title:"L'objectif à GrandLine", text:"Elle suit son frère partout. Son but ? Se faire des amis bizarres, et surtout prouver à Harry qu'elle est 'une grande' et qu'elle peut l'aider." } ] },
-        goals:[],
-        journal:""
-      }
-    };
-
-    const defaultState = { version:502, profiles: defaultProfiles };
-    let state = loadState();
-    let activeKey = null;
-    let editUnlocked = false;
-    let saveT = null;
-
-    function notify(msg){
-      const t = document.getElementById("toast");
-      if(!t) return;
-      t.innerText = msg;
-      t.classList.add("show");
-      setTimeout(()=>t.classList.remove("show"), 1600);
-    }
-    function openModal(id){ document.getElementById(id)?.classList.add("active"); }
-    function closeModal(id){ document.getElementById(id)?.classList.remove("active"); }
-
-    function setSaveChip(mode="ok"){
-      const chip = document.getElementById("ui-save-chip");
-      if(!chip) return;
-      if(mode==="busy"){ chip.className="chip"; chip.innerHTML='<i class="fa-solid fa-arrows-rotate"></i> SAVE'; }
-      else { chip.className="chip ok"; chip.innerHTML='<i class="fa-solid fa-cloud"></i> OK'; }
-    }
-    function setModeChip(){
-      const chip = document.getElementById("ui-mode-chip");
-      if(!chip) return;
-      if(editUnlocked){
-        chip.className="chip edit";
-        chip.innerHTML='<i class="fa-solid fa-pen"></i> ÉDITION';
-        document.body.classList.add("edit-unlocked");
-      }else{
-        chip.className="chip ro";
-        chip.innerHTML='<i class="fa-solid fa-eye"></i> LECTURE';
-        document.body.classList.remove("edit-unlocked");
-      }
-      document.querySelectorAll(".field").forEach(el=>{
-        el.setAttribute("contenteditable", editUnlocked ? "true" : "false");
-      });
-      const journal = document.getElementById("journal-input");
-      if(journal) journal.readOnly = !editUnlocked;
+      const r = (crypto?.getRandomValues) ? crypto.getRandomValues(new Uint32Array(2)) : [Date.now(), Math.random()*1e9];
+      return "id_" + r[0].toString(16) + r[1].toString(16);
     }
 
-    function loadState(){
-      try{
-        const raw = localStorage.getItem(STORAGE_NS);
-        if(!raw){
-          localStorage.setItem(STORAGE_NS, JSON.stringify(defaultState));
-          return clone(defaultState);
-        }
-        const parsed = JSON.parse(raw);
-        const merged = { ...clone(defaultState), ...parsed, profiles: { ...clone(defaultState.profiles), ...(parsed.profiles||{}) } };
-        if(!merged.profiles.harry) merged.profiles.harry = clone(defaultProfiles.harry);
-        if(!merged.profiles.seya) merged.profiles.seya = clone(defaultProfiles.seya);
-        return merged;
-      }catch{
-        localStorage.setItem(STORAGE_NS, JSON.stringify(defaultState));
-        return clone(defaultState);
-      }
-    }
-    function saveState(){ localStorage.setItem(STORAGE_NS, JSON.stringify(state)); }
-    function scheduleSave(){
-      setSaveChip("busy");
-      clearTimeout(saveT);
-      saveT = setTimeout(()=>{ saveState(); setSaveChip("ok"); }, 250);
-    }
-
-    function loadEditSession(){
-      try{ return JSON.parse(sessionStorage.getItem(EDIT_SESSION_NS) || "{}"); }catch{ return {}; }
-    }
-    function saveEditSession(obj){ sessionStorage.setItem(EDIT_SESSION_NS, JSON.stringify(obj)); }
-    function isProfileUnlocked(key){
-      const s = loadEditSession();
-      return Date.now() < (s?.[key]?.exp || 0);
-    }
-    function setProfileUnlocked(key, minutes=45){
-      const s = loadEditSession();
-      s[key] = { exp: Date.now() + minutes*60*1000 };
-      saveEditSession(s);
-    }
-    function clearProfileUnlocked(key){
-      const s = loadEditSession();
-      delete s[key];
-      saveEditSession(s);
+    function hashPin(pin){
+      // DJB2 simple (not security, just not storing raw)
+      let h = 5381;
+      for(let i=0;i<pin.length;i++) h = ((h<<5)+h) + pin.charCodeAt(i);
+      return "h" + (h>>>0).toString(16);
     }
 
     function slugify(s){
@@ -741,470 +526,414 @@
         .replace(/(^-|-$)/g,"")
         .slice(0, 24) || ("user-"+Math.floor(Math.random()*9999));
     }
-    function simpleHash(pin){
-      let h = 5381;
-      for(let i=0;i<pin.length;i++) h = ((h<<5)+h) + pin.charCodeAt(i);
-      return "h" + (h >>> 0).toString(16);
-    }
-    function getPath(obj, path){ return path.split(".").reduce((a,k)=>a?.[k], obj); }
-    function setPath(obj, path, val){
-      const parts = path.split(".");
-      let cur = obj;
-      for(let i=0;i<parts.length-1;i++){
-        const k = parts[i];
-        if(typeof cur[k] !== "object" || cur[k]===null) cur[k] = {};
-        cur = cur[k];
+
+    const defaults = {
+      version: 6,
+      profiles: {
+        harry: {
+          key:"harry", displayName:"HARRY", public:true,
+          meta:{ ref:"HC-151204", img:"photo harry.png" }, // <- CHANGE IMAGE HERE
+          pinHash:"",
+          data:{ fullName:"CARPENTIER Harry", age:"21 ans (15/12/2004)", role:"Chef de famille (précaire) / Faux Caïd", psy:"Chihuahua: aboie fort, fuit quand ça chauffe.", journal:"" }
+        },
+        seya: {
+          key:"seya", displayName:"SEYA", public:true,
+          meta:{ ref:"SC-19", img:"photo seya.png" }, // <- CHANGE IMAGE HERE
+          pinHash:"",
+          data:{ fullName:"CARPENTIER Seya", age:"19 ans", role:"Petite sœur surprotégée", psy:"Spontanée, jalouse, très attachée à Harry.", journal:"" }
+        }
       }
-      cur[parts[parts.length-1]] = val;
+    };
+
+    function loadState(){
+      const raw = localStorage.getItem(NS);
+      if(!raw){
+        localStorage.setItem(NS, JSON.stringify(defaults));
+        return structuredClone ? structuredClone(defaults) : safeJsonParse(JSON.stringify(defaults), defaults);
+      }
+      const st = safeJsonParse(raw, defaults);
+      // ensure base profiles exist
+      st.profiles = st.profiles || {};
+      if(!st.profiles.harry) st.profiles.harry = defaults.profiles.harry;
+      if(!st.profiles.seya) st.profiles.seya = defaults.profiles.seya;
+      return st;
     }
+    function saveState(){ localStorage.setItem(NS, JSON.stringify(state)); updateStorageSize(); }
 
-    function profile(){ return state.profiles[activeKey]; }
-
-    function storageInfo(){
+    function updateStorageSize(){
       const bytes = new Blob([JSON.stringify(state)]).size;
-      return (bytes/1024).toFixed(1) + " KB local";
+      $("storage").textContent = (bytes/1024).toFixed(1) + " KB local";
     }
 
-    function renderLogin(){
-      document.getElementById("login-storage")?.innerText = storageInfo();
+    let state = loadState();
+    let activeKey = null;
+    let unlocked = false;
 
-      const q = (document.getElementById("login-search")?.value || "").trim().toLowerCase();
+    /************ Unlock session ************/
+    function loadUnlock(){
+      return safeJsonParse(sessionStorage.getItem(SESSION) || "{}", {});
+    }
+    function setUnlock(key, minutes){
+      const s = loadUnlock();
+      s[key] = Date.now() + minutes*60*1000;
+      sessionStorage.setItem(SESSION, JSON.stringify(s));
+    }
+    function clearUnlock(key){
+      const s = loadUnlock();
+      delete s[key];
+      sessionStorage.setItem(SESSION, JSON.stringify(s));
+    }
+    function isUnlocked(key){
+      const s = loadUnlock();
+      return Date.now() < (s[key] || 0);
+    }
+
+    /************ UI: Login list ************/
+    function renderList(){
+      const q = ($("q").value || "").trim().toLowerCase();
+      const list = $("list");
+      list.textContent = ""; // clear
+
       const profiles = Object.values(state.profiles)
         .sort((a,b)=> (b.public===true)-(a.public===true) || (a.displayName||a.key).localeCompare(b.displayName||b.key));
 
-      const filtered = !q ? profiles : profiles.filter(p=>{
-        const hay = `${p.displayName||""} ${p.key||""} ${p.identity?.role||""}`.toLowerCase();
-        return hay.includes(q);
-      });
+      // fill duplicate select
+      $("cFrom").textContent = "";
+      for(const p of profiles){
+        const opt = document.createElement("option");
+        opt.value = p.key;
+        opt.textContent = `${p.displayName || p.key} (${p.key})`;
+        $("cFrom").appendChild(opt);
+      }
 
-      const container = document.getElementById("profiles");
-      if(!container) return;
+      for(const p of profiles){
+        const hay = `${p.displayName||""} ${p.key||""} ${p.data?.role||""}`.toLowerCase();
+        if(q && !hay.includes(q)) continue;
 
-      container.innerHTML = filtered.map(p=>{
-        const badge = p.public ? `<span class="badge public">PUBLIC</span>` : `<span class="badge local">VISITEUR</span>`;
-        const locked = (p.key==="harry" || p.key==="seya" || !!p.pinHash) ? `<span class="badge locked" style="right:92px">PIN</span>` : "";
-        const img = p.meta?.img || "";
-        const role = p.identity?.role || "";
-        const canDelete = (!p.public && p.key!=="harry" && p.key!=="seya");
+        const card = document.createElement("div");
+        card.className = "card";
+        card.tabIndex = 0;
 
-        return `
-          <div class="profile-card" tabindex="0" role="button" data-open-profile="${escapeAttr(p.key)}">
-            ${badge}${locked}
-            <div class="profile-top">
-              <div class="profile-pic">
-                <img src="${escapeAttr(img)}" onerror="this.src='https://via.placeholder.com/150/0a0a0c/333?text=${encodeURIComponent((p.displayName||p.key).slice(0,10))}'">
-              </div>
-              <div>
-                <div class="profile-name">${escapeHtml(p.displayName || p.key)}</div>
-                <div class="profile-role">${escapeHtml(role)}</div>
-              </div>
-            </div>
+        const row = document.createElement("div");
+        row.className = "row";
 
-            <div class="card-actions">
-              <button class="btn small" data-dup="${escapeAttr(p.key)}"><i class="fa-solid fa-clone"></i> Dupliquer</button>
-              ${canDelete ? `<button class="btn small danger" data-del="${escapeAttr(p.key)}"><i class="fa-solid fa-trash"></i> Suppr</button>` : ``}
-            </div>
-          </div>
-        `;
-      }).join("") || `<div style="color:#777">Aucun profil.</div>`;
+        const av = document.createElement("div");
+        av.className = "avatar";
+        const img = document.createElement("img");
+        img.src = p.meta?.img || "";
+        img.onerror = ()=> img.src = "https://via.placeholder.com/150/0a0a0c/333?text=USER";
+        av.appendChild(img);
 
-      container.querySelectorAll("[data-open-profile]").forEach(card=>{
-        card.addEventListener("click", (e)=>{ if(e.target.closest("button")) return; login(card.getAttribute("data-open-profile")); });
-        card.addEventListener("keydown", (e)=>{ if(e.key==="Enter") login(card.getAttribute("data-open-profile")); });
-      });
-      container.querySelectorAll("[data-dup]").forEach(btn=>{
-        btn.addEventListener("click", (e)=>{ e.stopPropagation(); openDuplicateModal(btn.getAttribute("data-dup")); });
-      });
-      container.querySelectorAll("[data-del]").forEach(btn=>{
-        btn.addEventListener("click", (e)=>{ e.stopPropagation(); deleteProfile(btn.getAttribute("data-del")); });
-      });
+        const info = document.createElement("div");
+        const name = document.createElement("div");
+        name.className = "name";
+        name.textContent = p.displayName || p.key;
+        const role = document.createElement("div");
+        role.className = "role";
+        role.textContent = p.data?.role || "";
+        info.appendChild(name);
+        info.appendChild(role);
 
-      const sel = document.getElementById("newDuplicateFrom");
-      if(sel){
-        sel.innerHTML = profiles.map(p=>`<option value="${escapeAttr(p.key)}">${escapeHtml(p.displayName||p.key)} (${p.key})</option>`).join("");
+        row.appendChild(av);
+        row.appendChild(info);
+
+        const badges = document.createElement("div");
+        badges.className = "badges";
+        const b1 = document.createElement("span");
+        b1.className = "badge " + (p.public ? "public" : "local");
+        b1.textContent = p.public ? "PUBLIC" : "VISITEUR";
+        badges.appendChild(b1);
+
+        const hasPin = (p.key==="harry" || p.key==="seya" || !!p.pinHash);
+        if(hasPin){
+          const b2 = document.createElement("span");
+          b2.className = "badge pin";
+          b2.textContent = "PIN";
+          badges.appendChild(b2);
+        }
+
+        const actions = document.createElement("div");
+        actions.className = "actions";
+
+        const openBtn = document.createElement("button");
+        openBtn.className = "btn primary";
+        openBtn.innerHTML = '<i class="fa-solid fa-folder-open"></i> Ouvrir';
+        openBtn.addEventListener("click", ()=>openProfile(p.key));
+
+        const dupBtn = document.createElement("button");
+        dupBtn.className = "btn";
+        dupBtn.innerHTML = '<i class="fa-solid fa-clone"></i> Dupliquer';
+        dupBtn.addEventListener("click", ()=>{
+          openCreateModal(p.key);
+        });
+
+        actions.appendChild(openBtn);
+        actions.appendChild(dupBtn);
+
+        if(!p.public && p.key!=="harry" && p.key!=="seya"){
+          const delBtn = document.createElement("button");
+          delBtn.className = "btn danger";
+          delBtn.innerHTML = '<i class="fa-solid fa-trash"></i> Suppr';
+          delBtn.addEventListener("click", ()=>{
+            if(confirm("Supprimer ce profil (local navigateur) ?")){
+              delete state.profiles[p.key];
+              saveState();
+              renderList();
+              toast("Supprimé");
+            }
+          });
+          actions.appendChild(delBtn);
+        }
+
+        card.appendChild(row);
+        card.appendChild(badges);
+        card.appendChild(actions);
+
+        // Enter opens profile
+        card.addEventListener("keydown", (e)=>{
+          if(e.key==="Enter") openProfile(p.key);
+        });
+
+        list.appendChild(card);
+      }
+
+      if(!list.childElementCount){
+        const empty = document.createElement("div");
+        empty.style.color = "#777";
+        empty.textContent = "Aucun profil.";
+        list.appendChild(empty);
       }
     }
 
-    function login(key){
+    /************ UI: App ************/
+    function openProfile(key){
       activeKey = key;
-      editUnlocked = isProfileUnlocked(activeKey);
-
-      const loginScreen = document.getElementById("login-screen");
-      loginScreen.style.opacity = "0";
-      setTimeout(()=>{
-        loginScreen.style.display = "none";
-        document.getElementById("main-app").style.display = "flex";
-        selectTab("profil");
-        hydrateUI();
-      }, 350);
+      unlocked = isUnlocked(activeKey);
+      $("login").style.display = "none";
+      $("app").style.display = "flex";
+      setEditMode(unlocked);
+      hydrate();
     }
 
-    function logout(){
+    function backToLogin(){
       activeKey = null;
-      editUnlocked = false;
-      document.getElementById("main-app").style.display="none";
-      const ls = document.getElementById("login-screen");
-      ls.style.display="flex";
-      setTimeout(()=>ls.style.opacity="1", 20);
-      renderLogin();
+      unlocked = false;
+      $("app").style.display = "none";
+      $("login").style.display = "flex";
+      renderList();
     }
 
-    function selectTab(id){
-      document.querySelectorAll(".tab-section").forEach(s=>s.classList.remove("active"));
-      document.querySelectorAll(".nav-btn[data-tab]").forEach(b=>b.classList.remove("active"));
-      document.getElementById(id)?.classList.add("active");
-      document.querySelector(`.nav-btn[data-tab="${CSS.escape(id)}"]`)?.classList.add("active");
-    }
+    function setEditMode(on){
+      unlocked = on;
+      document.body.classList.toggle("edit", unlocked);
+      $("modeChip").className = "chip " + (unlocked ? "edit" : "ro");
+      $("modeChip").innerHTML = unlocked
+        ? '<i class="fa-solid fa-pen"></i> ÉDITION'
+        : '<i class="fa-solid fa-eye"></i> LECTURE';
 
-    function setField(elId, path, allowHtml=false){
-      const el = document.getElementById(elId);
-      if(!el) return;
-      const v = getPath(profile(), path) ?? "";
-      el.innerHTML = allowHtml ? String(v) : escapeHtml(String(v));
-    }
-
-    function hydrateUI(){
-      document.getElementById("ui-sidebar-name").innerText = profile().meta?.sidebar || "DOSSIER";
-      document.getElementById("ui-active-profile").innerText = profile().displayName || profile().key;
-      document.getElementById("ui-ref-id").innerText = profile().meta?.refId || "-";
-      document.getElementById("ui-subref").innerText = profile().meta?.refId || "";
-      document.getElementById("ui-psy-ref").innerText = profile().meta?.psyRef || "";
-      document.getElementById("ui-lore-ref").innerText = profile().meta?.loreRef || "";
-
-      document.getElementById("ui-photo").src = profile().meta?.img || "";
-
-      setField("ui-full-name", "identity.fullName");
-      setField("ui-age", "identity.age");
-      setField("ui-birthplace", "identity.birthplace");
-      setField("ui-origins", "identity.origins");
-      setField("ui-role", "identity.role");
-      setField("ui-phys", "identity.phys");
-      setField("ui-sign", "identity.sign");
-      setField("ui-voice", "identity.voice");
-
-      setField("ui-psy1", "psy.psy1", true);
-      setField("ui-psy2", "psy.psy2", true);
-
-      const stats = document.getElementById("ui-stats-container");
-      stats.innerHTML = (profile().stats||[]).map(s=>`
-        <div style="margin-bottom:10px">
-          <div style="display:flex;justify-content:space-between;color:#9a9a9a;font-size:12px;margin-bottom:6px">
-            <span>${escapeHtml(s.label)}</span><span>${s.val}%</span>
-          </div>
-          <div style="height:8px;background:#08080a;border:1px solid #1a1a20;border-radius:999px;overflow:hidden">
-            <div style="height:100%;width:${s.val}%;background:var(--gold)"></div>
-          </div>
-        </div>
-      `).join("") || `<div style="color:#777">Aucune stat.</div>`;
-
-      const lore = document.getElementById("lore-container");
-      lore.innerHTML = (profile().lore?.sections||[]).map(sec=>`
-        <div style="margin-bottom:18px">
-          <div class="card-title" style="margin-bottom:8px">${escapeHtml(sec.title)}</div>
-          <div style="color:#bbb;line-height:1.8">${escapeHtml(sec.text)}</div>
-        </div>
-      `).join("") || `<div style="color:#777">Aucune section.</div>`;
-
-      renderGoals();
-
-      const journal = document.getElementById("journal-input");
-      journal.value = profile().journal || "";
-      journal.oninput = ()=>{
-        if(!editUnlocked) return;
-        profile().journal = journal.value;
-        scheduleSave();
-      };
-
-      preloadMetaModal();
-      wireInlineFields();
-      setModeChip();
-      notify(editUnlocked ? "ÉDITION DÉVERROUILLÉE" : "LECTURE SEULE");
-    }
-
-    function wireInlineFields(){
-      document.querySelectorAll(".field[data-path]").forEach(el=>{
-        el.onblur = ()=>{
-          if(!editUnlocked) return;
-          const path = el.dataset.path;
-          setPath(profile(), path, el.innerHTML.trim());
-          scheduleSave();
-          notify("SAUVEGARDÉ");
-        };
-        el.onkeydown = (e)=>{
-          if(!editUnlocked) return;
-          if(e.key==="Enter"){ e.preventDefault(); el.blur(); }
-        };
-      });
-    }
-
-    function openUnlock(){
-      document.getElementById("unlockPin").value="";
-      openModal("modalUnlock");
-      setTimeout(()=>document.getElementById("unlockPin").focus(), 50);
-    }
-
-    function unlockEditing(){
-      const pin = (document.getElementById("unlockPin").value || "").trim();
-      const k = profile().key;
-
-      if(k==="harry"){
-        if(pin !== PIN_HARRY) return notify("PIN incorrect");
-      } else if(k==="seya"){
-        if(pin !== PIN_SEYA) return notify("PIN incorrect");
-      } else {
-        const expected = profile().pinHash || "";
-        if(expected){
-          if(simpleHash(pin) !== expected) return notify("PIN incorrect");
-        } else {
-          if(pin){
-            profile().pinHash = simpleHash(pin);
-            scheduleSave();
-            notify("PIN enregistré");
-          }
-        }
+      // contenteditable toggles
+      for(const id of ["fullName","age","role","psy"]){
+        const el = $(id);
+        el.contentEditable = unlocked ? "true" : "false";
       }
-      editUnlocked = true;
-      setProfileUnlocked(activeKey, 45);
-      closeModal("modalUnlock");
-      setModeChip();
-      notify("ÉDITION ACTIVÉE");
+      $("journal").readOnly = !unlocked;
+      $("img").disabled = !unlocked;
     }
 
-    function lockEditing(){
-      editUnlocked = false;
-      clearProfileUnlocked(activeKey);
-      setModeChip();
-      notify("ÉDITION VERROUILLÉE");
+    function hydrate(){
+      const p = state.profiles[activeKey];
+      $("sbName").textContent = (p.displayName || p.key) + " O.S";
+      $("activeName").textContent = (p.displayName || p.key);
+      $("ref").textContent = p.meta?.ref || "";
+
+      $("img").value = p.meta?.img || "";
+      $("imgPreview").src = p.meta?.img || "";
+      $("imgPreview").onerror = ()=> $("imgPreview").src = "https://via.placeholder.com/150/0a0a0c/333?text=IMG";
+
+      $("fullName").textContent = p.data?.fullName || "";
+      $("age").textContent = p.data?.age || "";
+      $("role").textContent = p.data?.role || "";
+      $("psy").textContent = p.data?.psy || "";
+      $("journal").value = p.data?.journal || "";
     }
 
-    function preloadMetaModal(){
-      document.getElementById("editSidebar").value = profile().meta?.sidebar || "";
-      document.getElementById("editRef").value = profile().meta?.refId || "";
-      document.getElementById("editPsyRef").value = profile().meta?.psyRef || "";
-      document.getElementById("editLoreRef").value = profile().meta?.loreRef || "";
-      document.getElementById("editImg").value = profile().meta?.img || "";
+    function commitField(path, value){
+      const p = state.profiles[activeKey];
+      if(path === "meta.img") p.meta.img = value;
+      if(path === "data.fullName") p.data.fullName = value;
+      if(path === "data.age") p.data.age = value;
+      if(path === "data.role") p.data.role = value;
+      if(path === "data.psy") p.data.psy = value;
+      if(path === "data.journal") p.data.journal = value;
+      saveState();
     }
 
-    function saveMeta(){
-      if(!editUnlocked) return notify("Déverrouille pour modifier");
-      profile().meta = profile().meta || {};
-      profile().meta.sidebar = document.getElementById("editSidebar").value.trim();
-      profile().meta.refId = document.getElementById("editRef").value.trim();
-      profile().meta.psyRef = document.getElementById("editPsyRef").value.trim();
-      profile().meta.loreRef = document.getElementById("editLoreRef").value.trim();
-      profile().meta.img = document.getElementById("editImg").value.trim();
-      scheduleSave();
-      closeModal("modalEditMeta");
-      hydrateUI();
-      notify("PROFIL MIS À JOUR");
-    }
-
-    // ✅ FIXED renderGoals (no invalid assignment)
-    function renderGoals(){
-      const container = document.getElementById("goal-container");
-      if(!container || !profile()) return;
-
-      const goals = profile().goals || [];
-      let htmlCourt = `<div class="card"><div class="card-title">Court terme</div>`;
-      let htmlLong  = `<div class="card"><div class="card-title">Long terme</div>`;
-
-      goals.forEach(g=>{
-        const item = `
-          <div style="display:flex; gap:10px; align-items:center; padding:10px; border:1px solid #1a1a20; background:#0a0a0d; border-radius:12px; margin-bottom:10px; opacity:${g.done?0.6:1}">
-            <button class="btn small" data-goal-toggle="${escapeAttr(g.id)}" ${editUnlocked?"":"disabled"}>
-              <i class="fa-solid ${g.done?'fa-square-check':'fa-square'}"></i>
-            </button>
-            <div style="flex:1; color:#bbb; ${g.done?'text-decoration:line-through':''}">${escapeHtml(g.text)}</div>
-            <button class="btn small danger" data-goal-del="${escapeAttr(g.id)}" ${editUnlocked?"":"disabled"}>
-              <i class="fa-solid fa-trash"></i>
-            </button>
-          </div>
-        `;
-
-        if (g.type === "court") {
-          htmlCourt += item;
-        } else {
-          htmlLong += item;
-        }
-      });
-
-      container.innerHTML = htmlCourt + `</div>` + htmlLong + `</div>`;
-
-      container.querySelectorAll("[data-goal-toggle]").forEach(btn=>{
-        btn.addEventListener("click", ()=>toggleGoal(btn.getAttribute("data-goal-toggle")));
-      });
-      container.querySelectorAll("[data-goal-del]").forEach(btn=>{
-        btn.addEventListener("click", ()=>deleteGoal(btn.getAttribute("data-goal-del")));
+    /************ Tabs ************/
+    function showTab(tab){
+      $("tab-identite").style.display = tab==="identite" ? "" : "none";
+      $("tab-psy").style.display = tab==="psy" ? "" : "none";
+      $("tab-journal").style.display = tab==="journal" ? "" : "none";
+      document.querySelectorAll(".sbBtn[data-tab]").forEach(b=>{
+        b.classList.toggle("active", b.dataset.tab === tab);
       });
     }
 
-    function addGoal(){
-      if(!editUnlocked) return notify("Déverrouille pour modifier");
-      const text = document.getElementById("goalInput").value.trim();
-      if(!text) return;
-      const type = document.getElementById("goalType").value;
-
-      profile().goals = profile().goals || [];
-      profile().goals.push({ id: uid(), text, type, done:false });
-
-      document.getElementById("goalInput").value="";
-      scheduleSave();
-      closeModal("modalGoal");
-      renderGoals();
-      notify("OBJECTIF AJOUTÉ");
-    }
-    function toggleGoal(id){
-      if(!editUnlocked) return;
-      profile().goals = (profile().goals||[]).map(g=> g.id===id ? ({...g, done:!g.done}) : g);
-      scheduleSave();
-      renderGoals();
-    }
-    function deleteGoal(id){
-      if(!editUnlocked) return;
-      profile().goals = (profile().goals||[]).filter(g=>g.id!==id);
-      scheduleSave();
-      renderGoals();
+    /************ Modals ************/
+    function modal(el, show){
+      el.classList.toggle("show", !!show);
     }
 
-    function openDuplicateModal(fromKey){
-      openModal("modalCreateProfile");
-      const base = state.profiles[fromKey];
-      document.getElementById("newDisplayName").value = (base?.displayName ? base.displayName + " Copy" : "Nouveau profil");
-      document.getElementById("newKey").value = slugify((base?.displayName || base?.key || "profil") + "-copy");
-      document.getElementById("newAvatar").value = base?.meta?.img || "";
-      document.getElementById("newPin").value = "";
-      document.getElementById("newDuplicateFrom").value = fromKey;
+    function openCreateModal(fromKey){
+      modal($("mCreate"), true);
+      const base = state.profiles[fromKey] || state.profiles.harry;
+      $("cName").value = (base.displayName || base.key) + " Copy";
+      $("cKey").value = slugify((base.displayName || base.key) + "-copy");
+      $("cImg").value = base.meta?.img || "";
+      $("cPin").value = "";
+      $("cFrom").value = fromKey;
     }
 
     function createProfile(){
-      const displayName = document.getElementById("newDisplayName").value.trim() || "Visiteur";
-      const keyRaw = document.getElementById("newKey").value.trim();
-      const key = slugify(keyRaw || displayName);
-      const avatar = document.getElementById("newAvatar").value.trim();
-      const pin = (document.getElementById("newPin").value || "").trim();
-      const from = document.getElementById("newDuplicateFrom").value;
+      const name = ($("cName").value || "").trim() || "Visiteur";
+      const key = slugify(($("cKey").value || "").trim() || name);
+      const img = ($("cImg").value || "").trim();
+      const pin = ($("cPin").value || "").trim();
+      const from = $("cFrom").value;
 
-      if(state.profiles[key]) return notify("Clé déjà utilisée. Change la clé.");
-
-      const base = state.profiles[from] ? clone(state.profiles[from]) : null;
-      const p = base ? base : {
-        key, public:false, displayName,
-        meta:{ sidebar: displayName.toUpperCase()+" O.S", refId:"", psyRef:"", loreRef:"", img:avatar },
-        identity:{ fullName: displayName, age:"", birthplace:"", origins:"", role:"", phys:"", sign:"", voice:"" },
-        psy:{ psy1:"", psy2:"" },
-        stats:[],
-        lore:{ sections:[] },
-        goals:[],
-        journal:""
-      };
-
-      p.key = key;
-      p.public = false;
-      p.displayName = displayName;
-      p.meta = p.meta || {};
-      p.meta.img = avatar || p.meta.img || "";
-      p.pinHash = pin ? simpleHash(pin) : (p.pinHash || "");
-
-      state.profiles[key] = p;
-      scheduleSave();
-      closeModal("modalCreateProfile");
-      renderLogin();
-      notify("PROFIL CRÉÉ");
-    }
-
-    function deleteProfile(key){
-      if(key==="harry" || key==="seya") return notify("Impossible");
-      if(!confirm("Supprimer ce profil (local navigateur) ?")) return;
-      delete state.profiles[key];
-      scheduleSave();
-      renderLogin();
-      notify("SUPPRIMÉ");
-    }
-
-    function exportProfile(){
-      if(!profile()) return;
-      const json = JSON.stringify(profile(), null, 2);
-      const blob = new Blob([json], {type:"application/json"});
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = `profil_${profile().key}_${new Date().toISOString().slice(0,10)}.json`;
-      a.click();
-      setTimeout(()=>URL.revokeObjectURL(a.href), 1200);
-      notify("EXPORT OK");
-    }
-
-    function importProfile(){
-      try{
-        const raw = document.getElementById("importJson").value.trim();
-        const obj = JSON.parse(raw);
-        if(!obj.key) throw new Error("JSON doit contenir .key");
-        state.profiles[obj.key] = obj;
-        scheduleSave();
-        closeModal("modalImportProfile");
-        renderLogin();
-        notify("IMPORT OK");
-      }catch(e){
-        alert("Import impossible: " + e.message);
+      if(state.profiles[key]){
+        toast("Clé déjà utilisée");
+        return;
       }
+      const base = state.profiles[from] ? structuredClone(state.profiles[from]) : structuredClone(state.profiles.harry);
+      base.key = key;
+      base.public = false;
+      base.displayName = name;
+      base.meta = base.meta || {ref:"", img:""};
+      base.meta.ref = base.meta.ref || "";
+      base.meta.img = img || base.meta.img || "";
+      base.pinHash = pin ? hashPin(pin) : "";
+      base.data = base.data || {fullName:"",age:"",role:"",psy:"",journal:""};
+      // reset journal for new profile
+      base.data.journal = "";
+
+      state.profiles[key] = base;
+      saveState();
+      modal($("mCreate"), false);
+      renderList();
+      toast("Profil créé");
     }
 
-    function deleteActiveProfile(){
-      if(!activeKey) return;
-      if(profile()?.public) return notify("Impossible (profil public)");
-      const k = activeKey;
-      closeModal("modalProfileTools");
-      logout();
-      deleteProfile(k);
+    function openUnlockModal(){
+      $("uPin").value = "";
+      modal($("mUnlock"), true);
+      setTimeout(()=> $("uPin").focus(), 50);
     }
 
-    function wire(){
-      document.getElementById("btn-open-create").addEventListener("click", ()=>openModal("modalCreateProfile"));
-      document.getElementById("btn-open-import").addEventListener("click", ()=>openModal("modalImportProfile"));
-      document.getElementById("btn-open-import-2").addEventListener("click", ()=>openModal("modalImportProfile"));
-      document.getElementById("btn-open-help").addEventListener("click", ()=>openModal("modalHelp"));
+    function unlock(){
+      const p = state.profiles[activeKey];
+      const pin = ($("uPin").value || "").trim();
 
-      document.getElementById("btn-logout").addEventListener("click", logout);
+      if(p.key==="harry" && pin !== PIN_HARRY) return toast("PIN incorrect");
+      if(p.key==="seya"  && pin !== PIN_SEYA)  return toast("PIN incorrect");
 
-      document.querySelectorAll(".nav-btn[data-tab]").forEach(btn=>{
-        btn.addEventListener("click", ()=>selectTab(btn.getAttribute("data-tab")));
+      if(p.key!=="harry" && p.key!=="seya"){
+        if(p.pinHash){
+          if(hashPin(pin) !== p.pinHash) return toast("PIN incorrect");
+        } else {
+          // allow setting pin on first unlock
+          if(pin){
+            p.pinHash = hashPin(pin);
+            saveState();
+            toast("PIN enregistré");
+          }
+        }
+      }
+
+      setUnlock(activeKey, 45);
+      modal($("mUnlock"), false);
+      setEditMode(true);
+      toast("Édition activée");
+    }
+
+    function lock(){
+      clearUnlock(activeKey);
+      setEditMode(false);
+      toast("Verrouillé");
+    }
+
+    /************ Wire events ************/
+    // Login actions
+    $("q").addEventListener("input", renderList);
+    $("openCreate").addEventListener("click", ()=> openCreateModal("harry"));
+    $("openHelp").addEventListener("click", ()=> modal($("mHelp"), true));
+
+    // Modals
+    $("cCancel").addEventListener("click", ()=> modal($("mCreate"), false));
+    $("cOk").addEventListener("click", createProfile);
+
+    $("uCancel").addEventListener("click", ()=> modal($("mUnlock"), false));
+    $("uOk").addEventListener("click", unlock);
+
+    $("hOk").addEventListener("click", ()=> modal($("mHelp"), false));
+
+    // App actions
+    $("back").addEventListener("click", backToLogin);
+    $("unlock").addEventListener("click", openUnlockModal);
+    $("lock").addEventListener("click", lock);
+
+    // Tabs
+    document.querySelectorAll(".sbBtn[data-tab]").forEach(btn=>{
+      btn.addEventListener("click", ()=> showTab(btn.dataset.tab));
+    });
+
+    // Editable fields -> autosave on blur
+    $("img").addEventListener("input", ()=>{
+      if(!unlocked) return;
+      $("imgPreview").src = $("img").value.trim();
+      commitField("meta.img", $("img").value.trim());
+    });
+
+    function saveEditable(divId, path){
+      const el = $(divId);
+      el.addEventListener("blur", ()=>{
+        if(!unlocked) return;
+        commitField(path, el.textContent.trim());
+        toast("Sauvegardé");
       });
-
-      document.getElementById("btn-unlock").addEventListener("click", openUnlock);
-      document.getElementById("btn-do-unlock").addEventListener("click", unlockEditing);
-      document.getElementById("btn-lock").addEventListener("click", lockEditing);
-
-      document.getElementById("btn-tools").addEventListener("click", ()=>openModal("modalProfileTools"));
-      document.getElementById("btn-edit-meta").addEventListener("click", ()=>openModal("modalEditMeta"));
-      document.getElementById("btn-save-meta").addEventListener("click", saveMeta);
-
-      document.getElementById("btn-open-goal").addEventListener("click", ()=>openModal("modalGoal"));
-      document.getElementById("btn-add-goal").addEventListener("click", addGoal);
-
-      document.getElementById("btn-do-create").addEventListener("click", createProfile);
-
-      document.getElementById("btn-export").addEventListener("click", exportProfile);
-      document.getElementById("btn-do-import").addEventListener("click", importProfile);
-      document.getElementById("btn-delete-active").addEventListener("click", deleteActiveProfile);
-
-      document.querySelectorAll("[data-close]").forEach(btn=>{
-        btn.addEventListener("click", ()=>closeModal(btn.getAttribute("data-close")));
-      });
-
-      document.getElementById("login-search").addEventListener("input", renderLogin);
-
-      document.addEventListener("keydown", (e)=>{
-        if(e.key==="/" && document.activeElement?.tagName!=="INPUT" && document.activeElement?.tagName!=="TEXTAREA"){
+      el.addEventListener("keydown", (e)=>{
+        if(!unlocked) return;
+        if(e.key==="Enter"){
           e.preventDefault();
-          document.getElementById("login-search")?.focus();
-        }
-        if(e.key==="Escape"){
-          document.querySelectorAll(".modal.active").forEach(m=>m.classList.remove("active"));
+          el.blur();
         }
       });
     }
+    saveEditable("fullName", "data.fullName");
+    saveEditable("age", "data.age");
+    saveEditable("role", "data.role");
+    saveEditable("psy", "data.psy");
 
-    wire();
-    renderLogin();
+    $("journal").addEventListener("input", ()=>{
+      if(!unlocked) return;
+      commitField("data.journal", $("journal").value);
+    });
+
+    // Keyboard
+    document.addEventListener("keydown", (e)=>{
+      if(e.key==="/" && document.activeElement?.tagName!=="INPUT" && document.activeElement?.tagName!=="TEXTAREA"){
+        e.preventDefault(); $("q").focus();
+      }
+      if(e.key==="Escape"){
+        modal($("mCreate"), false);
+        modal($("mUnlock"), false);
+        modal($("mHelp"), false);
+      }
+    });
+
+    // Init
+    updateStorageSize();
+    renderList();
+    showTab("identite");
   </script>
 </body>
 </html>
