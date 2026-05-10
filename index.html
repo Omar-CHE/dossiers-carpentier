@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>DOSSIERS — SST SYSTEM</title>
+  <title>GRANDLINE // PARIS RP — DOSSIERS</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Montserrat:wght@300;400;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -16,6 +16,7 @@
       --border:1px solid #1f1f26;
       --danger:#e74c3c; --ok:#2ecc71; --info:#3498db;
       --focus:0 0 0 3px rgba(212,175,55,.35);
+      --shadow: 0 40px 120px rgba(0,0,0,1);
     }
     *{box-sizing:border-box;margin:0;padding:0}
     body{
@@ -26,34 +27,11 @@
         radial-gradient(circle at 50% 0%, #111118 0%, #040406 75%),
         var(--bg);
     }
-    button, input{
-      font-family:inherit;
-    }
+    button, input, textarea, select{font-family:inherit}
     :focus-visible{outline:none;box-shadow:var(--focus);border-radius:12px}
     a{color:var(--gold)}
 
-    /* Layout */
-    .screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:20px}
-    .wrap{width:min(1200px, 98vw)}
-    .title{
-      font-family:"Playfair Display",serif;
-      color:var(--gold);
-      letter-spacing:5px;
-      font-size:46px;
-      text-align:center;
-      margin-bottom:10px;
-      text-shadow:0 10px 50px rgba(0,0,0,.8);
-    }
-    .subtitle{
-      font-family:"Share Tech Mono";
-      color:var(--muted);
-      text-align:center;
-      letter-spacing:2px;
-      font-size:13px;
-      margin-bottom:20px;
-    }
-
-    /* Buttons / Inputs */
+    /* ---------- GLOBAL UI ---------- */
     .btn{
       display:inline-flex; align-items:center; gap:10px;
       border-radius:14px;
@@ -62,16 +40,18 @@
       color:#ddd;
       padding:10px 14px;
       cursor:pointer;
-      font-weight:800;
+      font-weight:900;
       font-size:12px;
       letter-spacing:1px;
       text-transform:uppercase;
-      transition:.2s;
+      transition:.18s;
+      user-select:none;
     }
     .btn:hover{border-color:#4a4a55;color:#fff}
     .btn.primary{border-color:rgba(212,175,55,.9);background:var(--goldDim);color:var(--gold)}
     .btn.primary:hover{background:rgba(212,175,55,.20)}
     .btn.danger{border-color:rgba(231,76,60,.55);background:rgba(231,76,60,.08);color:#ffbdb7}
+    .btn.small{padding:8px 10px;font-size:11px;border-radius:12px}
     .btn:disabled{opacity:.45;cursor:not-allowed}
     .input{
       width:100%;
@@ -83,13 +63,86 @@
       font-family:"Share Tech Mono";
       font-size:12px;
     }
+    .chip{
+      display:inline-flex; align-items:center; gap:10px;
+      font-family:"Share Tech Mono";
+      font-size:11px;
+      padding:6px 10px;
+      border-radius:999px;
+      background:#0a0a0d;
+      border:1px solid #1a1a20;
+      color:#bbb;
+      user-select:none;
+    }
+    .chip.ro{border-color:rgba(52,152,219,.25); color:#b7e2ff}
+    .chip.edit{border-color:rgba(212,175,55,.28); color:#ffe7a1}
+    .chip.ok{border-color:rgba(46,204,113,.22); color:#c7f6d7}
+    .chip.warn{border-color:rgba(231,76,60,.22); color:#ffd0cb}
+    .kbd{font-family:"Share Tech Mono";font-size:11px;color:#999;border:1px solid #2a2a33;border-bottom-width:3px;border-radius:8px;padding:2px 8px;background:#0a0a0d}
+    .muted{color:var(--muted)}
 
-    /* Login list */
+    /* ---------- LANDING ---------- */
+    #landing{
+      position:fixed; inset:0;
+      display:flex; align-items:center; justify-content:center;
+      padding:22px;
+      overflow:auto;
+    }
+    .landingWrap{width:min(1280px, 98vw)}
+    .hero{
+      border:1px solid #1f1f26;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(212,175,55,.09), transparent 55%),
+        linear-gradient(180deg, rgba(20,20,26,.9), rgba(12,12,16,.88));
+      border-radius:22px;
+      padding:22px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      position:relative;
+    }
+    .hero::before{
+      content:"";
+      position:absolute; inset:-2px;
+      background:
+        radial-gradient(circle at 10% 10%, rgba(52,152,219,.10), transparent 40%),
+        radial-gradient(circle at 90% 20%, rgba(46,204,113,.08), transparent 45%),
+        radial-gradient(circle at 50% 90%, rgba(212,175,55,.12), transparent 45%);
+      pointer-events:none;
+      filter: blur(10px);
+      opacity:.9;
+    }
+    .heroInner{position:relative}
+    .heroTop{
+      display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; align-items:flex-start;
+      margin-bottom:18px;
+    }
+    .brand{
+      display:flex; flex-direction:column; gap:10px;
+    }
+    .brandTitle{
+      font-family:"Playfair Display",serif;
+      color:var(--gold);
+      letter-spacing:6px;
+      font-size:44px;
+      text-shadow:0 10px 50px rgba(0,0,0,.8);
+    }
+    .brandSub{
+      font-family:"Share Tech Mono";
+      color:#a1a1a1;
+      letter-spacing:2px;
+      font-size:12px;
+      line-height:1.6;
+    }
+
+    .heroActions{display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:flex-end}
+    .statusRow{display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:flex-end}
+
     .toolbar{
-      display:flex;gap:10px;flex-wrap:wrap;justify-content:center;
-      margin-bottom:16px;
+      display:flex; gap:10px; flex-wrap:wrap; justify-content:space-between; align-items:center;
+      margin:16px 0 12px;
     }
     .search{
+      flex:1;
       display:flex; align-items:center; gap:10px;
       border:1px solid #1a1a20; background:#0a0a0d;
       padding:10px 14px;border-radius:999px;
@@ -98,21 +151,23 @@
     .search input{border:none;background:transparent;color:#ddd;flex:1;font-family:"Share Tech Mono";font-size:12px}
     .grid{
       display:grid;
-      grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));
+      grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));
       gap:16px;
     }
     .card{
       border:1px solid #1f1f26;
       background:linear-gradient(180deg, rgba(20,20,26,.95), rgba(12,12,16,.9));
-      border-radius:16px;
+      border-radius:18px;
       padding:16px;
-      transition:.2s;
+      transition:.18s;
+      position:relative;
+      overflow:hidden;
     }
     .card:hover{border-color:rgba(212,175,55,.65); transform:translateY(-3px); box-shadow:0 18px 40px rgba(0,0,0,.6)}
     .row{display:flex; gap:12px; align-items:center}
-    .avatar{width:64px;height:64px;border-radius:50%;background:#000;border:2px solid #26262f;overflow:hidden;flex-shrink:0}
+    .avatar{width:70px;height:70px;border-radius:50%;background:#000;border:2px solid #26262f;overflow:hidden;flex-shrink:0}
     .avatar img{width:100%;height:100%;object-fit:cover}
-    .name{font-weight:900;color:#fff;font-size:16px}
+    .name{font-weight:900;color:#fff;font-size:16px;letter-spacing:.8px}
     .role{color:var(--muted);font-size:12px;line-height:1.4;margin-top:4px}
     .badges{display:flex; gap:8px; margin-top:10px; flex-wrap:wrap}
     .badge{
@@ -123,13 +178,15 @@
       background:#0a0a0d;
       border:1px solid #25252f;
       color:#bbb;
+      user-select:none;
     }
     .badge.public{border-color:rgba(52,152,219,.28); color:#b7e2ff}
     .badge.local{border-color:rgba(46,204,113,.22); color:#c7f6d7}
     .badge.pin{border-color:rgba(231,76,60,.22); color:#ffd0cb}
+    .badge.cloud{border-color:rgba(212,175,55,.22); color:#ffe7a1}
     .actions{display:flex; gap:10px; margin-top:12px; flex-wrap:wrap}
 
-    /* App */
+    /* ---------- APP SHELL ---------- */
     #app{display:none}
     .appShell{
       position:fixed; inset:0;
@@ -140,13 +197,13 @@
       width:100%;
       border:1px solid #1f1f26;
       background:rgba(12,12,16,.92);
-      border-radius:16px;
+      border-radius:18px;
       overflow:hidden;
       display:flex;
-      box-shadow:0 40px 110px rgba(0,0,0,1);
+      box-shadow:var(--shadow);
     }
     .sidebar{
-      width:300px;
+      width:320px;
       background:#07070a;
       border-right:1px solid #1f1f26;
       display:flex; flex-direction:column;
@@ -161,13 +218,16 @@
       color:var(--gold);
       letter-spacing:2px;
       font-size:20px;
+      margin-bottom:8px;
     }
     .sbHead p{
-      margin-top:8px;
       font-family:"Share Tech Mono";
       color:var(--muted);
       letter-spacing:3px;
       font-size:9px;
+    }
+    .sbMeta{
+      display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:12px;
     }
     .sbBtn{
       border:none;
@@ -185,7 +245,7 @@
     }
     .sbBtn:hover{background:rgba(255,255,255,.03); color:var(--text)}
     .sbBtn.active{background:linear-gradient(90deg,var(--goldDim),transparent); color:var(--gold); border-left:3px solid var(--gold)}
-    .sbBottom{margin-top:auto; border-top:1px solid #1f1f26}
+    .sbBottom{margin-top:auto; border-top:1px solid #1f1f26; padding-top:8px}
     .sbBtn.logout{color:#ffbdb7}
     .sbBtn.logout:hover{background:rgba(231,76,60,.10); color:#ffe1de}
 
@@ -203,20 +263,6 @@
       backdrop-filter: blur(10px);
       display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;
     }
-    .chip{
-      display:inline-flex; align-items:center; gap:10px;
-      font-family:"Share Tech Mono";
-      font-size:11px;
-      padding:6px 10px;
-      border-radius:999px;
-      background:#0a0a0d;
-      border:1px solid #1a1a20;
-      color:#bbb;
-    }
-    .chip.ro{border-color:rgba(52,152,219,.25); color:#b7e2ff}
-    .chip.edit{border-color:rgba(212,175,55,.28); color:#ffe7a1}
-    .chip.ok{border-color:rgba(46,204,113,.22); color:#c7f6d7}
-
     .sectionTitle{
       font-family:"Playfair Display",serif;
       font-size:40px;
@@ -226,36 +272,81 @@
       display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;
     }
     .ref{font-family:"Share Tech Mono"; font-size:13px; color:rgba(212,175,55,.8); opacity:.8}
-    .panel{border:1px solid #1f1f26; background:rgba(20,20,26,.92); border-radius:16px; padding:18px; margin-bottom:14px}
+    .panel{border:1px solid #1f1f26; background:rgba(20,20,26,.92); border-radius:18px; padding:18px; margin-bottom:14px}
     .grid2{display:grid; grid-template-columns:1fr 1fr; gap:14px}
-    @media (max-width: 1000px){ .grid2{grid-template-columns:1fr} .sidebar{width:260px} .main{padding:18px} .topbar{margin:-18px -18px 14px; padding:12px 18px} }
+    .grid3{display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:14px}
+    @media (max-width: 1100px){
+      .grid2{grid-template-columns:1fr}
+      .sidebar{width:270px}
+      .main{padding:18px}
+      .topbar{margin:-18px -18px 14px; padding:12px 18px}
+      .search{min-width:unset}
+    }
 
     .fieldLabel{color:#9a9a9a; font-size:12px; margin-bottom:8px}
     .editable{
-      padding:8px 10px;
-      border-radius:14px;
+      padding:10px 12px;
+      border-radius:16px;
       border:1px dashed transparent;
-      min-height: 40px;
-      line-height:1.6;
+      min-height: 44px;
+      line-height:1.7;
       color:#ddd;
+      background:rgba(10,10,13,.35);
     }
     body.edit .editable{border-color:#2a2a33; cursor:text}
     body.edit .editable:focus{background:#0a0a0d; border-color:rgba(212,175,55,.7); outline:none}
+
+    /* Toggles / switches */
+    .toggleRow{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .switch{display:inline-flex;align-items:center;gap:10px}
+    .switch input{width:18px;height:18px}
+
+    /* Stats bars */
+    .stat{margin-bottom:12px}
+    .statTop{display:flex;justify-content:space-between;gap:10px;color:#a6a6a6;font-size:12px;margin-bottom:6px}
+    .bar{height:8px;border-radius:999px;background:#08080a;border:1px solid #1a1a20;overflow:hidden}
+    .fill{height:100%;background:var(--gold)}
+
+    /* Timeline */
+    .timelineItem{border:1px solid #1f1f26;background:#0a0a0d;border-radius:16px;padding:14px}
+    .tlHead{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+    .tagRow{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+    .tag{font-family:"Share Tech Mono";font-size:11px;padding:4px 10px;border-radius:999px;border:1px solid #2a2a33;background:#07070a;color:#bbb}
+
+    /* Roulette */
+    .result{
+      font-family:"Share Tech Mono";
+      background:#000;
+      border:1px solid #222;
+      border-radius:18px;
+      padding:18px;
+      min-height:90px;
+      display:flex;align-items:center;justify-content:center;
+      color:var(--gold);
+      font-size:22px;
+      text-transform:uppercase;
+    }
+    .spin{animation:glitch .08s infinite}
+    @keyframes glitch{from{transform:translate(2px,0)}to{transform:translate(-2px,0)}}
+
+    /* Canvas */
+    .canvasWrap{border:1px solid #1f1f26;background:#0a0a0d;border-radius:18px;overflow:hidden}
+    canvas{display:block;width:100%;height:420px;touch-action:none}
 
     /* Modal */
     .modal{display:none; position:fixed; inset:0; background:rgba(0,0,0,.88); backdrop-filter: blur(8px); z-index:50; padding:18px; align-items:center; justify-content:center}
     .modal.show{display:flex}
     .modalBox{
-      width:min(760px, 98vw);
+      width:min(860px, 98vw);
       border:1px solid rgba(212,175,55,.65);
       background:rgba(20,20,26,.97);
-      border-radius:16px;
+      border-radius:18px;
       padding:18px;
     }
     .modalBox h3{font-family:"Playfair Display",serif; color:var(--gold); font-size:24px; margin-bottom:10px}
     .formGrid{display:grid; grid-template-columns:1fr 1fr; gap:12px}
     .formGroup label{display:block; color:#888; font-size:11px; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px}
-    .formGroup textarea{min-height:100px; resize:vertical}
+    .formGroup textarea{min-height:120px; resize:vertical}
     .modalActions{display:flex; justify-content:flex-end; gap:10px; margin-top:12px; flex-wrap:wrap}
 
     /* Toast */
@@ -272,65 +363,84 @@
     #toast.show{transform:translateX(-50%) translateY(0); opacity:1}
 
     /* Debug indicator */
-    #js-ok{
+    #cloud{
       position:fixed; top:14px; right:14px; z-index:999;
       font-family:"Share Tech Mono";
       font-size:11px;
       padding:8px 10px;
       border-radius:999px;
       background:#0a0a0d;
-      border:1px solid rgba(46,204,113,.35);
-      color:#c7f6d7;
-      display:none;
+      border:1px solid #2a2a33;
+      color:#bbb;
     }
-    #js-ok.show{display:block}
   </style>
 </head>
-<body>
 
-  <div id="js-ok">JS OK</div>
+<body>
+  <div id="cloud">CLOUD: <span id="cloudState">OFF</span></div>
   <div id="toast">OK</div>
 
-  <!-- LOGIN SCREEN -->
-  <div id="login" class="screen">
-    <div class="wrap">
-      <div class="title">DOSSIERS</div>
-      <div class="subtitle">LECTURE PUBLIQUE // ÉDITION VERROUILLÉE PAR PIN</div>
+  <!-- LANDING -->
+  <section id="landing">
+    <div class="landingWrap">
+      <div class="hero">
+        <div class="heroInner">
+          <div class="heroTop">
+            <div class="brand">
+              <div class="brandTitle">GRANDLINE</div>
+              <div class="brandSub">
+                PARIS RP // DOSSIERS PERSONNAGES<br>
+                lecture publique — édition verrouillée par PIN — synchro cloud
+              </div>
+            </div>
 
-      <div class="toolbar">
-        <div class="search">
-          <i class="fa-solid fa-magnifying-glass" style="color:#666"></i>
-          <input id="q" placeholder="Rechercher un profil (nom, rôle...)" />
-          <span style="font-family:'Share Tech Mono';color:#666;font-size:11px;border:1px solid #2a2a33;border-bottom-width:3px;border-radius:8px;padding:2px 8px;background:#0a0a0d">/</span>
+            <div class="heroActions">
+              <div class="statusRow">
+                <span class="chip ok" id="netChip"><i class="fa-solid fa-satellite-dish"></i> Online</span>
+                <span class="chip" id="viewerChip"><i class="fa-solid fa-eye"></i> Visiteur</span>
+              </div>
+              <button class="btn primary" id="btnCreate"><i class="fa-solid fa-user-plus"></i> Créer mon perso</button>
+              <button class="btn" id="btnHelp"><i class="fa-solid fa-circle-info"></i> Aide</button>
+            </div>
+          </div>
+
+          <div class="toolbar">
+            <div class="search" title="Recherche (/)">
+              <i class="fa-solid fa-magnifying-glass" style="color:#666"></i>
+              <input id="q" placeholder="Rechercher un dossier (nom, rôle, tags…)" />
+              <span class="kbd">/</span>
+            </div>
+            <span class="chip"><i class="fa-solid fa-database"></i> <span id="storage">...</span></span>
+          </div>
+
+          <div class="grid" id="list"></div>
+
+          <div style="margin-top:14px;color:#777;font-size:12px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">
+            <div><span class="kbd">Tip</span> Ouvre un perso en lecture. Déverrouille pour modifier.</div>
+            <div><span class="kbd">Note</span> Les onglets peuvent être publics/privés selon le perso.</div>
+          </div>
         </div>
-        <button class="btn primary" id="openCreate"><i class="fa-solid fa-user-plus"></i> Créer profil</button>
-        <button class="btn" id="openHelp"><i class="fa-solid fa-circle-info"></i> Aide</button>
-      </div>
-
-      <div class="grid" id="list"></div>
-
-      <div style="margin-top:14px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;color:#777;font-size:12px">
-        <div><span style="font-family:'Share Tech Mono';border:1px solid #2a2a33;border-bottom-width:3px;border-radius:8px;padding:2px 8px;background:#0a0a0d;color:#999">Tip</span> Clique un profil pour lire. Déverrouille pour éditer.</div>
-        <div id="storage"></div>
       </div>
     </div>
-  </div>
+  </section>
 
   <!-- APP -->
-  <div id="app" class="appShell">
+  <section id="app" class="appShell">
     <div class="app">
       <aside class="sidebar">
         <div class="sbHead">
           <h2 id="sbName">DOSSIER</h2>
-          <p>v6.0 // STABLE BUILD</p>
+          <p>v7.0 // GRANDLINE FILESYSTEM</p>
+          <div class="sbMeta">
+            <span class="chip"><i class="fa-solid fa-fingerprint"></i> <span id="sbRef">—</span></span>
+            <span class="chip" id="sbPublic"><i class="fa-solid fa-globe"></i> Public</span>
+          </div>
         </div>
 
-        <button class="sbBtn active" data-tab="identite"><i class="fa-solid fa-id-card"></i> Identité</button>
-        <button class="sbBtn" data-tab="psy"><i class="fa-solid fa-brain"></i> Psycho</button>
-        <button class="sbBtn" data-tab="journal"><i class="fa-solid fa-keyboard"></i> Journal</button>
+        <div id="tabsNav"></div>
 
         <div class="sbBottom">
-          <button class="sbBtn logout" id="back"><i class="fa-solid fa-power-off"></i> Retour profils</button>
+          <button class="sbBtn logout" id="back"><i class="fa-solid fa-power-off"></i> Retour accueil</button>
         </div>
       </aside>
 
@@ -339,81 +449,27 @@
           <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
             <span class="chip ro" id="modeChip"><i class="fa-solid fa-eye"></i> LECTURE</span>
             <span class="chip"><i class="fa-solid fa-user"></i> <span id="activeName"></span></span>
-            <span class="chip ok"><i class="fa-solid fa-cloud"></i> localStorage</span>
+            <span class="chip ok"><i class="fa-solid fa-cloud"></i> Firebase</span>
+            <span class="chip" id="saveChip"><i class="fa-solid fa-floppy-disk"></i> Idle</span>
           </div>
           <div style="display:flex;gap:10px;flex-wrap:wrap">
             <button class="btn small primary" id="unlock"><i class="fa-solid fa-lock"></i> Déverrouiller</button>
             <button class="btn small" id="lock"><i class="fa-solid fa-lock-open"></i> Verrouiller</button>
+            <button class="btn small" id="tools"><i class="fa-solid fa-screwdriver-wrench"></i> Outils</button>
           </div>
         </div>
 
-        <section id="tab-identite">
-          <div class="sectionTitle">
-            <span>Identité</span>
-            <span class="ref" id="ref"></span>
-          </div>
-
-          <div class="grid2">
-            <div class="panel">
-              <div class="fieldLabel">Photo (URL ou fichier)</div>
-              <input id="img" class="input" placeholder="photo.png ou https://..." />
-              <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
-                <div class="avatar" style="width:90px;height:90px">
-                  <img id="imgPreview" alt="preview">
-                </div>
-                <div style="color:#888;font-size:12px;line-height:1.6">
-                  Aperçu. Si image cassée, tu peux corriger l’URL.
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <div class="panel">
-                <div class="fieldLabel">Nom complet</div>
-                <div id="fullName" class="editable" contenteditable="false"></div>
-              </div>
-              <div class="panel">
-                <div class="fieldLabel">Âge</div>
-                <div id="age" class="editable" contenteditable="false"></div>
-              </div>
-              <div class="panel">
-                <div class="fieldLabel">Rôle</div>
-                <div id="role" class="editable" contenteditable="false"></div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section id="tab-psy" style="display:none">
-          <div class="sectionTitle">
-            <span>Psycho</span>
-            <span class="ref">editable</span>
-          </div>
-          <div class="panel">
-            <div class="fieldLabel">Description</div>
-            <div id="psy" class="editable" contenteditable="false"></div>
-          </div>
-        </section>
-
-        <section id="tab-journal" style="display:none">
-          <div class="sectionTitle">
-            <span>Journal</span>
-            <span class="ref">autosave</span>
-          </div>
-          <div class="panel" style="padding:0;background:transparent;border:none">
-            <textarea id="journal" class="input" style="height:56vh; font-family:Montserrat; font-size:15px; line-height:1.8; padding:16px; border-radius:16px" placeholder="Cher journal..." readonly></textarea>
-          </div>
-        </section>
+        <div id="tabContent"></div>
       </main>
     </div>
-  </div>
+  </section>
 
   <!-- MODALS -->
   <div class="modal" id="mCreate">
     <div class="modalBox">
-      <h3>Créer un profil (visiteur)</h3>
-      <p style="color:#bbb;line-height:1.6;margin-bottom:12px">
-        Profil stocké dans ton navigateur. Optionnel : ajoute un PIN pour protéger l’édition.
+      <h3>Créer un dossier personnage</h3>
+      <p class="muted" style="line-height:1.6;margin-bottom:12px">
+        Ce perso sera synchronisé dans le cloud (Firebase). Tu définis un PIN pour l’édition.
       </p>
 
       <div class="formGrid">
@@ -422,15 +478,15 @@
           <input id="cName" class="input" placeholder="Ex: Omar">
         </div>
         <div class="formGroup">
-          <label>Clé (unique)</label>
-          <input id="cKey" class="input" placeholder="ex: omar">
+          <label>Clé (unique / id)</label>
+          <input id="cKey" class="input" placeholder="ex: omar-che">
         </div>
         <div class="formGroup" style="grid-column:1/-1">
-          <label>Avatar URL (optionnel)</label>
+          <label>Avatar (URL / fichier)</label>
           <input id="cImg" class="input" placeholder="https://... ou avatar.png">
         </div>
         <div class="formGroup">
-          <label>PIN (optionnel)</label>
+          <label>PIN (4-8 chiffres)</label>
           <input id="cPin" class="input" inputmode="numeric" placeholder="1234">
         </div>
         <div class="formGroup">
@@ -449,8 +505,8 @@
   <div class="modal" id="mUnlock">
     <div class="modalBox">
       <h3>Déverrouiller l’édition</h3>
-      <p style="color:#bbb;line-height:1.6;margin-bottom:12px">
-        Entre le PIN de ce profil. (Harry et Seya ont un PIN fixe.)
+      <p class="muted" style="line-height:1.6;margin-bottom:12px">
+        Entre le PIN pour éditer ce dossier (la lecture reste publique).
       </p>
       <div class="formGrid">
         <div class="formGroup" style="grid-column:1/-1">
@@ -465,14 +521,62 @@
     </div>
   </div>
 
+  <div class="modal" id="mTools">
+    <div class="modalBox">
+      <h3>Outils</h3>
+
+      <div class="panel">
+        <div class="toggleRow">
+          <div>
+            <div style="font-weight:900">Export / Import</div>
+            <div class="muted" style="font-size:12px;line-height:1.6">Backup JSON de ce profil (utile si tu changes de cloud ou pour debug).</div>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn" id="export"><i class="fa-solid fa-file-export"></i> Export</button>
+            <button class="btn" id="importOpen"><i class="fa-solid fa-file-import"></i> Import</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="toggleRow">
+          <div>
+            <div style="font-weight:900">Mode impression “Dossier Marine”</div>
+            <div class="muted" style="font-size:12px;line-height:1.6">Génère une page imprimable (PDF via “Imprimer” du navigateur).</div>
+          </div>
+          <button class="btn primary" id="print"><i class="fa-solid fa-print"></i> Imprimer</button>
+        </div>
+      </div>
+
+      <div class="modalActions">
+        <button class="btn primary" id="tClose">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="mImport">
+    <div class="modalBox">
+      <h3>Importer JSON (écrase ce profil)</h3>
+      <div class="formGroup">
+        <label>JSON</label>
+        <textarea id="importJson" class="input"></textarea>
+      </div>
+      <div class="modalActions">
+        <button class="btn" id="iCancel">Annuler</button>
+        <button class="btn primary" id="iOk"><i class="fa-solid fa-file-import"></i> Importer</button>
+      </div>
+    </div>
+  </div>
+
   <div class="modal" id="mHelp">
     <div class="modalBox">
       <h3>Aide</h3>
       <div class="panel" style="margin:0">
-        <div style="color:#bbb;line-height:1.8">
-          - Tout le monde peut lire les profils.<br>
-          - Pour modifier: Déverrouiller → PIN.<br>
-          - Les profils visiteurs sont locaux au navigateur.
+        <div style="color:#bbb;line-height:1.85">
+          - Les profils sont <strong>publics en lecture</strong>.<br>
+          - Pour <strong>modifier</strong> : bouton Déverrouiller + PIN.<br>
+          - Chaque onglet peut être public/privé (config par le propriétaire).<br>
+          - Les 3 onglets “Custom” permettent d’écrire, dessiner et créer des tableaux pour ton RP.
         </div>
       </div>
       <div class="modalActions">
@@ -481,25 +585,40 @@
     </div>
   </div>
 
-  <script>
-    // Hard indicator that JS is running
-    document.getElementById("js-ok").classList.add("show");
+  <!-- Firebase (modules) -->
+  <script type="module">
+    /******************************************************************
+     * 0) Firebase imports
+     ******************************************************************/
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
+    import {
+      getFirestore, doc, setDoc, getDoc, onSnapshot, collection,
+      query, orderBy, limit, getDocs, updateDoc
+    } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+    import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
 
-    /************ CONFIG PINS ************/
-    const PIN_HARRY = "15122004";
-    const PIN_SEYA  = "11111110";
-
-    /************ Storage ************/
-    const NS = "dossiers:v6";
-    const SESSION = "dossiers:v6:unlock";
-
+    /******************************************************************
+     * 1) Firebase config — YOU MUST FILL THIS
+     ******************************************************************/
+    const firebaseConfig = {
+  apiKey: "AIzaSyDgXHDBR8mN9OLXtv8syODzatGFFs7E5js",
+  authDomain: "grandline-parisrp.firebaseapp.com",
+  projectId: "grandline-parisrp",
+  storageBucket: "grandline-parisrp.firebasestorage.app",
+  messagingSenderId: "534184720773",
+  appId: "1:534184720773:web:67e5d5c21e4db0cfc06cec",
+  measurementId: "G-2SD0NEHV3Q"
+};
+    /******************************************************************
+     * 2) Basic utils
+     ******************************************************************/
     const $ = (id)=>document.getElementById(id);
 
     function toast(msg){
       const t = $("toast");
       t.textContent = msg;
       t.classList.add("show");
-      setTimeout(()=>t.classList.remove("show"), 1500);
+      setTimeout(()=>t.classList.remove("show"), 1600);
     }
 
     function safeJsonParse(raw, fallback){
@@ -512,7 +631,7 @@
     }
 
     function hashPin(pin){
-      // DJB2 simple (not security, just not storing raw)
+      // Not cryptographically secure; used only to avoid storing raw PIN.
       let h = 5381;
       for(let i=0;i<pin.length;i++) h = ((h<<5)+h) + pin.charCodeAt(i);
       return "h" + (h>>>0).toString(16);
@@ -524,95 +643,312 @@
         .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
         .replace(/[^a-z0-9]+/g,"-")
         .replace(/(^-|-$)/g,"")
-        .slice(0, 24) || ("user-"+Math.floor(Math.random()*9999));
+        .slice(0, 32) || ("user-"+Math.floor(Math.random()*9999));
     }
 
-    const defaults = {
-      version: 6,
-      profiles: {
-        harry: {
-          key:"harry", displayName:"HARRY", public:true,
-          meta:{ ref:"HC-151204", img:"photo harry.png" }, // <- CHANGE IMAGE HERE
-          pinHash:"",
-          data:{ fullName:"CARPENTIER Harry", age:"21 ans (15/12/2004)", role:"Chef de famille (précaire) / Faux Caïd", psy:"Chihuahua: aboie fort, fuit quand ça chauffe.", journal:"" }
-        },
-        seya: {
-          key:"seya", displayName:"SEYA", public:true,
-          meta:{ ref:"SC-19", img:"photo seya.png" }, // <- CHANGE IMAGE HERE
-          pinHash:"",
-          data:{ fullName:"CARPENTIER Seya", age:"19 ans", role:"Petite sœur surprotégée", psy:"Spontanée, jalouse, très attachée à Harry.", journal:"" }
-        }
+    function deepGet(obj, path){
+      return path.split(".").reduce((a,k)=>a?.[k], obj);
+    }
+    function deepSet(obj, path, value){
+      const parts = path.split(".");
+      let cur = obj;
+      for(let i=0;i<parts.length-1;i++){
+        const k = parts[i];
+        if(typeof cur[k] !== "object" || cur[k]===null) cur[k] = {};
+        cur = cur[k];
       }
+      cur[parts[parts.length-1]] = value;
+    }
+
+    /******************************************************************
+     * 3) Profiles schema (cloud)
+     ******************************************************************/
+    const PIN_HARRY = "15122004";
+    const PIN_SEYA  = "11111110";
+
+    const defaultProfile = (key, name)=>({
+      key,
+      displayName: name,
+      public: true,
+      meta: {
+        ref: "",
+        img: "",
+        tags: ["GRANDLINE", "PARIS RP"]
+      },
+      security: {
+        pinHash: "", // for visitors
+        fixedPin: false // for harry/seya
+      },
+      tabs: [
+        // 7 base tabs
+        { id:"identite", type:"identite", title:"Identité", icon:"fa-id-card", visiblePublic:true, enabled:true },
+        { id:"stats", type:"stats", title:"Stats", icon:"fa-chart-simple", visiblePublic:true, enabled:true },
+        { id:"lore", type:"lore", title:"Histoire", icon:"fa-scroll", visiblePublic:true, enabled:true },
+        { id:"goals", type:"goals", title:"Objectifs", icon:"fa-bullseye", visiblePublic:true, enabled:true },
+        { id:"roulette", type:"roulette", title:"Roulette", icon:"fa-dice", visiblePublic:true, enabled:true },
+        { id:"timeline", type:"timeline", title:"Timeline", icon:"fa-timeline", visiblePublic:true, enabled:true },
+        { id:"relations", type:"relations", title:"Relations", icon:"fa-users", visiblePublic:true, enabled:true },
+        // 3 custom tabs
+        { id:"custom1", type:"custom_note", title:"Carnet", icon:"fa-feather", visiblePublic:false, enabled:true },
+        { id:"custom2", type:"custom_canvas", title:"Dessin", icon:"fa-pen-nib", visiblePublic:false, enabled:true },
+        { id:"custom3", type:"custom_board", title:"Tableau", icon:"fa-table-columns", visiblePublic:false, enabled:true }
+      ],
+      data: {
+        identite: {
+          fullName: name,
+          age: "",
+          birthdate: "",
+          birthplace: "",
+          origins: "",
+          role: "",
+          faction: "GRANDLINE",
+          voice: "",
+          phys: "",
+          sign: ""
+        },
+        stats: [
+          { id:uid(), label:"Courage", val:50 },
+          { id:uid(), label:"Charisme", val:50 },
+          { id:uid(), label:"Endurance", val:50 }
+        ],
+        lore: {
+          sections: []
+        },
+        goals: {
+          court: [],
+          long: []
+        },
+        roulette: {
+          options: [],
+          history: []
+        },
+        timeline: {
+          events: []
+        },
+        relations: {
+          nodes: [], // can be used for graph later
+          list: []
+        },
+        custom_note: { html:"<p>Écris ton lore, tes scènes, tes secrets…</p>" },
+        custom_canvas: { strokes:[], background:"#0a0a0d" },
+        custom_board: { columns:[
+          { id:uid(), title:"À faire", cards:[] },
+          { id:uid(), title:"En cours", cards:[] },
+          { id:uid(), title:"Fait", cards:[] }
+        ]}
+      },
+      updatedAt: Date.now()
+    });
+
+    const harryProfile = ()=>{
+      const p = defaultProfile("harry", "HARRY");
+      p.public = true;
+      p.meta.ref = "HC-151204";
+      p.meta.img = "photo harry.png"; // change here
+      p.security.fixedPin = true;
+      p.data.identite = {
+        fullName:"CARPENTIER Harry",
+        age:"21 ans",
+        birthdate:"2004-12-15",
+        birthplace:"Paris 19ème (Hôpital Robert Debré)",
+        origins:"Franco-Algérien",
+        role:"Chef de famille (précaire) / Faux Caïd",
+        faction:"PARIS RP",
+        voice:"Voix très aiguë, zéro virilité.",
+        phys:"1m75 (plutôt frêle)",
+        sign:"Moustache taillée (pour paraître plus vieux)."
+      };
+      p.data.stats = [
+        { id:uid(), label:"Courage (Froid & Calculé)", val:5 },
+        { id:uid(), label:"Survie / Instinct", val:95 },
+        { id:uid(), label:"Sincérité (panique)", val:100 },
+        { id:uid(), label:"Dévouement (Seya)", val:100 }
+      ];
+      p.data.lore.sections = [
+        { id:uid(), title:"Les Origines : Le 19ème", text:"Harry est né et a grandi dans les barres d'HLM du 19ème arrondissement de Paris. Son père a disparu, sa mère Myriam s'est tuée à la tâche.", date:"" },
+        { id:uid(), title:"Le Drame de Seya", text:"À la naissance de Seya, une anoxie lui laisse un retard mental. Harry s’est retrouvé propulsé protecteur à temps plein.", date:"" },
+        { id:uid(), title:"Arrivée dans PARIS RP", text:"Après la mort de Myriam et la menace d’expulsion, Harry part dans la ville — pas pour conquérir… mais pour survivre.", date:"" }
+      ];
+      p.data.roulette.options = [
+        { id:uid(), text:"Fuir en hurlant", weight:2 },
+        { id:uid(), text:"Tout avouer par panique", weight:3 },
+        { id:uid(), text:"Se donner un rôle de caïd", weight:2 },
+        { id:uid(), text:"Appeler Seya", weight:1 }
+      ];
+      return p;
     };
 
-    function loadState(){
-      const raw = localStorage.getItem(NS);
-      if(!raw){
-        localStorage.setItem(NS, JSON.stringify(defaults));
-        return structuredClone ? structuredClone(defaults) : safeJsonParse(JSON.stringify(defaults), defaults);
+    const seyaProfile = ()=>{
+      const p = defaultProfile("seya", "SEYA");
+      p.public = true;
+      p.meta.ref = "SC-19";
+      p.meta.img = "photo seya.png"; // change here
+      p.security.fixedPin = true;
+      p.data.identite = {
+        fullName:"CARPENTIER Seya",
+        age:"19 ans",
+        birthdate:"",
+        birthplace:"Paris 19ème",
+        origins:"Franco-Algérienne",
+        role:"Petite sœur surprotégée",
+        faction:"PARIS RP",
+        voice:"Voix très aiguë, parle sans filtre.",
+        phys:"Petite, souvent cachée derrière Harry",
+        sign:"Regard fuyant, hyperactive."
+      };
+      p.data.stats = [
+        { id:uid(), label:"Naïveté", val:100 },
+        { id:uid(), label:"Émotivité", val:100 },
+        { id:uid(), label:"Jalousie", val:100 },
+        { id:uid(), label:"Dévouement (Harry)", val:100 }
+      ];
+      p.data.lore.sections = [
+        { id:uid(), title:"Une enfance dans l'ombre", text:"Pour Seya, le 19ème n’était pas un enfer mais un terrain de jeu bruyant. Elle n’a jamais compris les sacrifices de sa mère.", date:"" },
+        { id:uid(), title:"L'ancre Harry", text:"Harry est son héros absolu. Elle ne voit pas sa peur : elle voit un roi.", date:"" },
+        { id:uid(), title:"PARIS RP", text:"Elle suit Harry partout. Elle veut prouver qu'elle peut l'aider — même si elle attire souvent le chaos.", date:"" }
+      ];
+      p.data.roulette.options = [
+        { id:uid(), text:"Faire une crise de jalousie", weight:3 },
+        { id:uid(), text:"Se mettre à pleurer très fort", weight:2 },
+        { id:uid(), text:"Insulter sans faire exprès", weight:2 },
+        { id:uid(), text:"Faire un gros câlin à Harry", weight:1 }
+      ];
+      return p;
+    };
+
+    /******************************************************************
+     * 4) Firebase init
+     ******************************************************************/
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    $("cloudState").textContent = "CONNECTING";
+
+    let uidAuth = null;
+
+    onAuthStateChanged(auth, (user)=>{
+      if(user){
+        uidAuth = user.uid;
+        $("viewerChip").innerHTML = `<i class="fa-solid fa-user"></i> uid:${uidAuth.slice(0,6)}…`;
+        $("cloudState").textContent = "ON";
       }
-      const st = safeJsonParse(raw, defaults);
-      // ensure base profiles exist
-      st.profiles = st.profiles || {};
-      if(!st.profiles.harry) st.profiles.harry = defaults.profiles.harry;
-      if(!st.profiles.seya) st.profiles.seya = defaults.profiles.seya;
-      return st;
-    }
-    function saveState(){ localStorage.setItem(NS, JSON.stringify(state)); updateStorageSize(); }
+    });
 
-    function updateStorageSize(){
-      const bytes = new Blob([JSON.stringify(state)]).size;
-      $("storage").textContent = (bytes/1024).toFixed(1) + " KB local";
-    }
+    await signInAnonymously(auth);
+    toast("Cloud connecté");
 
-    let state = loadState();
+    /******************************************************************
+     * 5) Firestore paths
+     ******************************************************************/
+    // profiles collection: profiles/{profileKey}
+    const profilesCol = collection(db, "profiles");
+
+    async function ensureBaseProfilesExist(){
+      const hRef = doc(db, "profiles", "harry");
+      const sRef = doc(db, "profiles", "seya");
+      const [hSnap, sSnap] = await Promise.all([getDoc(hRef), getDoc(sRef)]);
+      if(!hSnap.exists()) await setDoc(hRef, harryProfile());
+      if(!sSnap.exists()) await setDoc(sRef, seyaProfile());
+    }
+    await ensureBaseProfilesExist();
+
+    /******************************************************************
+     * 6) App state
+     ******************************************************************/
+    let profilesCache = new Map(); // key -> profile object
     let activeKey = null;
+    let activeProfile = null;
     let unlocked = false;
+    let unsubscribeActive = null;
 
-    /************ Unlock session ************/
-    function loadUnlock(){
-      return safeJsonParse(sessionStorage.getItem(SESSION) || "{}", {});
+    // debounced save
+    let saveTimer = null;
+    function setSaveState(text){
+      $("saveChip").innerHTML = `<i class="fa-solid fa-floppy-disk"></i> ${text}`;
     }
-    function setUnlock(key, minutes){
-      const s = loadUnlock();
-      s[key] = Date.now() + minutes*60*1000;
-      sessionStorage.setItem(SESSION, JSON.stringify(s));
-    }
-    function clearUnlock(key){
-      const s = loadUnlock();
-      delete s[key];
-      sessionStorage.setItem(SESSION, JSON.stringify(s));
-    }
-    function isUnlocked(key){
-      const s = loadUnlock();
-      return Date.now() < (s[key] || 0);
+    function scheduleCloudSave(){
+      if(!unlocked) return;
+      setSaveState("Saving…");
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(async ()=>{
+        try{
+          activeProfile.updatedAt = Date.now();
+          await setDoc(doc(db, "profiles", activeKey), activeProfile, { merge:true });
+          setSaveState("Saved");
+        }catch(e){
+          console.error(e);
+          setSaveState("Error");
+          toast("Erreur cloud (console)");
+        }
+      }, 350);
     }
 
-    /************ UI: Login list ************/
-    function renderList(){
-      const q = ($("q").value || "").trim().toLowerCase();
+    function setEditMode(on){
+      unlocked = on;
+      document.body.classList.toggle("edit", unlocked);
+      $("modeChip").className = "chip " + (unlocked ? "edit" : "ro");
+      $("modeChip").innerHTML = unlocked
+        ? '<i class="fa-solid fa-pen"></i> ÉDITION'
+        : '<i class="fa-solid fa-eye"></i> LECTURE';
+    }
+
+    function modal(el, show){ el.classList.toggle("show", !!show); }
+
+    function storageInfo(){
+      // approximate info based on cached profiles
+      const obj = Array.from(profilesCache.values());
+      const bytes = new Blob([JSON.stringify(obj)]).size;
+      $("storage").textContent = (bytes/1024).toFixed(1) + " KB cache";
+    }
+
+    /******************************************************************
+     * 7) Render landing list (from Firestore)
+     ******************************************************************/
+    async function refreshProfilesList(){
+      // newest first (updatedAt)
+      const qy = query(profilesCol, orderBy("updatedAt", "desc"), limit(50));
+      const snap = await getDocs(qy);
+
+      profilesCache.clear();
+      snap.forEach(d=>{
+        profilesCache.set(d.id, d.data());
+      });
+
+      renderLanding();
+      storageInfo();
+      fillDuplicateSelect();
+    }
+
+    function fillDuplicateSelect(){
+      const sel = $("cFrom");
+      sel.textContent = "";
+      Array.from(profilesCache.values())
+        .sort((a,b)=>(a.displayName||a.key).localeCompare(b.displayName||b.key))
+        .forEach(p=>{
+          const opt = document.createElement("option");
+          opt.value = p.key;
+          opt.textContent = `${p.displayName || p.key} (${p.key})`;
+          sel.appendChild(opt);
+        });
+      // default to harry
+      if(sel.options.length) sel.value = "harry";
+    }
+
+    function renderLanding(){
       const list = $("list");
-      list.textContent = ""; // clear
+      list.textContent = "";
+      const q = ($("q").value||"").trim().toLowerCase();
 
-      const profiles = Object.values(state.profiles)
-        .sort((a,b)=> (b.public===true)-(a.public===true) || (a.displayName||a.key).localeCompare(b.displayName||b.key));
+      const arr = Array.from(profilesCache.values())
+        .sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0));
 
-      // fill duplicate select
-      $("cFrom").textContent = "";
-      for(const p of profiles){
-        const opt = document.createElement("option");
-        opt.value = p.key;
-        opt.textContent = `${p.displayName || p.key} (${p.key})`;
-        $("cFrom").appendChild(opt);
-      }
-
-      for(const p of profiles){
-        const hay = `${p.displayName||""} ${p.key||""} ${p.data?.role||""}`.toLowerCase();
+      for(const p of arr){
+        const hay = `${p.displayName||""} ${p.key||""} ${(p.data?.identite?.role||"")} ${(p.meta?.tags||[]).join(" ")}`.toLowerCase();
         if(q && !hay.includes(q)) continue;
 
         const card = document.createElement("div");
         card.className = "card";
-        card.tabIndex = 0;
 
         const row = document.createElement("div");
         row.className = "row";
@@ -630,7 +966,7 @@
         name.textContent = p.displayName || p.key;
         const role = document.createElement("div");
         role.className = "role";
-        role.textContent = p.data?.role || "";
+        role.textContent = p.data?.identite?.role || "";
         info.appendChild(name);
         info.appendChild(role);
 
@@ -639,190 +975,902 @@
 
         const badges = document.createElement("div");
         badges.className = "badges";
-        const b1 = document.createElement("span");
-        b1.className = "badge " + (p.public ? "public" : "local");
-        b1.textContent = p.public ? "PUBLIC" : "VISITEUR";
-        badges.appendChild(b1);
+        const bPublic = document.createElement("span");
+        bPublic.className = "badge public";
+        bPublic.textContent = "PUBLIC (READ)";
+        badges.appendChild(bPublic);
 
-        const hasPin = (p.key==="harry" || p.key==="seya" || !!p.pinHash);
-        if(hasPin){
-          const b2 = document.createElement("span");
-          b2.className = "badge pin";
-          b2.textContent = "PIN";
-          badges.appendChild(b2);
-        }
+        const bCloud = document.createElement("span");
+        bCloud.className = "badge cloud";
+        bCloud.textContent = "CLOUD";
+        badges.appendChild(bCloud);
+
+        const bPin = document.createElement("span");
+        bPin.className = "badge pin";
+        bPin.textContent = "EDIT PIN";
+        badges.appendChild(bPin);
 
         const actions = document.createElement("div");
         actions.className = "actions";
 
         const openBtn = document.createElement("button");
         openBtn.className = "btn primary";
-        openBtn.innerHTML = '<i class="fa-solid fa-folder-open"></i> Ouvrir';
+        openBtn.innerHTML = '<i class="fa-solid fa-folder-open"></i> Ouvrir (lecture)';
         openBtn.addEventListener("click", ()=>openProfile(p.key));
 
-        const dupBtn = document.createElement("button");
-        dupBtn.className = "btn";
-        dupBtn.innerHTML = '<i class="fa-solid fa-clone"></i> Dupliquer';
-        dupBtn.addEventListener("click", ()=>{
-          openCreateModal(p.key);
-        });
-
         actions.appendChild(openBtn);
-        actions.appendChild(dupBtn);
-
-        if(!p.public && p.key!=="harry" && p.key!=="seya"){
-          const delBtn = document.createElement("button");
-          delBtn.className = "btn danger";
-          delBtn.innerHTML = '<i class="fa-solid fa-trash"></i> Suppr';
-          delBtn.addEventListener("click", ()=>{
-            if(confirm("Supprimer ce profil (local navigateur) ?")){
-              delete state.profiles[p.key];
-              saveState();
-              renderList();
-              toast("Supprimé");
-            }
-          });
-          actions.appendChild(delBtn);
-        }
 
         card.appendChild(row);
         card.appendChild(badges);
         card.appendChild(actions);
-
-        // Enter opens profile
-        card.addEventListener("keydown", (e)=>{
-          if(e.key==="Enter") openProfile(p.key);
-        });
 
         list.appendChild(card);
       }
 
       if(!list.childElementCount){
         const empty = document.createElement("div");
+        empty.className = "panel";
         empty.style.color = "#777";
-        empty.textContent = "Aucun profil.";
+        empty.textContent = "Aucun dossier trouvé.";
         list.appendChild(empty);
       }
     }
 
-    /************ UI: App ************/
+    /******************************************************************
+     * 8) Open profile (live subscription)
+     ******************************************************************/
     function openProfile(key){
       activeKey = key;
-      unlocked = isUnlocked(activeKey);
-      $("login").style.display = "none";
-      $("app").style.display = "flex";
-      setEditMode(unlocked);
-      hydrate();
-    }
-
-    function backToLogin(){
-      activeKey = null;
       unlocked = false;
-      $("app").style.display = "none";
-      $("login").style.display = "flex";
-      renderList();
-    }
+      setEditMode(false);
 
-    function setEditMode(on){
-      unlocked = on;
-      document.body.classList.toggle("edit", unlocked);
-      $("modeChip").className = "chip " + (unlocked ? "edit" : "ro");
-      $("modeChip").innerHTML = unlocked
-        ? '<i class="fa-solid fa-pen"></i> ÉDITION'
-        : '<i class="fa-solid fa-eye"></i> LECTURE';
+      $("landing").style.display = "none";
+      $("app").style.display = "flex";
 
-      // contenteditable toggles
-      for(const id of ["fullName","age","role","psy"]){
-        const el = $(id);
-        el.contentEditable = unlocked ? "true" : "false";
-      }
-      $("journal").readOnly = !unlocked;
-      $("img").disabled = !unlocked;
-    }
+      // unsubscribe old
+      if(unsubscribeActive) unsubscribeActive();
 
-    function hydrate(){
-      const p = state.profiles[activeKey];
-      $("sbName").textContent = (p.displayName || p.key) + " O.S";
-      $("activeName").textContent = (p.displayName || p.key);
-      $("ref").textContent = p.meta?.ref || "";
-
-      $("img").value = p.meta?.img || "";
-      $("imgPreview").src = p.meta?.img || "";
-      $("imgPreview").onerror = ()=> $("imgPreview").src = "https://via.placeholder.com/150/0a0a0c/333?text=IMG";
-
-      $("fullName").textContent = p.data?.fullName || "";
-      $("age").textContent = p.data?.age || "";
-      $("role").textContent = p.data?.role || "";
-      $("psy").textContent = p.data?.psy || "";
-      $("journal").value = p.data?.journal || "";
-    }
-
-    function commitField(path, value){
-      const p = state.profiles[activeKey];
-      if(path === "meta.img") p.meta.img = value;
-      if(path === "data.fullName") p.data.fullName = value;
-      if(path === "data.age") p.data.age = value;
-      if(path === "data.role") p.data.role = value;
-      if(path === "data.psy") p.data.psy = value;
-      if(path === "data.journal") p.data.journal = value;
-      saveState();
-    }
-
-    /************ Tabs ************/
-    function showTab(tab){
-      $("tab-identite").style.display = tab==="identite" ? "" : "none";
-      $("tab-psy").style.display = tab==="psy" ? "" : "none";
-      $("tab-journal").style.display = tab==="journal" ? "" : "none";
-      document.querySelectorAll(".sbBtn[data-tab]").forEach(b=>{
-        b.classList.toggle("active", b.dataset.tab === tab);
+      const ref = doc(db, "profiles", key);
+      unsubscribeActive = onSnapshot(ref, (snap)=>{
+        if(!snap.exists()){
+          toast("Profil introuvable");
+          return;
+        }
+        activeProfile = snap.data();
+        profilesCache.set(key, activeProfile);
+        renderApp();
       });
     }
 
-    /************ Modals ************/
-    function modal(el, show){
-      el.classList.toggle("show", !!show);
+    function backToLanding(){
+      if(unsubscribeActive) unsubscribeActive();
+      unsubscribeActive = null;
+      activeKey = null;
+      activeProfile = null;
+      unlocked = false;
+      setEditMode(false);
+
+      $("app").style.display = "none";
+      $("landing").style.display = "flex";
+      refreshProfilesList();
     }
 
-    function openCreateModal(fromKey){
-      modal($("mCreate"), true);
-      const base = state.profiles[fromKey] || state.profiles.harry;
-      $("cName").value = (base.displayName || base.key) + " Copy";
-      $("cKey").value = slugify((base.displayName || base.key) + "-copy");
-      $("cImg").value = base.meta?.img || "";
-      $("cPin").value = "";
-      $("cFrom").value = fromKey;
+    /******************************************************************
+     * 9) Tabs framework (10 tabs, customizable per profile)
+     ******************************************************************/
+    let currentTabId = "identite";
+
+    function visibleTabsForViewer(){
+      const tabs = activeProfile.tabs || [];
+      // for viewer: only enabled tabs that are public OR unlocked (owner)
+      return tabs.filter(t => t.enabled && (t.visiblePublic || unlocked));
     }
 
-    function createProfile(){
-      const name = ($("cName").value || "").trim() || "Visiteur";
-      const key = slugify(($("cKey").value || "").trim() || name);
-      const img = ($("cImg").value || "").trim();
-      const pin = ($("cPin").value || "").trim();
-      const from = $("cFrom").value;
+    function renderTabsNav(){
+      const nav = $("tabsNav");
+      nav.textContent = "";
 
-      if(state.profiles[key]){
-        toast("Clé déjà utilisée");
+      const tabs = visibleTabsForViewer();
+      if(!tabs.find(t=>t.id===currentTabId) && tabs.length) currentTabId = tabs[0].id;
+
+      for(const t of tabs){
+        const btn = document.createElement("button");
+        btn.className = "sbBtn" + (t.id===currentTabId ? " active" : "");
+        btn.innerHTML = `<i class="fa-solid ${t.icon||"fa-folder"}"></i> ${t.title}`;
+        btn.addEventListener("click", ()=>{
+          currentTabId = t.id;
+          renderApp();
+        });
+        nav.appendChild(btn);
+      }
+
+      // Settings tab (only when unlocked)
+      if(unlocked){
+        const s = document.createElement("button");
+        s.className = "sbBtn";
+        s.innerHTML = `<i class="fa-solid fa-gear"></i> Onglets (config)`;
+        s.addEventListener("click", ()=>{
+          currentTabId = "__tabs_settings__";
+          renderApp();
+        });
+        nav.appendChild(s);
+      }
+    }
+
+    function renderAppHeader(){
+      $("sbName").textContent = (activeProfile.displayName || activeProfile.key) + " O.S";
+      $("activeName").textContent = (activeProfile.displayName || activeProfile.key);
+      $("sbRef").textContent = activeProfile.meta?.ref || "—";
+      $("sbPublic").innerHTML = `<i class="fa-solid fa-globe"></i> Public (lecture)`;
+    }
+
+    function renderApp(){
+      renderAppHeader();
+      renderTabsNav();
+      renderTabContent();
+    }
+
+    /******************************************************************
+     * 10) Tab renderers
+     ******************************************************************/
+    function el(tag, attrs={}, children=[]){
+      const node = document.createElement(tag);
+      for(const [k,v] of Object.entries(attrs)){
+        if(k==="class") node.className = v;
+        else if(k==="html") node.innerHTML = v;
+        else if(k.startsWith("on") && typeof v==="function") node.addEventListener(k.slice(2), v);
+        else node.setAttribute(k, v);
+      }
+      for(const c of children){
+        if(typeof c === "string") node.appendChild(document.createTextNode(c));
+        else if(c) node.appendChild(c);
+      }
+      return node;
+    }
+
+    function editableDiv(value, onCommit){
+      const d = el("div", { class:"editable", tabindex:"0" });
+      d.innerHTML = value || "";
+      d.contentEditable = unlocked ? "true" : "false";
+      d.addEventListener("blur", ()=>{
+        if(!unlocked) return;
+        onCommit(d.innerHTML.trim());
+      });
+      d.addEventListener("keydown", (e)=>{
+        if(!unlocked) return;
+        if(e.key==="Enter"){
+          e.preventDefault();
+          d.blur();
+        }
+      });
+      return d;
+    }
+
+    function renderTabContent(){
+      const root = $("tabContent");
+      root.textContent = "";
+
+      // tab settings panel
+      if(currentTabId === "__tabs_settings__"){
+        root.appendChild(renderTabsSettings());
         return;
       }
-      const base = state.profiles[from] ? structuredClone(state.profiles[from]) : structuredClone(state.profiles.harry);
-      base.key = key;
-      base.public = false;
-      base.displayName = name;
-      base.meta = base.meta || {ref:"", img:""};
-      base.meta.ref = base.meta.ref || "";
-      base.meta.img = img || base.meta.img || "";
-      base.pinHash = pin ? hashPin(pin) : "";
-      base.data = base.data || {fullName:"",age:"",role:"",psy:"",journal:""};
-      // reset journal for new profile
-      base.data.journal = "";
 
-      state.profiles[key] = base;
-      saveState();
-      modal($("mCreate"), false);
-      renderList();
-      toast("Profil créé");
+      const tab = (activeProfile.tabs||[]).find(t=>t.id===currentTabId);
+      if(!tab){
+        root.appendChild(el("div",{class:"panel"},["Onglet introuvable."]));
+        return;
+      }
+
+      // Enforce visibility: if not public and not unlocked, show blocked
+      if(!tab.visiblePublic && !unlocked){
+        root.appendChild(el("div",{class:"panel"},[
+          el("div",{style:"font-weight:900;margin-bottom:6px"},["Onglet privé"]),
+          el("div",{class:"muted",style:"line-height:1.7"},["Le propriétaire a masqué cet onglet au public."])
+        ]));
+        return;
+      }
+
+      // Title
+      root.appendChild(el("div",{class:"sectionTitle"},[
+        el("span",{html:tab.title}),
+        el("span",{class:"ref"},[tab.type.toUpperCase()])
+      ]));
+
+      // Render by type
+      const type = tab.type;
+      if(type==="identite") root.appendChild(renderIdentite());
+      else if(type==="stats") root.appendChild(renderStats());
+      else if(type==="lore") root.appendChild(renderLore());
+      else if(type==="goals") root.appendChild(renderGoals());
+      else if(type==="roulette") root.appendChild(renderRoulette());
+      else if(type==="timeline") root.appendChild(renderTimeline());
+      else if(type==="relations") root.appendChild(renderRelations());
+      else if(type==="custom_note") root.appendChild(renderCustomNote());
+      else if(type==="custom_canvas") root.appendChild(renderCustomCanvas());
+      else if(type==="custom_board") root.appendChild(renderCustomBoard());
+      else root.appendChild(el("div",{class:"panel"},["Type d’onglet non supporté."]));
     }
 
+    function renderIdentite(){
+      const idt = activeProfile.data?.identite || {};
+      const wrap = el("div",{class:"grid2"},[
+        el("div",{class:"panel"},[
+          el("div",{class:"fieldLabel"},["Photo (URL/path)"]),
+          el("input",{class:"input", id:"imgUrl", value: idt.img || activeProfile.meta?.img || ""}),
+          el("div",{style:"margin-top:12px;display:flex;gap:12px;align-items:center;flex-wrap:wrap"},[
+            el("div",{class:"avatar",style:"width:92px;height:92px"},[
+              el("img",{id:"imgPreview", src: activeProfile.meta?.img || ""})
+            ]),
+            el("div",{class:"muted",style:"line-height:1.6;font-size:12px"},[
+              "Aperçu image. (Tu peux changer l’URL si tu es déverrouillé.)"
+            ])
+          ])
+        ]),
+        el("div",{},[
+          el("div",{class:"panel"},[
+            el("div",{class:"fieldLabel"},["Nom complet"]),
+            editableDiv(idt.fullName, (v)=>{ deepSet(activeProfile,"data.identite.fullName",v); scheduleCloudSave(); })
+          ]),
+          el("div",{class:"panel"},[
+            el("div",{class:"fieldLabel"},["Âge"]),
+            editableDiv(idt.age, (v)=>{ deepSet(activeProfile,"data.identite.age",v); scheduleCloudSave(); })
+          ]),
+          el("div",{class:"panel"},[
+            el("div",{class:"fieldLabel"},["Date de naissance"]),
+            editableDiv(idt.birthdate, (v)=>{ deepSet(activeProfile,"data.identite.birthdate",v); scheduleCloudSave(); })
+          ]),
+          el("div",{class:"panel"},[
+            el("div",{class:"fieldLabel"},["Lieu de naissance"]),
+            editableDiv(idt.birthplace, (v)=>{ deepSet(activeProfile,"data.identite.birthplace",v); scheduleCloudSave(); })
+          ]),
+          el("div",{class:"panel"},[
+            el("div",{class:"fieldLabel"},["Origines"]),
+            editableDiv(idt.origins, (v)=>{ deepSet(activeProfile,"data.identite.origins",v); scheduleCloudSave(); })
+          ]),
+          el("div",{class:"panel"},[
+            el("div",{class:"fieldLabel"},["Rôle / Job"]),
+            editableDiv(idt.role, (v)=>{ deepSet(activeProfile,"data.identite.role",v); scheduleCloudSave(); })
+          ])
+        ])
+      ]);
+
+      // wire image input
+      setTimeout(()=>{
+        const input = $("imgUrl");
+        const preview = $("imgPreview");
+        if(!input || !preview) return;
+        preview.onerror = ()=> preview.src="https://via.placeholder.com/150/0a0a0c/333?text=IMG";
+        input.disabled = !unlocked;
+        input.addEventListener("input", ()=>{
+          if(!unlocked) return;
+          const url = input.value.trim();
+          activeProfile.meta.img = url;
+          preview.src = url;
+          scheduleCloudSave();
+        });
+      },0);
+
+      return wrap;
+    }
+
+    function renderStats(){
+      const stats = activeProfile.data?.stats || [];
+      const box = el("div",{class:"panel"},[
+        el("div",{style:"display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px"},[
+          el("div",{style:"font-weight:900"},["Stats (0-100)"]),
+          unlocked ? el("button",{class:"btn small primary", onClick:()=>{
+            stats.push({id:uid(), label:"Nouvelle stat", val:50});
+            deepSet(activeProfile,"data.stats",stats);
+            scheduleCloudSave();
+            renderApp();
+          }},[el("i",{class:"fa-solid fa-plus"})," Ajouter"]) : el("span",{class:"chip ro"},["Lecture"])
+        ]),
+        el("div",{}, stats.map(s=>{
+          const stat = el("div",{class:"stat"},[
+            el("div",{class:"statTop"},[
+              el("span",{html: unlocked ? `<span class="kbd">drag</span> ${s.label}` : s.label}),
+              el("span",{},[String(s.val)+"%"])
+            ]),
+            el("div",{class:"bar"},[
+              el("div",{class:"fill", style:`width:${Math.max(0,Math.min(100,Number(s.val)||0))}%`})
+            ])
+          ]);
+
+          if(unlocked){
+            const controls = el("div",{style:"display:flex;gap:10px;flex-wrap:wrap;margin:8px 0 0"},[
+              el("input",{class:"input", value:s.label, style:"max-width:320px", onInput:(e)=>{
+                s.label = e.target.value;
+                scheduleCloudSave();
+              }}),
+              el("input",{class:"input", type:"number", min:"0", max:"100", value:String(s.val), style:"max-width:140px", onInput:(e)=>{
+                s.val = Number(e.target.value||0);
+                scheduleCloudSave();
+                renderApp();
+              }}),
+              el("button",{class:"btn small danger", onClick:()=>{
+                deepSet(activeProfile,"data.stats", stats.filter(x=>x.id!==s.id));
+                scheduleCloudSave();
+                renderApp();
+              }},[el("i",{class:"fa-solid fa-trash"})," Suppr"])
+            ]);
+            stat.appendChild(controls);
+          }
+          return stat;
+        }))
+      ]);
+      return box;
+    }
+
+    function renderLore(){
+      const lore = activeProfile.data?.lore?.sections || [];
+      const root = el("div",{},[
+        el("div",{class:"panel"},[
+          el("div",{style:"display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px"},[
+            el("div",{style:"font-weight:900"},["Sections d’histoire"]),
+            unlocked ? el("button",{class:"btn small primary", onClick:()=>{
+              lore.unshift({id:uid(), title:"Nouvelle section", text:"", date:""});
+              deepSet(activeProfile,"data.lore.sections", lore);
+              scheduleCloudSave();
+              renderApp();
+            }},[el("i",{class:"fa-solid fa-plus"})," Ajouter"]) : el("span",{class:"chip ro"},["Lecture"])
+          ]),
+          el("div",{class:"grid3"}, lore.map(sec=>{
+            const card = el("div",{class:"panel", style:"margin:0"},[
+              el("div",{style:"display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px"},[
+                el("div",{style:"font-weight:900;color:var(--gold)"},[sec.title]),
+                unlocked ? el("button",{class:"btn small danger", onClick:()=>{
+                  deepSet(activeProfile,"data.lore.sections", lore.filter(x=>x.id!==sec.id));
+                  scheduleCloudSave();
+                  renderApp();
+                }},[el("i",{class:"fa-solid fa-trash"})]) : null
+              ]),
+              unlocked ? el("input",{class:"input", value:sec.title, onInput:(e)=>{ sec.title=e.target.value; scheduleCloudSave(); }}) : null,
+              unlocked ? el("input",{class:"input", value:sec.date||"", placeholder:"date (optionnel)", style:"margin-top:10px", onInput:(e)=>{ sec.date=e.target.value; scheduleCloudSave(); }}) : null,
+              el("div",{class:"muted",style:"font-size:12px;margin:10px 0 8px"},["Texte"]),
+              unlocked
+                ? el("textarea",{class:"input", style:"min-height:160px;font-family:Montserrat;font-size:14px;line-height:1.7", onInput:(e)=>{ sec.text=e.target.value; scheduleCloudSave(); }},[])
+                : el("div",{style:"color:#bbb;line-height:1.8"},[sec.text||""])
+            ]);
+
+            if(unlocked){
+              card.querySelector("textarea").value = sec.text || "";
+            }
+            return card;
+          }))
+        ])
+      ]);
+      return root;
+    }
+
+    function renderGoals(){
+      const goals = activeProfile.data?.goals || {court:[], long:[]};
+
+      const column = (title, key)=> {
+        const list = goals[key] || [];
+        const col = el("div",{class:"panel"},[
+          el("div",{style:"display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px"},[
+            el("div",{style:"font-weight:900;color:var(--gold)"},[title]),
+            unlocked ? el("button",{class:"btn small primary", onClick:()=>{
+              list.unshift({id:uid(), text:"Nouvel objectif", done:false});
+              goals[key]=list;
+              deepSet(activeProfile,"data.goals",goals);
+              scheduleCloudSave();
+              renderApp();
+            }},[el("i",{class:"fa-solid fa-plus"})," Ajouter"]) : null
+          ]),
+          el("div",{}, list.map(g=>{
+            const item = el("div",{class:"timelineItem"},[
+              el("div",{style:"display:flex;gap:10px;align-items:center;justify-content:space-between"},[
+                el("div",{style:`flex:1;color:#ddd;${g.done?"text-decoration:line-through;opacity:.7":""}`},[g.text]),
+                unlocked ? el("div",{style:"display:flex;gap:8px"},[
+                  el("button",{class:"btn small", onClick:()=>{
+                    g.done=!g.done;
+                    scheduleCloudSave();
+                    renderApp();
+                  }},[el("i",{class:"fa-solid fa-square-check"}),""]),
+                  el("button",{class:"btn small danger", onClick:()=>{
+                    goals[key]=list.filter(x=>x.id!==g.id);
+                    deepSet(activeProfile,"data.goals",goals);
+                    scheduleCloudSave();
+                    renderApp();
+                  }},[el("i",{class:"fa-solid fa-trash"})])
+                ]) : null
+              ]),
+              unlocked ? el("input",{class:"input", value:g.text, style:"margin-top:10px;font-family:Montserrat", onInput:(e)=>{ g.text=e.target.value; scheduleCloudSave(); }}) : null
+            ]);
+            return item;
+          }))
+        ]);
+        return col;
+      };
+
+      return el("div",{class:"grid2"},[
+        column("Court terme","court"),
+        column("Long terme","long")
+      ]);
+    }
+
+    function pickWeighted(options){
+      const pool = [];
+      for(const o of options){
+        const w = Math.max(1, Number(o.weight||1));
+        for(let i=0;i<w;i++) pool.push(o);
+      }
+      return pool[Math.floor(Math.random()*pool.length)];
+    }
+
+    function renderRoulette(){
+      const r = activeProfile.data?.roulette || {options:[],history:[]};
+
+      const result = el("div",{class:"result", id:"rr"},["EN ATTENTE…"]);
+      const btnSpin = el("button",{class:"btn primary", onClick:()=>{
+        if(!r.options.length) return toast("Aucune option");
+        result.classList.add("spin");
+        let c=0;
+        const it = setInterval(()=>{
+          result.textContent = r.options[Math.floor(Math.random()*r.options.length)].text;
+          if(c++>14){
+            clearInterval(it);
+            const chosen = pickWeighted(r.options);
+            result.classList.remove("spin");
+            result.textContent = ">> " + chosen.text + " <<";
+            r.history.unshift({at:Date.now(), text:chosen.text});
+            r.history = r.history.slice(0,50);
+            deepSet(activeProfile,"data.roulette", r);
+            scheduleCloudSave();
+            renderApp();
+          }
+        }, 90);
+      }},[el("i",{class:"fa-solid fa-dice"})," Lancer"]);
+
+      const optsBox = el("div",{class:"panel"},[
+        el("div",{style:"display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px"},[
+          el("div",{style:"font-weight:900"},["Options (poids)"]),
+          unlocked ? el("button",{class:"btn small primary", onClick:()=>{
+            r.options.unshift({id:uid(), text:"Nouvelle action", weight:1});
+            deepSet(activeProfile,"data.roulette",r);
+            scheduleCloudSave();
+            renderApp();
+          }},[el("i",{class:"fa-solid fa-plus"})," Ajouter"]) : null
+        ]),
+        el("div",{style:"display:flex;flex-wrap:wrap;gap:10px"}, r.options.map(o=>{
+          const chip = el("div",{class:"tag"},[`${o.text}  x${o.weight||1}`]);
+          if(unlocked){
+            chip.style.display="flex";
+            chip.style.alignItems="center";
+            chip.style.gap="10px";
+            chip.appendChild(el("button",{class:"btn small", onClick:()=>{
+              const w = prompt("Poids (1..20)", String(o.weight||1));
+              if(w===null) return;
+              o.weight = Math.min(20, Math.max(1, Number(w)||1));
+              scheduleCloudSave();
+              renderApp();
+            }},[el("i",{class:"fa-solid fa-weight-hanging"})]));
+            chip.appendChild(el("button",{class:"btn small danger", onClick:()=>{
+              r.options = r.options.filter(x=>x.id!==o.id);
+              deepSet(activeProfile,"data.roulette",r);
+              scheduleCloudSave();
+              renderApp();
+            }},[el("i",{class:"fa-solid fa-trash"})]));
+          }
+          return chip;
+        }))
+      ]);
+
+      const hist = el("div",{class:"panel"},[
+        el("div",{style:"font-weight:900;margin-bottom:10px"},["Historique"]),
+        el("div",{style:"display:flex;flex-direction:column;gap:8px"}, (r.history||[]).slice(0,12).map(h=>{
+          const d = new Date(h.at);
+          return el("div",{style:"display:flex;gap:10px;align-items:center;flex-wrap:wrap"},[
+            el("span",{class:"chip"},[d.toLocaleString()]),
+            el("span",{style:"color:#bbb"},[h.text])
+          ]);
+        }))
+      ]);
+
+      return el("div",{},[
+        el("div",{class:"panel"},[
+          result,
+          el("div",{style:"margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center"},[
+            btnSpin
+          ])
+        ]),
+        optsBox,
+        hist
+      ]);
+    }
+
+    function renderTimeline(){
+      const t = activeProfile.data?.timeline || {events:[]};
+      const events = t.events || [];
+
+      const root = el("div",{class:"panel"},[
+        el("div",{style:"display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px"},[
+          el("div",{style:"font-weight:900"},["Timeline RP"]),
+          unlocked ? el("button",{class:"btn small primary", onClick:()=>{
+            events.unshift({id:uid(), at:Date.now(), title:"Nouvel événement", text:"", tags:["PARIS RP"]});
+            deepSet(activeProfile,"data.timeline.events", events);
+            scheduleCloudSave();
+            renderApp();
+          }},[el("i",{class:"fa-solid fa-plus"})," Ajouter"]) : null
+        ]),
+        el("div",{style:"display:flex;flex-direction:column;gap:12px"}, events.map(ev=>{
+          const date = new Date(ev.at || Date.now());
+          const item = el("div",{class:"timelineItem"},[
+            el("div",{class:"tlHead"},[
+              el("div",{style:"font-weight:900;color:var(--gold)"},[ev.title]),
+              el("span",{class:"chip"},[date.toLocaleString()])
+            ]),
+            el("div",{style:"color:#bbb;line-height:1.8;margin-top:8px"},[ev.text || ""]),
+            el("div",{class:"tagRow"}, (ev.tags||[]).map(tag=>el("span",{class:"tag"},[tag])))
+          ]);
+
+          if(unlocked){
+            item.appendChild(el("div",{style:"margin-top:10px;display:grid;gap:10px"},[
+              el("input",{class:"input", value:ev.title, onInput:(e)=>{ ev.title=e.target.value; scheduleCloudSave(); }}),
+              el("textarea",{class:"input", style:"min-height:120px;font-family:Montserrat;font-size:14px;line-height:1.7", onInput:(e)=>{ ev.text=e.target.value; scheduleCloudSave(); }},[]),
+              el("input",{class:"input", value:(ev.tags||[]).join(", "), placeholder:"tags séparés par virgule", onInput:(e)=>{
+                ev.tags = e.target.value.split(",").map(x=>x.trim()).filter(Boolean);
+                scheduleCloudSave();
+                renderApp();
+              }}),
+              el("div",{style:"display:flex;justify-content:flex-end"},[
+                el("button",{class:"btn small danger", onClick:()=>{
+                  deepSet(activeProfile,"data.timeline.events", events.filter(x=>x.id!==ev.id));
+                  scheduleCloudSave();
+                  renderApp();
+                }},[el("i",{class:"fa-solid fa-trash"})," Suppr"])
+              ])
+            ]));
+            item.querySelector("textarea").value = ev.text || "";
+          }
+
+          return item;
+        }))
+      ]);
+      return root;
+    }
+
+    function renderRelations(){
+      // for now: list-based; graph comes in v7.1
+      const rel = activeProfile.data?.relations || {list:[]};
+      const list = rel.list || [];
+
+      const root = el("div",{class:"panel"},[
+        el("div",{style:"display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px"},[
+          el("div",{style:"font-weight:900"},["Relations"]),
+          unlocked ? el("button",{class:"btn small primary", onClick:()=>{
+            list.unshift({id:uid(), name:"Nouveau contact", tag:"Neutre", note:"", img:""});
+            deepSet(activeProfile,"data.relations.list", list);
+            scheduleCloudSave();
+            renderApp();
+          }},[el("i",{class:"fa-solid fa-plus"})," Ajouter"]) : null
+        ]),
+        el("div",{class:"grid3"}, list.map(r=>{
+          const tagColor = r.tag==="Allié" ? "rgba(46,204,113,.25)" : r.tag==="Ennemi" ? "rgba(231,76,60,.25)" : "rgba(180,180,180,.15)";
+          const card = el("div",{class:"panel", style:"margin:0"},[
+            el("div",{style:"display:flex;gap:12px;align-items:center"},[
+              el("div",{class:"avatar",style:"width:54px;height:54px;border-color:rgba(212,175,55,.45)"},[
+                el("img",{src:r.img||"", onError:(e)=>{ e.target.src="https://via.placeholder.com/150/0a0a0c/333?text=NPC"; }})
+              ]),
+              el("div",{},[
+                el("div",{style:"font-weight:900"},[r.name]),
+                el("span",{class:"tag", style:`border-color:${tagColor}`},[r.tag])
+              ])
+            ]),
+            el("div",{style:"margin-top:10px;color:#bbb;line-height:1.7"},[r.note||""])
+          ]);
+
+          if(unlocked){
+            card.appendChild(el("div",{style:"margin-top:10px;display:grid;gap:10px"},[
+              el("input",{class:"input", value:r.name, onInput:(e)=>{ r.name=e.target.value; scheduleCloudSave(); }}),
+              el("select",{class:"input", onChange:(e)=>{ r.tag=e.target.value; scheduleCloudSave(); renderApp(); }},[
+                el("option",{value:"Allié"},["Allié"]),
+                el("option",{value:"Ennemi"},["Ennemi"]),
+                el("option",{value:"Neutre"},["Neutre"])
+              ]),
+              el("input",{class:"input", value:r.img||"", placeholder:"image url/path", onInput:(e)=>{ r.img=e.target.value; scheduleCloudSave(); renderApp(); }}),
+              el("textarea",{class:"input", style:"min-height:90px;font-family:Montserrat;font-size:14px;line-height:1.7", onInput:(e)=>{ r.note=e.target.value; scheduleCloudSave(); }},[]),
+              el("div",{style:"display:flex;justify-content:flex-end"},[
+                el("button",{class:"btn small danger", onClick:()=>{
+                  deepSet(activeProfile,"data.relations.list", list.filter(x=>x.id!==r.id));
+                  scheduleCloudSave();
+                  renderApp();
+                }},[el("i",{class:"fa-solid fa-trash"})," Suppr"])
+              ])
+            ]));
+            card.querySelector("textarea").value = r.note || "";
+            // set select value
+            card.querySelector("select").value = r.tag || "Neutre";
+          }
+
+          return card;
+        }))
+      ]);
+
+      return root;
+    }
+
+    function renderCustomNote(){
+      const n = activeProfile.data?.custom_note || {html:""};
+      return el("div",{class:"panel"},[
+        el("div",{style:"display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px"},[
+          el("div",{style:"font-weight:900"},["Carnet (rich text)"]),
+          el("span",{class:"chip"},["Tu peux écrire librement"])
+        ]),
+        editableDivBlock(n.html, (html)=>{
+          deepSet(activeProfile,"data.custom_note.html", html);
+          scheduleCloudSave();
+        })
+      ]);
+    }
+
+    function editableDivBlock(html, onCommit){
+      const d = el("div",{class:"editable", style:"min-height:240px"});
+      d.innerHTML = html || "";
+      d.contentEditable = unlocked ? "true" : "false";
+      d.addEventListener("blur", ()=>{
+        if(!unlocked) return;
+        onCommit(d.innerHTML.trim());
+      });
+      return d;
+    }
+
+    function renderCustomCanvas(){
+      const st = activeProfile.data?.custom_canvas || {strokes:[], background:"#0a0a0d"};
+
+      const wrap = el("div",{},[
+        el("div",{class:"panel"},[
+          el("div",{style:"display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px"},[
+            el("div",{style:"font-weight:900"},["Dessin (Canvas)"]),
+            el("div",{style:"display:flex;gap:10px;flex-wrap:wrap;align-items:center"},[
+              el("span",{class:"chip"},["Public: " + (isTabPublic("custom2") ? "oui" : "non")]),
+              unlocked ? el("button",{class:"btn small", onClick:()=>exportCanvasPNG()},[el("i",{class:"fa-solid fa-file-image"})," PNG"]) : null,
+              unlocked ? el("button",{class:"btn small danger", onClick:()=>{
+                st.strokes = [];
+                deepSet(activeProfile,"data.custom_canvas", st);
+                scheduleCloudSave();
+                renderApp();
+              }},[el("i",{class:"fa-solid fa-eraser"})," Clear"]) : null
+            ])
+          ]),
+          el("div",{class:"canvasWrap"},[
+            el("canvas",{id:"cvs"})
+          ]),
+          unlocked ? el("div",{style:"display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;align-items:center"},[
+            el("label",{class:"chip"},["Couleur"]),
+            el("input",{id:"penColor", type:"color", value:"#d4af37"}),
+            el("label",{class:"chip"},["Taille"]),
+            el("input",{id:"penSize", type:"range", min:"1", max:"18", value:"4"})
+          ]) : el("div",{class:"muted",style:"margin-top:10px"},["Lecture seule"])
+        ])
+      ]);
+
+      setTimeout(()=>initCanvas(st), 0);
+      return wrap;
+    }
+
+    function initCanvas(st){
+      const canvas = $("cvs");
+      if(!canvas) return;
+
+      const ctx = canvas.getContext("2d");
+      function resize(){
+        const rect = canvas.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = Math.floor(rect.width * dpr);
+        canvas.height = Math.floor(rect.height * dpr);
+        ctx.setTransform(dpr,0,0,dpr,0,0);
+        redraw();
+      }
+
+      function redraw(){
+        const rect = canvas.getBoundingClientRect();
+        ctx.clearRect(0,0,rect.width,rect.height);
+        ctx.fillStyle = st.background || "#0a0a0d";
+        ctx.fillRect(0,0,rect.width,rect.height);
+
+        for(const s of (st.strokes||[])){
+          ctx.strokeStyle = s.color;
+          ctx.lineWidth = s.size;
+          ctx.lineCap = "round";
+          ctx.lineJoin = "round";
+          ctx.beginPath();
+          for(let i=0;i<s.points.length;i++){
+            const p = s.points[i];
+            if(i===0) ctx.moveTo(p.x, p.y);
+            else ctx.lineTo(p.x, p.y);
+          }
+          ctx.stroke();
+        }
+      }
+
+      window.addEventListener("resize", resize, {passive:true});
+      resize();
+
+      if(!unlocked){
+        canvas.style.cursor = "not-allowed";
+        return;
+      }
+
+      let drawing = false;
+      let cur = null;
+
+      const getPoint = (e)=>{
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return { x: clientX - rect.left, y: clientY - rect.top };
+      };
+
+      const colorEl = $("penColor");
+      const sizeEl = $("penSize");
+
+      const start = (e)=>{
+        drawing = true;
+        const p = getPoint(e);
+        cur = { id: uid(), color: colorEl?.value || "#d4af37", size: Number(sizeEl?.value||4), points:[p] };
+        st.strokes = st.strokes || [];
+        st.strokes.push(cur);
+        redraw();
+        e.preventDefault();
+      };
+      const move = (e)=>{
+        if(!drawing || !cur) return;
+        cur.points.push(getPoint(e));
+        redraw();
+        e.preventDefault();
+      };
+      const end = ()=>{
+        drawing = false;
+        cur = null;
+        deepSet(activeProfile,"data.custom_canvas", st);
+        scheduleCloudSave();
+      };
+
+      canvas.addEventListener("pointerdown", start);
+      canvas.addEventListener("pointermove", move);
+      window.addEventListener("pointerup", end);
+
+      canvas.addEventListener("touchstart", start, {passive:false});
+      canvas.addEventListener("touchmove", move, {passive:false});
+      window.addEventListener("touchend", end);
+    }
+
+    function exportCanvasPNG(){
+      const canvas = $("cvs");
+      if(!canvas) return;
+      const a = document.createElement("a");
+      a.download = `canvas_${activeKey}.png`;
+      a.href = canvas.toDataURL("image/png");
+      a.click();
+    }
+
+    function renderCustomBoard(){
+      const b = activeProfile.data?.custom_board || {columns:[]};
+      const cols = b.columns || [];
+
+      const root = el("div",{class:"panel"},[
+        el("div",{style:"display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px"},[
+          el("div",{style:"font-weight:900"},["Tableau (Kanban RP)"]),
+          unlocked ? el("button",{class:"btn small primary", onClick:()=>{
+            cols.push({id:uid(), title:"Nouvelle colonne", cards:[]});
+            deepSet(activeProfile,"data.custom_board.columns", cols);
+            scheduleCloudSave();
+            renderApp();
+          }},[el("i",{class:"fa-solid fa-plus"})," Colonne"]) : null
+        ]),
+        el("div",{class:"grid3"}, cols.map(col=>{
+          const cards = col.cards || [];
+          const box = el("div",{class:"panel", style:"margin:0"},[
+            el("div",{style:"display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px"},[
+              el("div",{style:"font-weight:900;color:var(--gold)"},[col.title]),
+              unlocked ? el("button",{class:"btn small danger", onClick:()=>{
+                deepSet(activeProfile,"data.custom_board.columns", cols.filter(x=>x.id!==col.id));
+                scheduleCloudSave();
+                renderApp();
+              }},[el("i",{class:"fa-solid fa-trash"})]) : null
+            ]),
+            unlocked ? el("input",{class:"input", value:col.title, onInput:(e)=>{ col.title=e.target.value; scheduleCloudSave(); }}) : null,
+            unlocked ? el("button",{class:"btn small primary", style:"margin-top:10px", onClick:()=>{
+              cards.unshift({id:uid(), text:"Nouvelle carte"});
+              col.cards = cards;
+              scheduleCloudSave();
+              renderApp();
+            }},[el("i",{class:"fa-solid fa-plus"})," Carte"]) : null,
+            el("div",{style:"display:flex;flex-direction:column;gap:10px;margin-top:10px"}, cards.map(cd=>{
+              const item = el("div",{class:"timelineItem"},[
+                el("div",{style:"display:flex;justify-content:space-between;gap:10px;align-items:center"},[
+                  el("div",{style:"flex:1;color:#ddd"},[cd.text]),
+                  unlocked ? el("button",{class:"btn small danger", onClick:()=>{
+                    col.cards = cards.filter(x=>x.id!==cd.id);
+                    scheduleCloudSave();
+                    renderApp();
+                  }},[el("i",{class:"fa-solid fa-trash"})]) : null
+                ])
+              ]);
+              if(unlocked){
+                item.appendChild(el("input",{class:"input", value:cd.text, style:"margin-top:10px;font-family:Montserrat", onInput:(e)=>{ cd.text=e.target.value; scheduleCloudSave(); }}));
+              }
+              return item;
+            }))
+          ]);
+          return box;
+        }))
+      ]);
+      return root;
+    }
+
+    function isTabPublic(tabId){
+      const t = (activeProfile.tabs||[]).find(x=>x.id===tabId);
+      return !!t?.visiblePublic;
+    }
+
+    /******************************************************************
+     * 11) Tabs settings (rename/hide/reorder/public/private)
+     ******************************************************************/
+    function renderTabsSettings(){
+      const tabs = activeProfile.tabs || [];
+
+      const root = el("div",{},[
+        el("div",{class:"sectionTitle"},[
+          el("span",{},["Onglets — Configuration"]),
+          el("span",{class:"ref"},["customizable"])
+        ]),
+        el("div",{class:"panel"},[
+          el("div",{class:"muted",style:"line-height:1.7;margin-bottom:12px"},[
+            "Ici tu peux renommer, masquer (enabled), et choisir la visibilité publique de chaque onglet."
+          ]),
+          el("div",{style:"display:flex;flex-direction:column;gap:12px"}, tabs.map((t,idx)=>{
+            const row = el("div",{class:"timelineItem"},[
+              el("div",{style:"display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap"},[
+                el("div",{style:"font-weight:900;color:var(--gold)"},[`${idx+1}. ${t.title}`]),
+                el("span",{class:"chip"},[t.type])
+              ]),
+              el("div",{style:"display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px"},[
+                el("div",{},[
+                  el("div",{class:"fieldLabel"},["Titre"]),
+                  el("input",{class:"input", value:t.title, onInput:(e)=>{ t.title=e.target.value; scheduleCloudSave(); renderApp(); }})
+                ]),
+                el("div",{},[
+                  el("div",{class:"fieldLabel"},["Icône (FontAwesome, ex: fa-scroll)"]),
+                  el("input",{class:"input", value:t.icon||"", onInput:(e)=>{ t.icon=e.target.value; scheduleCloudSave(); renderApp(); }})
+                ])
+              ]),
+              el("div",{style:"display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;align-items:center"},[
+                el("label",{class:"switch"},[
+                  el("input",{type:"checkbox", checked:!!t.enabled, onChange:(e)=>{ t.enabled=e.target.checked; scheduleCloudSave(); renderApp(); }}),
+                  el("span",{},["Activé"])
+                ]),
+                el("label",{class:"switch"},[
+                  el("input",{type:"checkbox", checked:!!t.visiblePublic, onChange:(e)=>{ t.visiblePublic=e.target.checked; scheduleCloudSave(); renderApp(); }}),
+                  el("span",{},["Public (lecture)"])
+                ])
+              ]),
+              el("div",{style:"display:flex;justify-content:flex-end;gap:10px;margin-top:12px;flex-wrap:wrap"},[
+                el("button",{class:"btn small", disabled: idx===0, onClick:()=>{
+                  const x = tabs[idx-1]; tabs[idx-1]=tabs[idx]; tabs[idx]=x;
+                  deepSet(activeProfile,"tabs",tabs);
+                  scheduleCloudSave(); renderApp();
+                }},[el("i",{class:"fa-solid fa-arrow-up"}),""]),
+                el("button",{class:"btn small", disabled: idx===tabs.length-1, onClick:()=>{
+                  const x = tabs[idx+1]; tabs[idx+1]=tabs[idx]; tabs[idx]=x;
+                  deepSet(activeProfile,"tabs",tabs);
+                  scheduleCloudSave(); renderApp();
+                }},[el("i",{class:"fa-solid fa-arrow-down"}),""])
+              ])
+            ]);
+            return row;
+          }))
+        ])
+      ]);
+      return root;
+    }
+
+    /******************************************************************
+     * 12) Unlock logic (PIN)
+     ******************************************************************/
     function openUnlockModal(){
       $("uPin").value = "";
       modal($("mUnlock"), true);
@@ -830,110 +1878,195 @@
     }
 
     function unlock(){
-      const p = state.profiles[activeKey];
       const pin = ($("uPin").value || "").trim();
+      const p = activeProfile;
 
       if(p.key==="harry" && pin !== PIN_HARRY) return toast("PIN incorrect");
       if(p.key==="seya"  && pin !== PIN_SEYA)  return toast("PIN incorrect");
 
       if(p.key!=="harry" && p.key!=="seya"){
-        if(p.pinHash){
-          if(hashPin(pin) !== p.pinHash) return toast("PIN incorrect");
+        const expected = p.security?.pinHash || "";
+        if(expected){
+          if(hashPin(pin) !== expected) return toast("PIN incorrect");
         } else {
-          // allow setting pin on first unlock
-          if(pin){
-            p.pinHash = hashPin(pin);
-            saveState();
-            toast("PIN enregistré");
-          }
+          // First time: set pinHash
+          if(!pin) return toast("Choisis un PIN");
+          p.security.pinHash = hashPin(pin);
+          scheduleCloudSave();
+          toast("PIN enregistré");
         }
       }
 
-      setUnlock(activeKey, 45);
-      modal($("mUnlock"), false);
+      unlocked = true;
       setEditMode(true);
+      modal($("mUnlock"), false);
       toast("Édition activée");
+      renderApp();
     }
 
     function lock(){
-      clearUnlock(activeKey);
+      unlocked = false;
       setEditMode(false);
       toast("Verrouillé");
+      renderApp();
     }
 
-    /************ Wire events ************/
-    // Login actions
-    $("q").addEventListener("input", renderList);
-    $("openCreate").addEventListener("click", ()=> openCreateModal("harry"));
-    $("openHelp").addEventListener("click", ()=> modal($("mHelp"), true));
+    /******************************************************************
+     * 13) Create profile (cloud)
+     ******************************************************************/
+    function openCreateModal(){
+      modal($("mCreate"), true);
+      $("cName").value = "";
+      $("cKey").value = "";
+      $("cImg").value = "";
+      $("cPin").value = "";
+      fillDuplicateSelect();
+      $("cFrom").value = "harry";
+    }
 
-    // Modals
-    $("cCancel").addEventListener("click", ()=> modal($("mCreate"), false));
+    async function createProfile(){
+      const name = ($("cName").value || "").trim() || "Visiteur";
+      const key = slugify(($("cKey").value || "").trim() || name);
+      const img = ($("cImg").value || "").trim();
+      const pin = ($("cPin").value || "").trim();
+      const from = $("cFrom").value;
+
+      if(pin.length < 4 || pin.length > 8) return toast("PIN 4-8 chiffres");
+
+      const ref = doc(db, "profiles", key);
+      const exists = await getDoc(ref);
+      if(exists.exists()) return toast("ID déjà pris (change la clé)");
+
+      const base = profilesCache.get(from) || harryProfile();
+      const p = JSON.parse(JSON.stringify(base)); // deep copy (safe)
+      p.key = key;
+      p.displayName = name;
+      p.public = true;
+      p.meta = p.meta || {};
+      p.meta.img = img || p.meta.img || "";
+      p.meta.ref = p.meta.ref || "";
+      p.security = p.security || {};
+      p.security.fixedPin = false;
+      p.security.pinHash = hashPin(pin);
+      p.updatedAt = Date.now();
+
+      // reset some stuff
+      p.data.timeline.events = [];
+      p.data.goals.court = [];
+      p.data.goals.long = [];
+      p.data.roulette.history = [];
+
+      await setDoc(ref, p);
+      toast("Profil créé (cloud)");
+      modal($("mCreate"), false);
+      await refreshProfilesList();
+    }
+
+    /******************************************************************
+     * 14) Tools: export/import/print
+     ******************************************************************/
+    function exportActive(){
+      const json = JSON.stringify(activeProfile, null, 2);
+      const blob = new Blob([json], {type:"application/json"});
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `profil_${activeProfile.key}_${new Date().toISOString().slice(0,10)}.json`;
+      a.click();
+      setTimeout(()=>URL.revokeObjectURL(a.href), 1200);
+      toast("Export OK");
+    }
+
+    async function importActive(){
+      if(!unlocked) return toast("Déverrouille d'abord");
+      try{
+        const raw = ($("importJson").value||"").trim();
+        const obj = JSON.parse(raw);
+        if(!obj.key || obj.key !== activeKey) return toast("Le JSON doit correspondre à ce profil");
+        activeProfile = obj;
+        await setDoc(doc(db,"profiles",activeKey), activeProfile, {merge:false});
+        modal($("mImport"), false);
+        toast("Import OK");
+      }catch(e){
+        alert("JSON invalide: " + e.message);
+      }
+    }
+
+    function printProfile(){
+      // simplistic print: open new window with basic layout (v7.1 will be better)
+      const w = window.open("", "_blank");
+      const name = activeProfile.displayName || activeProfile.key;
+      w.document.write(`
+        <html><head><title>${name} — Dossier</title>
+        <style>
+          body{font-family:Arial; padding:30px}
+          h1{margin:0 0 10px}
+          .stamp{position:fixed; top:20px; right:20px; border:2px solid #d00; padding:10px 14px; transform:rotate(8deg); font-weight:900}
+          .sec{margin:18px 0}
+          .muted{color:#666}
+        </style></head><body>
+        <div class="stamp">GRANDLINE // CONFIDENTIEL</div>
+        <h1>${name}</h1>
+        <div class="muted">${activeProfile.meta?.ref||""}</div>
+        <div class="sec">
+          <h2>Identité</h2>
+          <pre>${escapeHtml(JSON.stringify(activeProfile.data?.identite||{}, null, 2))}</pre>
+        </div>
+        <div class="sec">
+          <h2>Lore</h2>
+          <pre>${escapeHtml(JSON.stringify(activeProfile.data?.lore?.sections||[], null, 2))}</pre>
+        </div>
+        <div class="sec">
+          <h2>Timeline</h2>
+          <pre>${escapeHtml(JSON.stringify(activeProfile.data?.timeline?.events||[], null, 2))}</pre>
+        </div>
+        <script>window.print();</script>
+        </body></html>
+      `);
+      w.document.close();
+    }
+
+    function escapeHtml(s){
+      return String(s ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");
+    }
+
+    /******************************************************************
+     * 15) Wire events + init
+     ******************************************************************/
+    $("q").addEventListener("input", renderLanding);
+    $("btnCreate").addEventListener("click", openCreateModal);
+    $("btnHelp").addEventListener("click", ()=>modal($("mHelp"), true));
+    $("hOk").addEventListener("click", ()=>modal($("mHelp"), false));
+
+    $("cCancel").addEventListener("click", ()=>modal($("mCreate"), false));
     $("cOk").addEventListener("click", createProfile);
 
-    $("uCancel").addEventListener("click", ()=> modal($("mUnlock"), false));
-    $("uOk").addEventListener("click", unlock);
+    $("back").addEventListener("click", backToLanding);
 
-    $("hOk").addEventListener("click", ()=> modal($("mHelp"), false));
-
-    // App actions
-    $("back").addEventListener("click", backToLogin);
     $("unlock").addEventListener("click", openUnlockModal);
     $("lock").addEventListener("click", lock);
 
-    // Tabs
-    document.querySelectorAll(".sbBtn[data-tab]").forEach(btn=>{
-      btn.addEventListener("click", ()=> showTab(btn.dataset.tab));
-    });
+    $("uCancel").addEventListener("click", ()=>modal($("mUnlock"), false));
+    $("uOk").addEventListener("click", unlock);
 
-    // Editable fields -> autosave on blur
-    $("img").addEventListener("input", ()=>{
-      if(!unlocked) return;
-      $("imgPreview").src = $("img").value.trim();
-      commitField("meta.img", $("img").value.trim());
-    });
+    $("tools").addEventListener("click", ()=>modal($("mTools"), true));
+    $("tClose").addEventListener("click", ()=>modal($("mTools"), false));
+    $("export").addEventListener("click", exportActive);
+    $("importOpen").addEventListener("click", ()=>modal($("mImport"), true));
+    $("iCancel").addEventListener("click", ()=>modal($("mImport"), false));
+    $("iOk").addEventListener("click", importActive);
+    $("print").addEventListener("click", printProfile);
 
-    function saveEditable(divId, path){
-      const el = $(divId);
-      el.addEventListener("blur", ()=>{
-        if(!unlocked) return;
-        commitField(path, el.textContent.trim());
-        toast("Sauvegardé");
-      });
-      el.addEventListener("keydown", (e)=>{
-        if(!unlocked) return;
-        if(e.key==="Enter"){
-          e.preventDefault();
-          el.blur();
-        }
-      });
-    }
-    saveEditable("fullName", "data.fullName");
-    saveEditable("age", "data.age");
-    saveEditable("role", "data.role");
-    saveEditable("psy", "data.psy");
-
-    $("journal").addEventListener("input", ()=>{
-      if(!unlocked) return;
-      commitField("data.journal", $("journal").value);
-    });
-
-    // Keyboard
+    // keyboard
     document.addEventListener("keydown", (e)=>{
       if(e.key==="/" && document.activeElement?.tagName!=="INPUT" && document.activeElement?.tagName!=="TEXTAREA"){
         e.preventDefault(); $("q").focus();
       }
       if(e.key==="Escape"){
-        modal($("mCreate"), false);
-        modal($("mUnlock"), false);
-        modal($("mHelp"), false);
+        [$("mCreate"),$("mUnlock"),$("mTools"),$("mImport"),$("mHelp")].forEach(m=>m.classList.remove("show"));
       }
     });
 
-    // Init
-    updateStorageSize();
-    renderList();
-    showTab("identite");
+    await refreshProfilesList();
   </script>
 </body>
 </html>
