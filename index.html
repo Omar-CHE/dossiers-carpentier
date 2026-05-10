@@ -18,16 +18,10 @@
       --focus:0 0 0 3px rgba(212,175,55,.35);
       --shadow: 0 40px 120px rgba(0,0,0,1);
     }
-
-    *{
-        box-sizing:border-box;
-        margin:0;
-        padding:0;
-    }
+    *{box-sizing:border-box;margin:0;padding:0}
     
     body{
-      height:100vh; 
-      overflow:hidden;
+      height:100vh; overflow:hidden;
       font-family:Montserrat,system-ui;
       color:var(--text);
       background:
@@ -35,24 +29,10 @@
         url('fond.png') center/cover fixed;
     }
     
-    button, input, textarea, select{
-        font-family:inherit;
-    }
-
-    :focus-visible{
-        outline:none;
-        box-shadow:var(--focus);
-        border-radius:12px;
-    }
-
-    a {
-        color:var(--gold); 
-        text-decoration: none;
-    }
-
-    a:hover {
-        text-decoration: underline;
-    }
+    button, input, textarea, select{font-family:inherit}
+    :focus-visible{outline:none;box-shadow:var(--focus);border-radius:12px}
+    a{color:var(--gold); text-decoration: none;}
+    a:hover{text-decoration: underline;}
 
     .logo-main {
       height: 90px; 
@@ -62,7 +42,6 @@
       display: block;
       filter: drop-shadow(0 0 10px rgba(212,175,55, 0.5));
     }
-
     .logo-sidebar {
       height: 80px; 
       width: auto;
@@ -92,6 +71,12 @@
     .btn.primary{border-color:rgba(212,175,55,.9);background:var(--goldDim);color:var(--gold)}
     .btn.primary:hover{background:rgba(212,175,55,.20)}
     .btn.danger{border-color:rgba(231,76,60,.55);background:rgba(231,76,60,.08);color:#ffbdb7}
+    
+    /* ======= BOUTON TWITCH ======= */
+    .btn.twitch{border-color:#9146ff;background:rgba(145,70,255,0.15);color:#b380ff;}
+    .btn.twitch:hover{background:rgba(145,70,255,0.3); color:#fff;}
+    .hrp-pseudo{font-size:10px; color:#b380ff; margin-top:3px; font-weight:700; text-transform:uppercase; letter-spacing:1px;}
+    
     .btn.small{padding:8px 10px;font-size:11px;border-radius:12px}
     .btn:disabled{opacity:.45;cursor:not-allowed}
 
@@ -149,10 +134,7 @@
       padding:22px;
       overflow:auto;
     }
-    .landingWrap{
-        width:min(1280px, 98vw); 
-        position: relative;
-    }
+    .landingWrap{width:min(1280px, 98vw); position: relative;}
     .hero{
       border:1px solid #1f1f26;
       background:
@@ -823,7 +805,7 @@
       ],
       data: {
         identite: { fullName: name, age: "", birthdate: "", birthplace: "", origins: "", role: "", faction: "GRANDLINE", voice: "", phys: "", sign: "" },
-        hrp: { pseudo: "", twitch: "" },
+        hrp: { isStreamer: false, pseudo: "", twitch: "" },
         stats: [ { id:uid(), label:"Courage", val:50 }, { id:uid(), label:"Charisme", val:50 }, { id:uid(), label:"Endurance", val:50 } ],
         lore: { sections: [] }, goals: { court: [], long: [] }, roulette: { options: [], history: [] }, timeline: { events: [] }, relations: { nodes: [], list: [] },
         custom_note: { html:"<p>Écris ton lore, tes scènes, tes secrets…</p>" }, custom_canvas: { strokes:[], background:"#0a0a0d" },
@@ -840,7 +822,7 @@
         origins:"Franco-Algérien", role:"Chef de famille (précaire) / Faux Caïd", faction:"PARIS RP",
         voice:"Voix très aiguë, zéro virilité.", phys:"1m75 (plutôt frêle)", sign:"Moustache taillée (pour paraître plus vieux)."
       };
-      p.data.hrp = { pseudo: "Ruubix", twitch: "https://www.twitch.tv/ruubix" };
+      p.data.hrp = { isStreamer: true, pseudo: "Ruubix", twitch: "https://www.twitch.tv/ruubix" };
       p.data.stats = [
         { id:uid(), label:"Courage (Froid & Calculé)", val:5 }, { id:uid(), label:"Survie / Instinct", val:95 },
         { id:uid(), label:"Sincérité (panique)", val:100 }, { id:uid(), label:"Dévouement (Seya)", val:100 }
@@ -865,7 +847,7 @@
         origins:"Franco-Algérienne", role:"Petite sœur surprotégée", faction:"PARIS RP",
         voice:"Voix très aiguë, parle sans filtre.", phys:"Petite, souvent cachée derrière Harry", sign:"Regard fuyant, hyperactive."
       };
-      p.data.hrp = { pseudo: "", twitch: "" };
+      p.data.hrp = { isStreamer: false, pseudo: "", twitch: "" };
       p.data.stats = [
         { id:uid(), label:"Naïveté", val:100 }, { id:uid(), label:"Émotivité", val:100 },
         { id:uid(), label:"Jalousie", val:100 }, { id:uid(), label:"Dévouement (Harry)", val:100 }
@@ -1006,12 +988,20 @@
         const name = document.createElement("div"); 
         name.className = "name"; 
         name.textContent = p.displayName || p.key;
+        info.appendChild(name); 
+
+        // === AJOUT PSEUDO STREAMER ===
+        const hrpData = p.data?.hrp || {};
+        if(hrpData.isStreamer && hrpData.pseudo) {
+            const pseudoDiv = document.createElement("div");
+            pseudoDiv.className = "hrp-pseudo";
+            pseudoDiv.innerHTML = `<i class="fa-solid fa-gamepad"></i> Joué par ${hrpData.pseudo}`;
+            info.appendChild(pseudoDiv);
+        }
         
         const role = document.createElement("div"); 
         role.className = "role"; 
         role.textContent = p.data?.identite?.role || "";
-        
-        info.appendChild(name); 
         info.appendChild(role);
         
         row.appendChild(av); 
@@ -1032,8 +1022,17 @@
         openBtn.className = "btn primary"; 
         openBtn.innerHTML = '<i class="fa-solid fa-folder-open"></i> Ouvrir';
         openBtn.addEventListener("click", ()=>openProfile(p.key));
-        
         actions.appendChild(openBtn);
+        
+        // === AJOUT BOUTON TWITCH ===
+        if(hrpData.isStreamer && hrpData.twitch) {
+            const twBtn = document.createElement("a");
+            twBtn.href = hrpData.twitch;
+            twBtn.target = "_blank";
+            twBtn.className = "btn twitch";
+            twBtn.innerHTML = '<i class="fa-brands fa-twitch"></i> Twitch';
+            actions.appendChild(twBtn);
+        }
         
         card.appendChild(row); 
         card.appendChild(badges); 
@@ -1208,8 +1207,45 @@
 
     function renderIdentite(){
       const idt = activeProfile.data?.identite || {};
-      const hrp = activeProfile.data?.hrp || { pseudo: "", twitch: "" };
+      const hrp = activeProfile.data?.hrp || { isStreamer: false, pseudo: "", twitch: "" };
       
+      const hrpPanel = el("div",{class:"panel", style:"margin-top:20px;"},[
+          el("div",{style:"display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #222; padding-bottom:5px; margin-bottom:15px;"},[
+            el("div",{class:"fieldLabel", style:"font-weight:900; color:var(--ok); margin:0;"},["SECTION HRP"]),
+            unlocked ? el("label",{class:"switch"},[
+              el("input",{type:"checkbox", checked:!!hrp.isStreamer, onChange:(e)=>{ 
+                  deepSet(activeProfile, "data.hrp.isStreamer", e.target.checked); 
+                  scheduleCloudSave(); 
+                  renderApp(); 
+              }}),
+              el("div",{class:"slider"}),
+              el("span",{style:"font-size:11px; color:#bbb;"},["Streamer"])
+            ]) : (hrp.isStreamer ? el("span",{class:"chip ok"},["Streamer"]) : el("span",{class:"chip"},["Non-streamer"]))
+          ])
+      ]);
+
+      if (hrp.isStreamer) {
+          hrpPanel.appendChild(el("div",{class:"fieldLabel"},["Votre pseudo"]));
+          hrpPanel.appendChild(editableDiv(hrp.pseudo, (v)=>{ deepSet(activeProfile,"data.hrp.pseudo",v); scheduleCloudSave(); }));
+          
+          hrpPanel.appendChild(el("div",{class:"fieldLabel", style:"margin-top:10px;"},["Lien Twitch"]));
+          if (unlocked) {
+            hrpPanel.appendChild(el("input",{class:"input", value: hrp.twitch || "", placeholder:"https://twitch.tv/...", onInput:(e)=>{ deepSet(activeProfile,"data.hrp.twitch", e.target.value); scheduleCloudSave(); }}));
+          } else {
+            if (hrp.twitch) {
+               hrpPanel.appendChild(el("div",{style:"margin-top:5px;"},[ el("a", {href: hrp.twitch, target:"_blank", class:"btn small twitch"},[el("i",{class:"fa-brands fa-twitch"}), " Twitch"]) ]));
+            } else {
+               hrpPanel.appendChild(el("div",{class:"muted", style:"font-style:italic; font-size:12px;"},["Aucun Twitch renseigné"]));
+            }
+          }
+      } else {
+          if(!unlocked) {
+              hrpPanel.appendChild(el("div",{class:"muted", style:"font-style:italic; font-size:12px;"},["Ce joueur n'est pas un streamer."]));
+          } else {
+              hrpPanel.appendChild(el("div",{class:"muted", style:"font-style:italic; font-size:12px;"},["Cochez 'Streamer' en haut à droite de cette section pour ajouter votre pseudo et lien Twitch."]));
+          }
+      }
+
       const wrap = el("div",{class:"grid2"},[
         el("div",{class:"panel"},[
           el("div",{style:"display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;"},[
@@ -1268,21 +1304,25 @@
           ]),
           
           // SECTION HRP
-          el("div",{class:"panel", style:"margin-top:20px;"},[
-            el("div",{class:"fieldLabel", style:"font-weight:900; color:var(--ok); border-bottom:1px solid #222; padding-bottom:5px; margin-bottom:15px;"},["SECTION HRP"]),
-            
-            el("div",{class:"fieldLabel"},["Votre pseudo"]),
-            editableDiv(hrp.pseudo, (v)=>{ deepSet(activeProfile,"data.hrp.pseudo",v); scheduleCloudSave(); }),
-            
-            el("div",{class:"fieldLabel", style:"margin-top:10px;"},["Lien Twitch"]),
-            unlocked 
-              ? el("input",{class:"input", value: hrp.twitch || "", placeholder:"https://twitch.tv/...", onInput:(e)=>{ deepSet(activeProfile,"data.hrp.twitch", e.target.value); scheduleCloudSave(); }})
-              : (hrp.twitch 
-                  ? el("div",{style:"margin-top:5px;"},[ el("a", {href: hrp.twitch, target:"_blank", class:"btn small", style:"background:rgba(145,70,255,0.2); color:#a970ff; border-color:#9146ff;"},[el("i",{class:"fa-brands fa-twitch"}), " Twitch"]) ]) 
-                  : el("div",{class:"muted", style:"font-style:italic; font-size:12px;"},["Aucun Twitch renseigné"]))
-          ])
+          hrpPanel
         ])
       ]);
+
+      setTimeout(()=>{
+        const input = $("imgUrl");
+        const preview = $("imgPreview");
+        if(!input || !preview) return;
+        preview.onerror = ()=> preview.style.opacity = '0';
+        input.disabled = !unlocked;
+        input.addEventListener("input", ()=>{
+          if(!unlocked) return;
+          const url = input.value.trim();
+          activeProfile.meta.img = url;
+          preview.src = url;
+          preview.style.opacity = '1';
+          scheduleCloudSave();
+        });
+      },0);
 
       return wrap;
     }
@@ -1387,52 +1427,433 @@
       ]);
     }
 
-    function openUnlockModal(){ 
-        $("uPin").value = ""; 
-        modal($("mUnlock"), true); 
+    function renderLore(){
+      const lore = activeProfile.data?.lore?.sections || [];
+      const root = el("div",{},[
+        el("div",{class:"panel"},[
+          el("div",{style:"display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px"},[
+            el("div",{style:"font-weight:900"},["Sections d’histoire"]),
+            unlocked ? el("button",{class:"btn small primary", onClick:()=>{
+              lore.unshift({id:uid(), title:"Nouvelle section", text:"", date:""});
+              deepSet(activeProfile,"data.lore.sections", lore);
+              scheduleCloudSave();
+              renderApp();
+            }},[el("i",{class:"fa-solid fa-plus"})," Ajouter"]) : el("span",{class:"chip ro"},["Lecture"])
+          ]),
+          el("div",{class:"grid3"}, lore.map(sec=>{
+            const card = el("div",{class:"panel", style:"margin:0"},[
+              el("div",{style:"display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px"},[
+                el("div",{style:"font-weight:900;color:var(--gold)"},[sec.title]),
+                unlocked ? el("button",{class:"btn small danger", onClick:()=>{
+                  deepSet(activeProfile,"data.lore.sections", lore.filter(x=>x.id!==sec.id));
+                  scheduleCloudSave();
+                  renderApp();
+                }},[el("i",{class:"fa-solid fa-trash"})]) : null
+              ]),
+              unlocked ? el("input",{class:"input", value:sec.title, onInput:(e)=>{ sec.title=e.target.value; scheduleCloudSave(); }}) : null,
+              unlocked ? el("input",{class:"input", value:sec.date||"", placeholder:"date (optionnel)", style:"margin-top:10px", onInput:(e)=>{ sec.date=e.target.value; scheduleCloudSave(); }}) : null,
+              el("div",{class:"muted",style:"font-size:12px;margin:10px 0 8px"},["Texte"]),
+              unlocked
+                ? el("textarea",{class:"input", style:"min-height:160px;font-family:Montserrat;font-size:14px;line-height:1.7", onInput:(e)=>{ sec.text=e.target.value; scheduleCloudSave(); }},[])
+                : el("div",{style:"color:#bbb;line-height:1.8"},[sec.text||""])
+            ]);
+
+            if(unlocked){
+              card.querySelector("textarea").value = sec.text || "";
+            }
+            return card;
+          }))
+        ])
+      ]);
+      return root;
     }
-    
+
+    function renderGoals(){
+      const goals = activeProfile.data?.goals || {court:[], long:[]};
+
+      const column = (title, key)=> {
+        const list = goals[key] || [];
+        const col = el("div",{class:"panel"},[
+          el("div",{style:"display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px"},[
+            el("div",{style:"font-weight:900;color:var(--gold)"},[title]),
+            unlocked ? el("button",{class:"btn small primary", onClick:()=>{
+              list.unshift({id:uid(), text:"Nouvel objectif", done:false});
+              goals[key]=list;
+              deepSet(activeProfile,"data.goals",goals);
+              scheduleCloudSave();
+              renderApp();
+            }},[el("i",{class:"fa-solid fa-plus"})," Ajouter"]) : null
+          ]),
+          el("div",{}, list.map(g=>{
+            const item = el("div",{class:"timelineItem"},[
+              el("div",{style:"display:flex;gap:10px;align-items:center;justify-content:space-between"},[
+                el("div",{style:`flex:1;color:#ddd;${g.done?"text-decoration:line-through;opacity:.7":""}`},[g.text]),
+                unlocked ? el("div",{style:"display:flex;gap:8px"},[
+                  el("button",{class:"btn small", onClick:()=>{
+                    g.done=!g.done;
+                    scheduleCloudSave();
+                    renderApp();
+                  }},[el("i",{class:"fa-solid fa-square-check"}),""]),
+                  el("button",{class:"btn small danger", onClick:()=>{
+                    goals[key]=list.filter(x=>x.id!==g.id);
+                    deepSet(activeProfile,"data.goals",goals);
+                    scheduleCloudSave();
+                    renderApp();
+                  }},[el("i",{class:"fa-solid fa-trash"})])
+                ]) : null
+              ]),
+              unlocked ? el("input",{class:"input", value:g.text, style:"margin-top:10px;font-family:Montserrat", onInput:(e)=>{ g.text=e.target.value; scheduleCloudSave(); }}) : null
+            ]);
+            return item;
+          }))
+        ]);
+        return col;
+      };
+
+      return el("div",{class:"grid2"},[
+        column("Court terme","court"),
+        column("Long terme","long")
+      ]);
+    }
+
+    function renderTimeline(){
+      const t = activeProfile.data?.timeline || {events:[]};
+      const events = t.events || [];
+
+      const root = el("div",{class:"panel"},[
+        el("div",{style:"display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px"},[
+          el("div",{style:"font-weight:900"},["Timeline RP"]),
+          unlocked ? el("button",{class:"btn small primary", onClick:()=>{
+            events.unshift({id:uid(), at:Date.now(), title:"Nouvel événement", text:"", tags:["PARIS RP"]});
+            deepSet(activeProfile,"data.timeline.events", events);
+            scheduleCloudSave();
+            renderApp();
+          }},[el("i",{class:"fa-solid fa-plus"})," Ajouter"]) : null
+        ]),
+        el("div",{style:"display:flex;flex-direction:column;gap:12px"}, events.map(ev=>{
+          const date = new Date(ev.at || Date.now());
+          const item = el("div",{class:"timelineItem"},[
+            el("div",{class:"tlHead"},[
+              el("div",{style:"font-weight:900;color:var(--gold)"},[ev.title]),
+              el("span",{class:"chip"},[date.toLocaleString()])
+            ]),
+            el("div",{style:"color:#bbb;line-height:1.8;margin-top:8px"},[ev.text || ""]),
+            el("div",{class:"tagRow"}, (ev.tags||[]).map(tag=>el("span",{class:"tag"},[tag])))
+          ]);
+
+          if(unlocked){
+            item.appendChild(el("div",{style:"margin-top:10px;display:grid;gap:10px"},[
+              el("input",{class:"input", value:ev.title, onInput:(e)=>{ ev.title=e.target.value; scheduleCloudSave(); }}),
+              el("textarea",{class:"input", style:"min-height:120px;font-family:Montserrat;font-size:14px;line-height:1.7", onInput:(e)=>{ ev.text=e.target.value; scheduleCloudSave(); }},[]),
+              el("input",{class:"input", value:(ev.tags||[]).join(", "), placeholder:"tags séparés par virgule", onInput:(e)=>{
+                ev.tags = e.target.value.split(",").map(x=>x.trim()).filter(Boolean);
+                scheduleCloudSave();
+                renderApp();
+              }}),
+              el("div",{style:"display:flex;justify-content:flex-end"},[
+                el("button",{class:"btn small danger", onClick:()=>{
+                  deepSet(activeProfile,"data.timeline.events", events.filter(x=>x.id!==ev.id));
+                  scheduleCloudSave();
+                  renderApp();
+                }},[el("i",{class:"fa-solid fa-trash"})," Suppr"])
+              ])
+            ]));
+            item.querySelector("textarea").value = ev.text || "";
+          }
+
+          return item;
+        }))
+      ]);
+      return root;
+    }
+
+    function renderRelations(){
+      const rel = activeProfile.data?.relations || {list:[]};
+      const list = rel.list || [];
+
+      const root = el("div",{class:"panel"},[
+        el("div",{style:"display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px"},[
+          el("div",{style:"font-weight:900"},["Relations"]),
+          unlocked ? el("button",{class:"btn small primary", onClick:()=>{
+            list.unshift({id:uid(), name:"Nouveau contact", tag:"Neutre", note:"", img:""});
+            deepSet(activeProfile,"data.relations.list", list);
+            scheduleCloudSave();
+            renderApp();
+          }},[el("i",{class:"fa-solid fa-plus"})," Ajouter"]) : null
+        ]),
+        el("div",{class:"grid3"}, list.map(r=>{
+          const tagColor = r.tag==="Allié" ? "rgba(46,204,113,.25)" : r.tag==="Ennemi" ? "rgba(231,76,60,.25)" : "rgba(180,180,180,.15)";
+          const card = el("div",{class:"panel", style:"margin:0"},[
+            el("div",{style:"display:flex;gap:12px;align-items:center"},[
+              el("div",{class:"avatar",style:"width:54px;height:54px;border-color:rgba(212,175,55,.45)"},[
+                el("img",{src:r.img||"", onError:(e)=>{ e.target.style.opacity = '0'; }})
+              ]),
+              el("div",{},[
+                el("div",{style:"font-weight:900"},[r.name]),
+                el("span",{class:"tag", style:`border-color:${tagColor}`},[r.tag])
+              ])
+            ]),
+            el("div",{style:"margin-top:10px;color:#bbb;line-height:1.7"},[r.note||""])
+          ]);
+
+          if(unlocked){
+            card.appendChild(el("div",{style:"margin-top:10px;display:grid;gap:10px"},[
+              el("input",{class:"input", value:r.name, onInput:(e)=>{ r.name=e.target.value; scheduleCloudSave(); }}),
+              el("select",{class:"input", onChange:(e)=>{ r.tag=e.target.value; scheduleCloudSave(); renderApp(); }},[
+                el("option",{value:"Allié"},["Allié"]),
+                el("option",{value:"Ennemi"},["Ennemi"]),
+                el("option",{value:"Neutre"},["Neutre"])
+              ]),
+              el("div", {style:"display:flex; gap:10px; align-items:center;"}, [
+                el("input",{class:"input", style:"flex:1;", value:r.img||"", placeholder:"image url ou import...", onInput:(e)=>{ r.img=e.target.value; scheduleCloudSave(); renderApp(); }}),
+                el("button", {class:"btn small", onClick:()=> {
+                  const fi = document.createElement('input');
+                  fi.type = 'file'; fi.accept = 'image/*';
+                  fi.onchange = (e) => window.processImageUpload(e.target.files[0], (base64) => {
+                    r.img = base64;
+                    scheduleCloudSave();
+                    renderApp();
+                    toast("Image contact ajoutée");
+                  });
+                  fi.click();
+                }}, [el("i",{class:"fa-solid fa-upload"})])
+              ]),
+              el("textarea",{class:"input", style:"min-height:90px;font-family:Montserrat;font-size:14px;line-height:1.7", onInput:(e)=>{ r.note=e.target.value; scheduleCloudSave(); }},[]),
+              el("div",{style:"display:flex;justify-content:flex-end"},[
+                el("button",{class:"btn small danger", onClick:()=>{
+                  deepSet(activeProfile,"data.relations.list", list.filter(x=>x.id!==r.id));
+                  scheduleCloudSave();
+                  renderApp();
+                }},[el("i",{class:"fa-solid fa-trash"})," Suppr"])
+              ])
+            ]));
+            card.querySelector("textarea").value = r.note || "";
+            card.querySelector("select").value = r.tag || "Neutre";
+          }
+
+          return card;
+        }))
+      ]);
+
+      return root;
+    }
+
+    function renderCustomNote(){
+      const n = activeProfile.data?.custom_note || {html:""};
+      return el("div",{class:"panel"},[
+        el("div",{style:"display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px"},[
+          el("div",{style:"font-weight:900"},["Carnet (rich text)"]),
+          el("span",{class:"chip"},["Tu peux écrire librement"])
+        ]),
+        editableDivBlock(n.html, (html)=>{
+          deepSet(activeProfile,"data.custom_note.html", html);
+          scheduleCloudSave();
+        })
+      ]);
+    }
+
+    function renderCustomCanvas(){
+      const st = activeProfile.data?.custom_canvas || {strokes:[], background:"#0a0a0d"};
+
+      const wrap = el("div",{},[
+        el("div",{class:"panel"},[
+          el("div",{style:"display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px"},[
+            el("div",{style:"font-weight:900"},["Dessin (Canvas)"]),
+            el("div",{style:"display:flex;gap:10px;flex-wrap:wrap;align-items:center"},[
+              el("span",{class:"chip"},["Public: " + (isTabPublic("custom2") ? "oui" : "non")]),
+              unlocked ? el("button",{class:"btn small", onClick:()=>exportCanvasPNG()},[el("i",{class:"fa-solid fa-file-image"})," PNG"]) : null,
+              unlocked ? el("button",{class:"btn small danger", onClick:()=>{
+                st.strokes = [];
+                deepSet(activeProfile,"data.custom_canvas", st);
+                scheduleCloudSave();
+                renderApp();
+              }},[el("i",{class:"fa-solid fa-eraser"})," Clear"]) : null
+            ])
+          ]),
+          el("div",{class:"canvasWrap"},[
+            el("canvas",{id:"cvs"})
+          ]),
+          unlocked ? el("div",{style:"display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;align-items:center"},[
+            el("label",{class:"chip"},["Couleur"]),
+            el("input",{id:"penColor", type:"color", value:"#d4af37"}),
+            el("label",{class:"chip"},["Taille"]),
+            el("input",{id:"penSize", type:"range", min:"1", max:"18", value:"4"})
+          ]) : el("div",{class:"muted",style:"margin-top:10px"},["Lecture seule"])
+        ])
+      ]);
+
+      setTimeout(()=>initCanvas(st), 0);
+      return wrap;
+    }
+
+    function initCanvas(st){
+      const canvas = $("cvs");
+      if(!canvas) return;
+
+      const ctx = canvas.getContext("2d");
+      function resize(){
+        const rect = canvas.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = Math.floor(rect.width * dpr);
+        canvas.height = Math.floor(rect.height * dpr);
+        ctx.setTransform(dpr,0,0,dpr,0,0);
+        redraw();
+      }
+
+      function redraw(){
+        const rect = canvas.getBoundingClientRect();
+        ctx.clearRect(0,0,rect.width,rect.height);
+        ctx.fillStyle = st.background || "#0a0a0d";
+        ctx.fillRect(0,0,rect.width,rect.height);
+
+        for(const s of (st.strokes||[])){
+          ctx.strokeStyle = s.color;
+          ctx.lineWidth = s.size;
+          ctx.lineCap = "round";
+          ctx.lineJoin = "round";
+          ctx.beginPath();
+          for(let i=0;i<s.points.length;i++){
+            const p = s.points[i];
+            if(i===0) ctx.moveTo(p.x, p.y);
+            else ctx.lineTo(p.x, p.y);
+          }
+          ctx.stroke();
+        }
+      }
+
+      window.addEventListener("resize", resize, {passive:true});
+      resize();
+
+      if(!unlocked){
+        canvas.style.cursor = "not-allowed";
+        return;
+      }
+
+      let drawing = false;
+      let cur = null;
+
+      const getPoint = (e)=>{
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return { x: clientX - rect.left, y: clientY - rect.top };
+      };
+
+      const colorEl = $("penColor");
+      const sizeEl = $("penSize");
+
+      const start = (e)=>{
+        drawing = true;
+        const p = getPoint(e);
+        cur = { id: uid(), color: colorEl?.value || "#d4af37", size: Number(sizeEl?.value||4), points:[p] };
+        st.strokes = st.strokes || [];
+        st.strokes.push(cur);
+        redraw();
+        e.preventDefault();
+      };
+      const move = (e)=>{
+        if(!drawing || !cur) return;
+        cur.points.push(getPoint(e));
+        redraw();
+        e.preventDefault();
+      };
+      const end = ()=>{
+        drawing = false;
+        cur = null;
+        deepSet(activeProfile,"data.custom_canvas", st);
+        scheduleCloudSave();
+      };
+
+      canvas.addEventListener("pointerdown", start);
+      canvas.addEventListener("pointermove", move);
+      window.addEventListener("pointerup", end);
+
+      canvas.addEventListener("touchstart", start, {passive:false});
+      canvas.addEventListener("touchmove", move, {passive:false});
+      window.addEventListener("touchend", end);
+    }
+
+    function exportCanvasPNG(){
+      const canvas = $("cvs");
+      if(!canvas) return;
+      const a = document.createElement("a");
+      a.download = `canvas_${activeKey}.png`;
+      a.href = canvas.toDataURL("image/png");
+      a.click();
+    }
+
+    function renderCustomBoard(){
+      const b = activeProfile.data?.custom_board || {columns:[]};
+      const cols = b.columns || [];
+
+      const root = el("div",{class:"panel"},[
+        el("div",{style:"display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px"},[
+          el("div",{style:"font-weight:900"},["Tableau (Kanban RP)"]),
+          unlocked ? el("button",{class:"btn small primary", onClick:()=>{
+            cols.push({id:uid(), title:"Nouvelle colonne", cards:[]});
+            deepSet(activeProfile,"data.custom_board.columns", cols);
+            scheduleCloudSave();
+            renderApp();
+          }},[el("i",{class:"fa-solid fa-plus"})," Colonne"]) : null
+        ]),
+        el("div",{class:"grid3"}, cols.map(col=>{
+          const cards = col.cards || [];
+          const box = el("div",{class:"panel", style:"margin:0"},[
+            el("div",{style:"display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px"},[
+              el("div",{style:"font-weight:900;color:var(--gold)"},[col.title]),
+              unlocked ? el("button",{class:"btn small danger", onClick:()=>{
+                deepSet(activeProfile,"data.custom_board.columns", cols.filter(x=>x.id!==col.id));
+                scheduleCloudSave();
+                renderApp();
+              }},[el("i",{class:"fa-solid fa-trash"})]) : null
+            ]),
+            unlocked ? el("input",{class:"input", value:col.title, onInput:(e)=>{ col.title=e.target.value; scheduleCloudSave(); }}) : null,
+            unlocked ? el("button",{class:"btn small primary", style:"margin-top:10px", onClick:()=>{
+              cards.unshift({id:uid(), text:"Nouvelle carte"});
+              col.cards = cards;
+              scheduleCloudSave();
+              renderApp();
+            }},[el("i",{class:"fa-solid fa-plus"})," Carte"]) : null,
+            el("div",{style:"display:flex;flex-direction:column;gap:10px;margin-top:10px"}, cards.map(cd=>{
+              const item = el("div",{class:"timelineItem"},[
+                el("div",{style:"display:flex;justify-content:space-between;gap:10px;align-items:center"},[
+                  el("div",{style:"flex:1;color:#ddd"},[cd.text]),
+                  unlocked ? el("button",{class:"btn small danger", onClick:()=>{
+                    col.cards = cards.filter(x=>x.id!==cd.id);
+                    scheduleCloudSave();
+                    renderApp();
+                  }},[el("i",{class:"fa-solid fa-trash"})]) : null
+                ])
+              ]);
+              if(unlocked){
+                item.appendChild(el("input",{class:"input", value:cd.text, style:"margin-top:10px;font-family:Montserrat", onInput:(e)=>{ cd.text=e.target.value; scheduleCloudSave(); }}));
+              }
+              return item;
+            }))
+          ]);
+          return box;
+        }))
+      ]);
+      return root;
+    }
+
+    // === RESTE DU SCRIPT FIREBASE ===
+    function openUnlockModal(){ $("uPin").value = ""; modal($("mUnlock"), true); }
     function unlock(){
       const pin = ($("uPin").value || "").trim();
       if(activeProfile.key==="harry" && pin !== PIN_HARRY) return toast("PIN incorrect");
       if(activeProfile.key==="seya"  && pin !== PIN_SEYA)  return toast("PIN incorrect");
       if(activeProfile.key!=="harry" && activeProfile.key!=="seya" && activeProfile.security.pinHash && hashPin(pin) !== activeProfile.security.pinHash) return toast("PIN incorrect");
-      unlocked = true; 
-      setEditMode(true); 
-      modal($("mUnlock"), false); 
-      toast("Édition activée"); 
-      renderApp();
+      unlocked = true; setEditMode(true); modal($("mUnlock"), false); toast("Édition activée"); renderApp();
     }
-    
-    function lock(){ 
-        unlocked = false; 
-        setEditMode(false); 
-        toast("Verrouillé"); 
-        renderApp(); 
-    }
-    
-    function openCreateModal(){ 
-        modal($("mCreate"), true); 
-        fillDuplicateSelect(); 
-    }
-    
+    function lock(){ unlocked = false; setEditMode(false); toast("Verrouillé"); renderApp(); }
+    function openCreateModal(){ modal($("mCreate"), true); fillDuplicateSelect(); }
     async function createProfile(){
-      const name = ($("cName").value || "").trim() || "Dossier"; 
-      const key = slugify(($("cKey").value || "").trim() || name); 
-      const pin = ($("cPin").value || "").trim();
+      const name = ($("cName").value || "").trim() || "Dossier"; const key = slugify(($("cKey").value || "").trim() || name); const pin = ($("cPin").value || "").trim();
       if(pin.length < 4) return toast("PIN trop court");
-      
-      const ref = doc(db, "profiles", key); 
-      const exists = await getDoc(ref); 
-      if(exists.exists()) return toast("ID déjà pris");
-      
-      const p = defaultProfile(key, name); 
-      p.security.pinHash = hashPin(pin);
-      
-      await setDoc(ref, p); 
-      toast("Profil créé !"); 
-      modal($("mCreate"), false); 
-      await refreshProfilesList();
+      const ref = doc(db, "profiles", key); const exists = await getDoc(ref); if(exists.exists()) return toast("ID déjà pris");
+      const p = defaultProfile(key, name); p.security.pinHash = hashPin(pin);
+      await setDoc(ref, p); toast("Profil créé !"); modal($("mCreate"), false); await refreshProfilesList();
     }
 
     $("q").addEventListener("input", renderLanding);
@@ -1447,13 +1868,9 @@
     $("tools").addEventListener("click", ()=>modal($("mTools"), true));
     $("tClose").addEventListener("click", ()=>modal($("mTools"), false));
     $("export").addEventListener("click", ()=>toast("Export JSON..."));
-    
     $("deleteProfileBtn").addEventListener("click", async ()=>{
       if(!unlocked) return toast("Déverrouille d'abord");
-      if(confirm("Supprimer définitivement ?")){ 
-          await deleteDoc(doc(db, "profiles", activeKey)); 
-          backToLanding(); 
-      }
+      if(confirm("Supprimer définitivement ?")){ await deleteDoc(doc(db, "profiles", activeKey)); backToLanding(); }
     });
 
     await refreshProfilesList();
