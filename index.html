@@ -4,6 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
   <title>PARIS RP — DOSSIERS</title>
+  
+  <link rel="icon" type="image/png" href="logo.png">
 
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@600&family=Montserrat:wght@300;400;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -22,12 +24,8 @@
     *{ box-sizing:border-box; margin:0; padding:0; }
     
     body{
-      height:100vh; overflow:hidden;
-      font-family:Montserrat,system-ui;
-      color:var(--text);
-      background:
-        linear-gradient(to bottom, rgba(4, 4, 6, 0.85), rgba(4, 4, 6, 0.98)),
-        url('fond.png') center/cover fixed;
+      height:100vh; overflow:hidden; font-family:Montserrat,system-ui; color:var(--text);
+      background: linear-gradient(to bottom, rgba(4, 4, 6, 0.85), rgba(4, 4, 6, 0.98)), url('fond.jpg') center/cover fixed;
     }
     
     button, input, textarea, select{ font-family:inherit; }
@@ -212,7 +210,7 @@
     .tagRow{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
     .tag{font-family:"Share Tech Mono";font-size:11px;padding:4px 10px;border-radius:999px;border:1px solid #2a2a33;background:#07070a;color:#bbb}
 
-    .result{ font-family:"Share Tech Mono"; background:#000; border:1px solid #222; border-radius:18px; padding:18px; min-height:90px; display:flex;align-items:center;justify-content:center; color:var(--gold); font-size:22px; text-transform:uppercase; }
+    .result{ font-family:"Share Tech Mono"; background:#000; border:1px solid #222; border-radius:18px; padding:18px; min-height:90px; display:flex;align-items:center;justify-content:center; color:var(--gold); font-size:22px; text-transform:uppercase; text-align:center;}
     .spin{animation:glitch .08s infinite}
     @keyframes glitch{from{transform:translate(2px,0)}to{transform:translate(-2px,0)}}
 
@@ -228,7 +226,7 @@
     .formGroup textarea{min-height:120px; resize:vertical}
     .modalActions{display:flex; justify-content:flex-end; gap:10px; margin-top:12px; flex-wrap:wrap}
 
-    #toast{ position:fixed; bottom:30px; left:50%; transform:translateX(-50%) translateY(100px); opacity:0; background:var(--gold); color:#000; padding:12px 18px; border-radius:999px; font-weight:900; font-size:13px; transition:.35s; z-index:100; }
+    #toast{ position:fixed; bottom:30px; left:50%; transform:translateX(-50%) translateY(100px); opacity:0; background:var(--gold); color:#000; padding:12px 18px; border-radius:999px; font-weight:900; font-size:13px; transition:.35s; z-index:100; pointer-events: none;}
     #toast.show{transform:translateX(-50%) translateY(0); opacity:1}
 
     #cloud{ position:fixed; top:14px; right:14px; z-index:999; font-family:"Share Tech Mono"; font-size:11px; padding:8px 10px; border-radius:999px; background:#0a0a0d; border:1px solid #2a2a33; color:#bbb; }
@@ -496,11 +494,64 @@
   </div>
 
   <script type="module">
+    // -------------------------------------------------------------------------
+    // 1. ATTACHEMENT SÉCURISÉ DES ÉVÉNEMENTS (Garantit que l'UI marche)
+    // -------------------------------------------------------------------------
+    const $ = (id)=>document.getElementById(id);
+    
+    function modal(el, show){ el.classList.toggle("show", !!show); }
+    function toast(msg){
+      const t = $("toast"); t.textContent = msg; t.classList.add("show");
+      setTimeout(()=>t.classList.remove("show"), 1600);
+    }
+    
+    $("mobileMenuBtn").addEventListener("click", () => { document.querySelector(".sidebar").classList.add("open"); $("sidebarOverlay").classList.add("open"); });
+    $("sidebarOverlay").addEventListener("click", () => { document.querySelector(".sidebar").classList.remove("open"); $("sidebarOverlay").classList.remove("open"); });
+    $("back").addEventListener("click", backToLanding);
+    $("q").addEventListener("input", renderLanding);
+    
+    $("btnOpenAdminAuth").addEventListener("click", () => { modal($("mAdminAuth"), true); });
+    $("btnCloseAdminAuth").addEventListener("click", () => { modal($("mAdminAuth"), false); });
+    $("btnCloseAdminPanel").addEventListener("click", () => { modal($("mAdminPanel"), false); });
+    $("btnAdminLogin").addEventListener("click", () => {
+        if($("adminPwd").value === ADMIN_PASSWORD) {
+            toast("Accès autorisé"); modal($("mAdminAuth"), false); $("adminPwd").value = ""; modal($("mAdminPanel"), true);
+        } else { toast("Mot de passe incorrect"); }
+    });
+
+    $("btnCreate").addEventListener("click", openCreateModal);
+    $("cOk").addEventListener("click", createProfile);
+    $("cCancel").addEventListener("click", ()=>modal($("mCreate"), false));
+
+    $("unlock").addEventListener("click", openUnlockModal);
+    $("lock").addEventListener("click", lock);
+    $("uOk").addEventListener("click", unlock);
+    $("uCancel").addEventListener("click", ()=>modal($("mUnlock"), false));
+
+    $("tools").addEventListener("click", ()=>modal($("mTools"), true));
+    $("tClose").addEventListener("click", ()=>modal($("mTools"), false));
+    $("export").addEventListener("click", exportActive);
+    $("importOpen").addEventListener("click", ()=>modal($("mImport"), true));
+    $("iCancel").addEventListener("click", ()=>modal($("mImport"), false));
+    $("iOk").addEventListener("click", importActive);
+    $("print").addEventListener("click", printProfile);
+    $("btnHelp").addEventListener("click", ()=>modal($("mHelp"), true));
+    $("hOk").addEventListener("click", ()=>modal($("mHelp"), false));
+
+    document.addEventListener("keydown", (e)=>{
+      if(e.key==="/" && document.activeElement?.tagName!=="INPUT" && document.activeElement?.tagName!=="TEXTAREA"){
+        e.preventDefault(); $("q").focus();
+      }
+      if(e.key==="Escape"){
+        [$("mCreate"),$("mUnlock"),$("mTools"),$("mImport"),$("mHelp"), $("mAdminAuth"), $("mAdminPanel")].forEach(m=>m.classList.remove("show"));
+      }
+    });
+
+    // -------------------------------------------------------------------------
+    // 2. IMPORTS ET VARIABLES GLOBALES
+    // -------------------------------------------------------------------------
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
-    import {
-      getFirestore, doc, setDoc, getDoc, onSnapshot, collection,
-      query, orderBy, limit, getDocs, deleteDoc
-    } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+    import { getFirestore, doc, setDoc, getDoc, onSnapshot, collection, query, orderBy, limit, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
     import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
 
     const firebaseConfig = {
@@ -513,14 +564,24 @@
       measurementId: "G-2SD0NEHV3Q"
     };
 
-    const $ = (id)=>document.getElementById(id);
-    
-    // Utilitaires de base
-    function modal(el, show){ el.classList.toggle("show", !!show); }
-    function toast(msg){
-      const t = $("toast"); t.textContent = msg; t.classList.add("show");
-      setTimeout(()=>t.classList.remove("show"), 1600);
-    }
+    let currentRouletteResult = "EN ATTENTE…"; 
+    const ADMIN_PASSWORD = "ruubix_master"; 
+    let isGlobalCreationAllowed = true; 
+    let sysConfigRef = null;
+    let profilesCache = new Map(); 
+    let activeKey = null; 
+    let activeProfile = null; 
+    let unlocked = false; 
+    let unsubscribeActive = null;
+    let saveTimer = null;
+    let currentTabId = "identite";
+    let db = null;
+    let auth = null;
+    let profilesCol = null;
+
+    // -------------------------------------------------------------------------
+    // 3. FONCTIONS UTILITAIRES
+    // -------------------------------------------------------------------------
     function uid(){ const r = (crypto?.getRandomValues) ? crypto.getRandomValues(new Uint32Array(2)) : [Date.now(), Math.random()*1e9]; return "id_" + r[0].toString(16) + r[1].toString(16); }
     function hashPin(pin){ let h = 5381; for(let i=0;i<pin.length;i++) h = ((h<<5)+h) + pin.charCodeAt(i); return "h" + (h>>>0).toString(16); }
     function slugify(s){ return (s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/(^-|-$)/g,"").slice(0, 32) || ("user-"+Math.floor(Math.random()*9999)); }
@@ -547,81 +608,9 @@
       reader.readAsDataURL(file);
     }
 
-    // Variables globales
-    let currentRouletteResult = "EN ATTENTE…"; 
-    const ADMIN_PASSWORD = "ruubix_master"; 
-    let isGlobalCreationAllowed = true; 
-    let sysConfigRef = null;
-    let profilesCache = new Map(); 
-    let activeKey = null; 
-    let activeProfile = null; 
-    let unlocked = false; 
-    let unsubscribeActive = null;
-    let saveTimer = null;
-    let currentTabId = "identite";
-    
-    // =========================================================================
-    // ETAPE 1 : ATTACHER TOUS LES BOUTONS (MÊME SI FIREBASE CRASHE)
-    // =========================================================================
-    
-    // Boutons de navigation et menus
-    $("mobileMenuBtn").addEventListener("click", () => { document.querySelector(".sidebar").classList.add("open"); $("sidebarOverlay").classList.add("open"); });
-    $("sidebarOverlay").addEventListener("click", () => { document.querySelector(".sidebar").classList.remove("open"); $("sidebarOverlay").classList.remove("open"); });
-    $("back").addEventListener("click", backToLanding);
-    $("q").addEventListener("input", renderLanding);
-    
-    // Boutons Admin
-    $("btnOpenAdminAuth").addEventListener("click", () => { modal($("mAdminAuth"), true); });
-    $("btnCloseAdminAuth").addEventListener("click", () => { modal($("mAdminAuth"), false); });
-    $("btnCloseAdminPanel").addEventListener("click", () => { modal($("mAdminPanel"), false); });
-    $("btnAdminLogin").addEventListener("click", () => {
-        if($("adminPwd").value === ADMIN_PASSWORD) {
-            toast("Accès autorisé"); modal($("mAdminAuth"), false); $("adminPwd").value = ""; modal($("mAdminPanel"), true);
-        } else { toast("Mot de passe incorrect"); }
-    });
-    $("adminToggleCreation").addEventListener("change", (e) => {
-        if(sysConfigRef) {
-            import { setDoc } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
-            setDoc(sysConfigRef, { allowCreation: e.target.checked }, { merge: true }).catch(err=>console.error(err));
-            toast(e.target.checked ? "Création activée" : "Création désactivée");
-        }
-    });
+    const PIN_HARRY = "15122004";
+    const PIN_SEYA  = "11111110";
 
-    // Boutons Création
-    $("btnCreate").addEventListener("click", openCreateModal);
-    $("cOk").addEventListener("click", createProfile);
-    $("cCancel").addEventListener("click", ()=>modal($("mCreate"), false));
-
-    // Boutons Unlock / Lock
-    $("unlock").addEventListener("click", openUnlockModal);
-    $("lock").addEventListener("click", lock);
-    $("uOk").addEventListener("click", unlock);
-    $("uCancel").addEventListener("click", ()=>modal($("mUnlock"), false));
-
-    // Outils & Modal divers
-    $("tools").addEventListener("click", ()=>modal($("mTools"), true));
-    $("tClose").addEventListener("click", ()=>modal($("mTools"), false));
-    $("export").addEventListener("click", exportActive);
-    $("importOpen").addEventListener("click", ()=>modal($("mImport"), true));
-    $("iCancel").addEventListener("click", ()=>modal($("mImport"), false));
-    $("iOk").addEventListener("click", importActive);
-    $("print").addEventListener("click", printProfile);
-    $("btnHelp").addEventListener("click", ()=>modal($("mHelp"), true));
-    $("hOk").addEventListener("click", ()=>modal($("mHelp"), false));
-
-    $("deleteProfileBtn").addEventListener("click", async ()=>{
-      if(!unlocked) return toast("Déverrouille d'abord");
-      if(activeKey === "harry" || activeKey === "seya") return toast("Impossible de supprimer les profils de base");
-      if(confirm("Supprimer définitivement ?")){ 
-          import { deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
-          await deleteDoc(doc(db, "profiles", activeKey)); backToLanding(); modal($("mTools"), false);
-      }
-    });
-
-    // =========================================================================
-    // ETAPE 2 : CONFIGURATION DES DONNÉES PAR DÉFAUT
-    // =========================================================================
-    
     const defaultProfile = (key, name)=>({
       key, displayName: name, public: true, meta: { ref: "", img: "", tags: ["GRANDLINE", "PARIS RP"] }, security: { pinHash: "", fixedPin: false },
       tabs: [
@@ -697,37 +686,51 @@
       return p;
     };
 
-    // =========================================================================
-    // ETAPE 3 : INITIALISATION DE FIREBASE DANS UN BLOC SÉCURISÉ (TRY/CATCH)
-    // =========================================================================
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const auth = getAuth(app);
-    const profilesCol = collection(db, "profiles");
-    
-    async function bootFirebase() {
-        try {
-            $("cloudState").textContent = "CONNECTING";
-            onAuthStateChanged(auth, (user)=>{
-              if(user){ 
-                  uidAuth = user.uid; 
-                  $("viewerChip").innerHTML = `<i class="fa-solid fa-user"></i> uid:${uidAuth.slice(0,6)}…`; 
-                  $("cloudState").textContent = "ON"; 
-              }
-            });
+    // -------------------------------------------------------------------------
+    // 5. INITIALISATION DE FIREBASE SÉCURISÉE
+    // -------------------------------------------------------------------------
+    try {
+        const app = initializeApp(firebaseConfig);
+        db = getFirestore(app);
+        auth = getAuth(app);
+        profilesCol = collection(db, "profiles");
 
-            await signInAnonymously(auth);
+        $("cloudState").textContent = "CONNECTING";
+        
+        onAuthStateChanged(auth, (user)=>{
+          if(user){ 
+              $("viewerChip").innerHTML = `<i class="fa-solid fa-user"></i> uid:${user.uid.slice(0,6)}…`; 
+              $("cloudState").textContent = "ON"; 
+          }
+        });
+
+        signInAnonymously(auth).then(() => {
             toast("Cloud connecté");
 
-            // Initialisation configuration système avec gestion des erreurs
+            // 1. Charger les profils en priorité (GARANTIT L'AFFICHAGE DU SITE)
+            refreshProfilesList().then(() => {
+                
+                // 2. Vérifier/Créer les profils de base SANS bloquer si erreur de permission
+                const hRef = doc(db, "profiles", "harry"); const sRef = doc(db, "profiles", "seya");
+                Promise.all([getDoc(hRef), getDoc(sRef)]).then(([hSnap, sSnap]) => {
+                    let p = [];
+                    if(!hSnap.exists()) p.push(setDoc(hRef, harryProfile())); 
+                    if(!sSnap.exists()) p.push(setDoc(sRef, seyaProfile()));
+                    if(p.length > 0) {
+                        Promise.all(p).then(() => refreshProfilesList()).catch(e => console.warn("Impossible de créer les bases:", e.message));
+                    }
+                }).catch(e => console.warn("Lecture des bases ignorée:", e.message));
+
+            });
+
+            // 3. Charger le panneau admin SANS bloquer
             sysConfigRef = doc(db, "system", "config");
             onSnapshot(sysConfigRef, (snap) => {
                 if(snap.exists()) {
                     isGlobalCreationAllowed = snap.data().allowCreation;
                 } else {
-                    import { setDoc } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
                     isGlobalCreationAllowed = true;
-                    setDoc(sysConfigRef, { allowCreation: true }).catch(err=>console.warn("Write sys block:", err.message));
+                    setDoc(sysConfigRef, { allowCreation: true }).catch(e => console.warn("Admin non inscriptible:", e.message));
                 }
                 
                 const btnCreate = $("btnCreate");
@@ -748,32 +751,28 @@
                     toggleCreation.checked = isGlobalCreationAllowed;
                 }
             }, (error) => {
-                console.warn("Lecture configuration Admin bloquée par les règles :", error.message);
-                // Si bloqué, on laisse ouvert par défaut pour que l'app fonctionne quand même.
+                console.warn("Sécurité Admin active. Création par défaut ouverte localement.", error.message);
+            });
+            
+            // Attacher l'événement admin qui a besoin de sysConfigRef
+            $("adminToggleCreation").addEventListener("change", (e) => {
+                setDoc(sysConfigRef, { allowCreation: e.target.checked }, { merge: true }).catch(err=>console.error(err));
+                toast(e.target.checked ? "Création activée" : "Création désactivée");
             });
 
-            // Base profiles
-            const hRef = doc(db, "profiles", "harry"); const sRef = doc(db, "profiles", "seya");
-            const [hSnap, sSnap] = await Promise.all([getDoc(hRef), getDoc(sRef)]);
-            import { setDoc } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
-            if(!hSnap.exists()) await setDoc(hRef, harryProfile()); 
-            if(!sSnap.exists()) await setDoc(sRef, seyaProfile());
+        }).catch(err => {
+            console.error("Auth error", err);
+            toast("Erreur d'authentification");
+        });
 
-            await refreshProfilesList();
-            
-        } catch (error) {
-            console.error("Erreur critique Firebase :", error);
-            toast("Erreur base de données");
-        }
+    } catch(e) {
+        console.error("Crash critique Firebase:", e);
+        toast("Erreur de système");
     }
-    
-    // On lance Firebase
-    bootFirebase();
 
-    // =========================================================================
-    // ETAPE 4 : LOGIQUE DE L'APPLICATION
-    // =========================================================================
-
+    // -------------------------------------------------------------------------
+    // 6. LOGIQUE DE L'APPLICATION (Vues et Rendu)
+    // -------------------------------------------------------------------------
     function setSaveState(text){ $("saveChip").innerHTML = `<i class="fa-solid fa-floppy-disk"></i> ${text}`; }
 
     function scheduleCloudSave(){
@@ -783,14 +782,9 @@
       saveTimer = setTimeout(async ()=>{
         try{
           activeProfile.updatedAt = Date.now();
-          import { setDoc } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
           await setDoc(doc(db, "profiles", activeKey), activeProfile, { merge:true });
           setSaveState("Saved");
-        }catch(e){ 
-            console.error(e); 
-            setSaveState("Error"); 
-            toast("Erreur cloud (console)"); 
-        }
+        }catch(e){ console.error(e); setSaveState("Error"); toast("Erreur cloud (console)"); }
       }, 350);
     }
 
@@ -799,8 +793,7 @@
       document.body.classList.toggle("edit", unlocked);
       $("modeChip").className = "chip " + (unlocked ? "edit" : "ro");
       $("modeChip").innerHTML = unlocked ? '<i class="fa-solid fa-pen"></i> ÉDITION' : '<i class="fa-solid fa-eye"></i> LECTURE';
-      const imgInput = $("imgUrl"); 
-      if(imgInput) imgInput.disabled = !unlocked;
+      const imgInput = $("imgUrl"); if(imgInput) imgInput.disabled = !unlocked;
     }
 
     function storageInfo(){
@@ -810,25 +803,22 @@
     }
 
     async function refreshProfilesList(){
-      const qy = query(profilesCol, orderBy("updatedAt", "desc"), limit(50));
-      const snap = await getDocs(qy);
-      profilesCache.clear();
-      snap.forEach(d=>{ 
-          profilesCache.set(d.id, d.data()); 
-      });
-      renderLanding(); 
-      storageInfo(); 
-      fillDuplicateSelect();
+      if(!db) return;
+      try {
+          const qy = query(profilesCol, orderBy("updatedAt", "desc"), limit(50));
+          const snap = await getDocs(qy);
+          profilesCache.clear();
+          snap.forEach(d=>{ profilesCache.set(d.id, d.data()); });
+          renderLanding(); storageInfo(); fillDuplicateSelect();
+      } catch(e) {
+          console.error("Lecture profils impossible", e);
+      }
     }
 
     function fillDuplicateSelect(){
-      const sel = $("cFrom"); 
-      sel.textContent = "";
+      const sel = $("cFrom"); sel.textContent = "";
       Array.from(profilesCache.values()).sort((a,b)=>(a.displayName||a.key).localeCompare(b.displayName||b.key)).forEach(p=>{
-          const opt = document.createElement("option"); 
-          opt.value = p.key; 
-          opt.textContent = `${p.displayName || p.key} (${p.key})`; 
-          sel.appendChild(opt);
+          const opt = document.createElement("option"); opt.value = p.key; opt.textContent = `${p.displayName || p.key} (${p.key})`; sel.appendChild(opt);
         });
       if(sel.options.length) sel.value = "harry";
     }
@@ -844,103 +834,62 @@
         
         const card = document.createElement("div"); card.className = "card";
         const row = document.createElement("div"); row.className = "row";
-        const av = document.createElement("div"); av.className = "avatar";
         
+        const av = document.createElement("div"); av.className = "avatar";
         const img = document.createElement("img"); 
-        img.src = p.meta?.img || ""; 
-        img.onerror = ()=> img.style.opacity = '0';
+        img.src = p.meta?.img || ""; img.onerror = ()=> img.style.opacity = '0';
         av.appendChild(img);
         
         const info = document.createElement("div");
-        const name = document.createElement("div"); 
-        name.className = "name"; 
-        name.textContent = p.displayName || p.key;
+        const name = document.createElement("div"); name.className = "name"; name.textContent = p.displayName || p.key;
         info.appendChild(name); 
 
         const hrpData = p.data?.hrp || {};
         if(hrpData.isStreamer && hrpData.pseudo) {
-            const pseudoDiv = document.createElement("div");
-            pseudoDiv.className = "hrp-pseudo";
-            pseudoDiv.innerHTML = `<i class="fa-solid fa-gamepad"></i> Joué par ${hrpData.pseudo}`;
-            info.appendChild(pseudoDiv);
+            const pseudoDiv = document.createElement("div"); pseudoDiv.className = "hrp-pseudo";
+            pseudoDiv.innerHTML = `<i class="fa-solid fa-gamepad"></i> Joué par ${hrpData.pseudo}`; info.appendChild(pseudoDiv);
         }
         
-        const role = document.createElement("div"); 
-        role.className = "role"; 
-        role.textContent = p.data?.identite?.role || "";
+        const role = document.createElement("div"); role.className = "role"; role.textContent = p.data?.identite?.role || "";
         info.appendChild(role);
         
-        row.appendChild(av); 
-        row.appendChild(info);
+        row.appendChild(av); row.appendChild(info);
         
-        const badges = document.createElement("div"); 
-        badges.className = "badges";
+        const badges = document.createElement("div"); badges.className = "badges";
+        const bPublic = document.createElement("span"); bPublic.className = "badge public"; bPublic.textContent = "PUBLIC (READ)"; badges.appendChild(bPublic);
         
-        const bPublic = document.createElement("span"); 
-        bPublic.className = "badge public"; 
-        bPublic.textContent = "PUBLIC (READ)"; 
-        badges.appendChild(bPublic);
-        
-        const actions = document.createElement("div"); 
-        actions.className = "actions";
-        
-        const openBtn = document.createElement("button"); 
-        openBtn.className = "btn primary"; 
-        openBtn.innerHTML = '<i class="fa-solid fa-folder-open"></i> Ouvrir';
+        const actions = document.createElement("div"); actions.className = "actions";
+        const openBtn = document.createElement("button"); openBtn.className = "btn primary"; openBtn.innerHTML = '<i class="fa-solid fa-folder-open"></i> Ouvrir';
         openBtn.addEventListener("click", ()=>openProfile(p.key));
         actions.appendChild(openBtn);
         
         if(hrpData.isStreamer && hrpData.twitch) {
-            const twBtn = document.createElement("a");
-            twBtn.href = hrpData.twitch;
-            twBtn.target = "_blank";
-            twBtn.className = "btn twitch";
-            twBtn.innerHTML = '<i class="fa-brands fa-twitch"></i> Twitch';
-            actions.appendChild(twBtn);
+            const twBtn = document.createElement("a"); twBtn.href = hrpData.twitch; twBtn.target = "_blank"; twBtn.className = "btn twitch";
+            twBtn.innerHTML = '<i class="fa-brands fa-twitch"></i> Twitch'; actions.appendChild(twBtn);
         }
         
-        card.appendChild(row); 
-        card.appendChild(badges); 
-        card.appendChild(actions);
-        list.appendChild(card);
+        card.appendChild(row); card.appendChild(badges); card.appendChild(actions); list.appendChild(card);
       }
     }
 
     function openProfile(key){
-      activeKey = key; 
-      unlocked = false; 
-      setEditMode(false);
-      
-      $("landing").style.display = "none"; 
-      $("app").style.display = "flex";
-      
+      activeKey = key; unlocked = false; setEditMode(false);
+      $("landing").style.display = "none"; $("app").style.display = "flex";
       if(unsubscribeActive) unsubscribeActive();
       
       const ref = doc(db, "profiles", key);
       unsubscribeActive = onSnapshot(ref, (snap)=>{
-        if(!snap.exists()){ 
-            toast("Profil introuvable"); 
-            return; 
-        }
+        if(!snap.exists()){ toast("Profil introuvable"); return; }
         const newData = snap.data();
         if (unlocked && activeProfile && newData.updatedAt <= activeProfile.updatedAt) return;
-        activeProfile = newData; 
-        profilesCache.set(key, activeProfile); 
-        renderApp();
+        activeProfile = newData; profilesCache.set(key, activeProfile); renderApp();
       });
     }
 
     function backToLanding(){
       if(unsubscribeActive) unsubscribeActive(); 
-      unsubscribeActive = null; 
-      activeKey = null; 
-      activeProfile = null; 
-      unlocked = false; 
-      setEditMode(false);
-      
-      $("app").style.display = "none"; 
-      $("landing").style.display = "flex"; 
-      refreshProfilesList();
+      unsubscribeActive = null; activeKey = null; activeProfile = null; unlocked = false; setEditMode(false);
+      $("app").style.display = "none"; $("landing").style.display = "flex"; refreshProfilesList();
     }
 
     function visibleTabsForViewer(){
@@ -949,36 +898,28 @@
     }
 
     function renderTabsNav(){
-      const nav = $("tabsNav"); 
-      nav.textContent = "";
+      const nav = $("tabsNav"); nav.textContent = "";
       const tabs = visibleTabsForViewer();
       
-      if(currentTabId !== "__tabs_settings__" && !tabs.find(t=>t.id===currentTabId) && tabs.length) { 
-          currentTabId = tabs[0].id; 
-      }
+      if(currentTabId !== "__tabs_settings__" && !tabs.find(t=>t.id===currentTabId) && tabs.length) { currentTabId = tabs[0].id; }
       
       for(const t of tabs){
-        const btn = document.createElement("button"); 
-        btn.className = "sbBtn" + (t.id===currentTabId ? " active" : "");
+        const btn = document.createElement("button"); btn.className = "sbBtn" + (t.id===currentTabId ? " active" : "");
         btn.innerHTML = `<i class="fa-solid ${t.icon||"fa-folder"}"></i> ${t.title}`;
         btn.addEventListener("click", ()=>{ 
-            currentTabId = t.id; 
-            currentRouletteResult = "EN ATTENTE…"; 
-            document.querySelector(".sidebar").classList.remove("open");
-            $("sidebarOverlay").classList.remove("open");
+            currentTabId = t.id; currentRouletteResult = "EN ATTENTE…"; 
+            document.querySelector(".sidebar").classList.remove("open"); $("sidebarOverlay").classList.remove("open");
             renderApp(); 
         });
         nav.appendChild(btn);
       }
       
       if(unlocked){
-        const s = document.createElement("button"); 
-        s.className = "sbBtn" + (currentTabId === "__tabs_settings__" ? " active" : "");
+        const s = document.createElement("button"); s.className = "sbBtn" + (currentTabId === "__tabs_settings__" ? " active" : "");
         s.innerHTML = `<i class="fa-solid fa-gear"></i> Onglets (config)`;
         s.addEventListener("click", ()=>{ 
             currentTabId = "__tabs_settings__"; 
-            document.querySelector(".sidebar").classList.remove("open");
-            $("sidebarOverlay").classList.remove("open");
+            document.querySelector(".sidebar").classList.remove("open"); $("sidebarOverlay").classList.remove("open");
             renderApp(); 
         });
         nav.appendChild(s);
@@ -988,104 +929,53 @@
     function renderAppHeader(){
       const fullName = activeProfile.data?.identite?.fullName || activeProfile.displayName || activeProfile.key;
       $("sbName").textContent = fullName.toUpperCase();
-      
       $("activeName").textContent = (activeProfile.displayName || activeProfile.key);
       $("sbRef").textContent = activeProfile.meta?.ref || "—";
       $("sbPublic").innerHTML = `<i class="fa-solid fa-globe"></i> Public (lecture)`;
 
       const sbAvatar = $("sbProfileImage");
       const imgUrl = activeProfile.meta?.img;
-      
-      if (imgUrl) {
-          sbAvatar.src = imgUrl;
-          sbAvatar.className = "avatar-sidebar"; 
-      } else {
-          sbAvatar.src = "logo.png";
-          sbAvatar.className = "logo-sidebar"; 
-      }
-      
+      if (imgUrl) { sbAvatar.src = imgUrl; sbAvatar.className = "avatar-sidebar"; } 
+      else { sbAvatar.src = "logo.png"; sbAvatar.className = "logo-sidebar"; }
       sbAvatar.style.display = "block";
-      
-      sbAvatar.onerror = function() {
-          this.src = "logo.png";
-          this.className = "logo-sidebar";
-      };
+      sbAvatar.onerror = function() { this.src = "logo.png"; this.className = "logo-sidebar"; };
     }
 
-    function renderApp(){ 
-        renderAppHeader(); 
-        renderTabsNav(); 
-        renderTabContent(); 
-    }
+    function renderApp(){ renderAppHeader(); renderTabsNav(); renderTabContent(); }
 
     function el(tag, attrs={}, children=[]){
       const node = document.createElement(tag);
       for(const [k,v] of Object.entries(attrs)){
-        if(k==="class") node.className = v;
-        else if(k==="html") node.innerHTML = v;
-        else if(k==="checked") node.checked = !!v; 
-        else if(k==="value") node.value = v; 
-        else if(k==="disabled") node.disabled = !!v;
-        else if(k.startsWith("on") && typeof v==="function") node.addEventListener(k.slice(2).toLowerCase(), v);
-        else node.setAttribute(k, v);
+        if(k==="class") node.className = v; else if(k==="html") node.innerHTML = v; else if(k==="checked") node.checked = !!v; else if(k==="value") node.value = v; else if(k==="disabled") node.disabled = !!v;
+        else if(k.startsWith("on") && typeof v==="function") node.addEventListener(k.slice(2).toLowerCase(), v); else node.setAttribute(k, v);
       }
-      for(const c of children){ 
-          if(typeof c === "string") node.appendChild(document.createTextNode(c)); 
-          else if(c) node.appendChild(c); 
-      }
+      for(const c of children){ if(typeof c === "string") node.appendChild(document.createTextNode(c)); else if(c) node.appendChild(c); }
       return node;
     }
 
     function editableDiv(value, onCommit){
       const d = el("div", { class:"editable", tabindex:"0" });
-      d.innerHTML = value || "";
-      d.contentEditable = unlocked ? "true" : "false";
-      
-      d.addEventListener("input", ()=>{ 
-          if(!unlocked) return; 
-          onCommit(d.innerHTML); 
-      });
+      d.innerHTML = value || ""; d.contentEditable = unlocked ? "true" : "false";
+      d.addEventListener("input", ()=>{ if(!unlocked) return; onCommit(d.innerHTML); });
       return d;
     }
     
     function editableDivBlock(html, onCommit){
       const d = el("div",{class:"editable", style:"min-height:240px"});
-      d.innerHTML = html || "";
-      d.contentEditable = unlocked ? "true" : "false";
-      d.addEventListener("input", ()=>{
-        if(!unlocked) return;
-        onCommit(d.innerHTML);
-      });
+      d.innerHTML = html || ""; d.contentEditable = unlocked ? "true" : "false";
+      d.addEventListener("input", ()=>{ if(!unlocked) return; onCommit(d.innerHTML); });
       return d;
     }
 
     function renderTabContent(){
-      const root = $("tabContent"); 
-      root.textContent = "";
-      
-      if(currentTabId === "__tabs_settings__"){ 
-          root.appendChild(renderTabsSettings()); 
-          return; 
-      }
+      const root = $("tabContent"); root.textContent = "";
+      if(currentTabId === "__tabs_settings__"){ root.appendChild(renderTabsSettings()); return; }
       
       const tab = (activeProfile.tabs||[]).find(t=>t.id===currentTabId);
-      if(!tab){ 
-          root.appendChild(el("div",{class:"panel"},["Onglet introuvable."])); 
-          return; 
-      }
+      if(!tab){ root.appendChild(el("div",{class:"panel"},["Onglet introuvable."])); return; }
+      if(!tab.visiblePublic && !unlocked){ root.appendChild(el("div",{class:"panel"},[ el("div",{style:"font-weight:900;margin-bottom:6px"},["Onglet privé"]), el("div",{class:"muted",style:"line-height:1.7"},["Le propriétaire a masqué cet onglet au public."]) ])); return; }
       
-      if(!tab.visiblePublic && !unlocked){
-        root.appendChild(el("div",{class:"panel"},[ 
-            el("div",{style:"font-weight:900;margin-bottom:6px"},["Onglet privé"]), 
-            el("div",{class:"muted",style:"line-height:1.7"},["Le propriétaire a masqué cet onglet au public."]) 
-        ])); 
-        return;
-      }
-      
-      root.appendChild(el("div",{class:"sectionTitle"},[ 
-          el("span",{html:tab.title}), 
-          el("span",{class:"ref"},[tab.type.toUpperCase()]) 
-      ]));
+      root.appendChild(el("div",{class:"sectionTitle"},[ el("span",{html:tab.title}), el("span",{class:"ref"},[tab.type.toUpperCase()]) ]));
       
       const type = tab.type;
       if(type==="identite") root.appendChild(renderIdentite());
@@ -1102,44 +992,27 @@
     }
 
     function renderIdentite(){
-      const idt = activeProfile.data?.identite || {};
-      const hrp = activeProfile.data?.hrp || { isStreamer: false, pseudo: "", twitch: "" };
+      const idt = activeProfile.data?.identite || {}; const hrp = activeProfile.data?.hrp || { isStreamer: false, pseudo: "", twitch: "" };
       
       const hrpPanel = el("div",{class:"panel", style:"margin-top:20px;"},[
           el("div",{style:"display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #222; padding-bottom:5px; margin-bottom:15px;"},[
             el("div",{class:"fieldLabel", style:"font-weight:900; color:var(--ok); margin:0;"},["SECTION HRP"]),
-            unlocked ? el("label",{class:"switch"},[
-              el("input",{type:"checkbox", checked:!!hrp.isStreamer, onChange:(e)=>{ 
-                  deepSet(activeProfile, "data.hrp.isStreamer", e.target.checked); 
-                  scheduleCloudSave(); 
-                  renderApp(); 
-              }}),
-              el("div",{class:"slider"}),
-              el("span",{style:"font-size:11px; color:#bbb;"},["Streamer"])
-            ]) : (hrp.isStreamer ? el("span",{class:"chip ok"},["Streamer"]) : el("span",{class:"chip"},["Non-streamer"]))
+            unlocked ? el("label",{class:"switch"},[ el("input",{type:"checkbox", checked:!!hrp.isStreamer, onChange:(e)=>{ deepSet(activeProfile, "data.hrp.isStreamer", e.target.checked); scheduleCloudSave(); renderApp(); }}), el("div",{class:"slider"}), el("span",{style:"font-size:11px; color:#bbb;"},["Streamer"]) ]) : (hrp.isStreamer ? el("span",{class:"chip ok"},["Streamer"]) : el("span",{class:"chip"},["Non-streamer"]))
           ])
       ]);
 
       if (hrp.isStreamer) {
           hrpPanel.appendChild(el("div",{class:"fieldLabel"},["Votre pseudo"]));
           hrpPanel.appendChild(editableDiv(hrp.pseudo, (v)=>{ deepSet(activeProfile,"data.hrp.pseudo",v); scheduleCloudSave(); }));
-          
           hrpPanel.appendChild(el("div",{class:"fieldLabel", style:"margin-top:10px;"},["Lien Twitch"]));
-          if (unlocked) {
-            hrpPanel.appendChild(el("input",{class:"input", value: hrp.twitch || "", placeholder:"https://twitch.tv/...", onInput:(e)=>{ deepSet(activeProfile,"data.hrp.twitch", e.target.value); scheduleCloudSave(); }}));
-          } else {
-            if (hrp.twitch) {
-               hrpPanel.appendChild(el("div",{style:"margin-top:5px;"},[ el("a", {href: hrp.twitch, target:"_blank", class:"btn small twitch"},[el("i",{class:"fa-brands fa-twitch"}), " Twitch"]) ]));
-            } else {
-               hrpPanel.appendChild(el("div",{class:"muted", style:"font-style:italic; font-size:12px;"},["Aucun Twitch renseigné"]));
-            }
+          if (unlocked) { hrpPanel.appendChild(el("input",{class:"input", value: hrp.twitch || "", placeholder:"https://twitch.tv/...", onInput:(e)=>{ deepSet(activeProfile,"data.hrp.twitch", e.target.value); scheduleCloudSave(); }})); } 
+          else {
+            if (hrp.twitch) { hrpPanel.appendChild(el("div",{style:"margin-top:5px;"},[ el("a", {href: hrp.twitch, target:"_blank", class:"btn small twitch"},[el("i",{class:"fa-brands fa-twitch"}), " Twitch"]) ])); } 
+            else { hrpPanel.appendChild(el("div",{class:"muted", style:"font-style:italic; font-size:12px;"},["Aucun Twitch renseigné"])); }
           }
       } else {
-          if(!unlocked) {
-              hrpPanel.appendChild(el("div",{class:"muted", style:"font-style:italic; font-size:12px;"},["Ce joueur n'est pas un streamer."]));
-          } else {
-              hrpPanel.appendChild(el("div",{class:"muted", style:"font-style:italic; font-size:12px;"},["Cochez 'Streamer' en haut à droite de cette section pour ajouter votre pseudo et lien Twitch."]));
-          }
+          if(!unlocked) hrpPanel.appendChild(el("div",{class:"muted", style:"font-style:italic; font-size:12px;"},["Ce joueur n'est pas un streamer."]));
+          else hrpPanel.appendChild(el("div",{class:"muted", style:"font-style:italic; font-size:12px;"},["Cochez 'Streamer' en haut à droite de cette section pour ajouter votre pseudo et lien Twitch."]));
       }
 
       const wrap = el("div",{class:"grid2"},[
@@ -1147,76 +1020,40 @@
           el("div",{style:"display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;"},[
             el("div",{class:"fieldLabel", style:"margin:0;"},["Photo du profil"]),
             unlocked ? el("button", {class:"btn small primary", onClick:()=> {
-              const fi = document.createElement('input'); 
-              fi.type = 'file'; 
-              fi.accept = 'image/*';
+              const fi = document.createElement('input'); fi.type = 'file'; fi.accept = 'image/*';
               fi.onchange = (e) => window.processImageUpload(e.target.files[0], (base64) => {
-                const input = $("imgUrl"); 
-                const preview = $("imgPreview");
-                input.value = base64; 
-                activeProfile.meta.img = base64;
-                if(preview) { preview.src = base64; preview.style.opacity = '1'; }
-                scheduleCloudSave(); 
-                toast("Image uploadée !");
-                renderAppHeader(); 
-              });
-              fi.click();
+                $("imgUrl").value = base64; activeProfile.meta.img = base64;
+                if($("imgPreview")) { $("imgPreview").src = base64; $("imgPreview").style.opacity = '1'; }
+                scheduleCloudSave(); toast("Image uploadée !"); renderAppHeader();
+              }); fi.click();
             }}, [el("i",{class:"fa-solid fa-upload"})," Parcourir"]) : null
           ]),
-          
           el("input",{class:"input", id:"imgUrl", placeholder:"URL ou import PC...", value: activeProfile.meta?.img || ""}),
-          
-          el("div",{class:"muted",style:"margin-top:8px; line-height:1.5; font-size:11px;"},[
-              "Comment faire ? Collez ici un lien web direct ou utilisez le bouton 'Parcourir'."
-          ]),
-          
-          el("div",{style:"margin-top:12px;display:flex;justify-content:center;align-items:center;flex-wrap:wrap"},[
-            el("div",{class:"avatar",style:"width:140px;height:140px; border-color:var(--goldDim);"},[
-              el("img",{id:"imgPreview", src: activeProfile.meta?.img || "", onError: (e) => e.target.style.opacity = '0' })
-            ])
-          ])
+          el("div",{class:"muted",style:"margin-top:8px; line-height:1.5; font-size:11px;"},["Comment faire ? Collez ici un lien web direct ou utilisez le bouton 'Parcourir'."]),
+          el("div",{style:"margin-top:12px;display:flex;justify-content:center;align-items:center;flex-wrap:wrap"},[ el("div",{class:"avatar",style:"width:140px;height:140px; border-color:var(--goldDim);"},[ el("img",{id:"imgPreview", src: activeProfile.meta?.img || "", onError: (e) => e.target.style.opacity = '0' }) ]) ])
         ]),
         
         el("div",{},[
           el("div",{class:"panel"},[
             el("div",{class:"fieldLabel", style:"font-weight:900; color:var(--gold); border-bottom:1px solid #222; padding-bottom:5px; margin-bottom:15px;"},["SECTION RP"]),
-            el("div",{class:"fieldLabel"},["Nom complet"]), 
-            editableDiv(idt.fullName, (v)=>{ deepSet(activeProfile,"data.identite.fullName",v); scheduleCloudSave(); }),
-            
-            el("div",{class:"fieldLabel", style:"margin-top:10px;"},["Âge"]), 
-            editableDiv(idt.age, (v)=>{ deepSet(activeProfile,"data.identite.age",v); scheduleCloudSave(); }),
-            
-            el("div",{class:"fieldLabel", style:"margin-top:10px;"},["Lieu de naissance"]), 
-            editableDiv(idt.birthplace, (v)=>{ deepSet(activeProfile,"data.identite.birthplace",v); scheduleCloudSave(); }),
-            
-            el("div",{class:"fieldLabel", style:"margin-top:10px;"},["Job"]), 
-            editableDiv(idt.role, (v)=>{ deepSet(activeProfile,"data.identite.role",v); scheduleCloudSave(); }),
-            
-            el("div",{class:"fieldLabel", style:"margin-top:10px;"},["Physique"]), 
-            editableDiv(idt.phys, (v)=>{ deepSet(activeProfile,"data.identite.phys",v); scheduleCloudSave(); }),
-            
-            el("div",{class:"fieldLabel", style:"margin-top:10px;"},["Voix"]), 
-            editableDiv(idt.voice, (v)=>{ deepSet(activeProfile,"data.identite.voice",v); scheduleCloudSave(); })
-          ]),
-          
-          hrpPanel
+            el("div",{class:"fieldLabel"},["Nom complet"]), editableDiv(idt.fullName, (v)=>{ deepSet(activeProfile,"data.identite.fullName",v); scheduleCloudSave(); }),
+            el("div",{class:"fieldLabel", style:"margin-top:10px;"},["Âge"]), editableDiv(idt.age, (v)=>{ deepSet(activeProfile,"data.identite.age",v); scheduleCloudSave(); }),
+            el("div",{class:"fieldLabel", style:"margin-top:10px;"},["Lieu de naissance"]), editableDiv(idt.birthplace, (v)=>{ deepSet(activeProfile,"data.identite.birthplace",v); scheduleCloudSave(); }),
+            el("div",{class:"fieldLabel", style:"margin-top:10px;"},["Job"]), editableDiv(idt.role, (v)=>{ deepSet(activeProfile,"data.identite.role",v); scheduleCloudSave(); }),
+            el("div",{class:"fieldLabel", style:"margin-top:10px;"},["Physique"]), editableDiv(idt.phys, (v)=>{ deepSet(activeProfile,"data.identite.phys",v); scheduleCloudSave(); }),
+            el("div",{class:"fieldLabel", style:"margin-top:10px;"},["Voix"]), editableDiv(idt.voice, (v)=>{ deepSet(activeProfile,"data.identite.voice",v); scheduleCloudSave(); })
+          ]), hrpPanel
         ])
       ]);
 
       setTimeout(()=>{
-        const input = $("imgUrl");
-        const preview = $("imgPreview");
+        const input = $("imgUrl"); const preview = $("imgPreview");
         if(!input || !preview) return;
-        preview.onerror = ()=> preview.style.opacity = '0';
-        input.disabled = !unlocked;
+        preview.onerror = ()=> preview.style.opacity = '0'; input.disabled = !unlocked;
         input.addEventListener("input", ()=>{
           if(!unlocked) return;
-          const url = input.value.trim();
-          activeProfile.meta.img = url;
-          preview.src = url;
-          preview.style.opacity = '1';
-          scheduleCloudSave();
-          renderAppHeader(); 
+          activeProfile.meta.img = input.value.trim(); preview.src = activeProfile.meta.img; preview.style.opacity = '1';
+          scheduleCloudSave(); renderAppHeader();
         });
       },0);
 
@@ -1225,26 +1062,16 @@
 
     function renderStats(){
       const stats = activeProfile.data?.stats || [];
-      const box = el("div",{class:"panel"},[
+      return el("div",{class:"panel"},[
         el("div",{style:"display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px"},[
           el("div",{style:"font-weight:900"},["Stats (0-100)"]),
-          unlocked ? el("button",{class:"btn small primary", onClick:()=>{ 
-              stats.push({id:uid(), label:"Nouvelle stat", val:50}); 
-              scheduleCloudSave(); 
-              renderApp(); 
-          }},[el("i",{class:"fa-solid fa-plus"})," Ajouter"]) : el("span",{class:"chip ro"},["Lecture"])
+          unlocked ? el("button",{class:"btn small primary", onClick:()=>{ stats.push({id:uid(), label:"Nouvelle stat", val:50}); scheduleCloudSave(); renderApp(); }},[el("i",{class:"fa-solid fa-plus"})," Ajouter"]) : el("span",{class:"chip ro"},["Lecture"])
         ]),
         el("div",{}, stats.map(s=>{
           const stat = el("div",{class:"stat"},[ 
-              el("div",{class:"statTop"},[ 
-                  el("span",{html: s.label}), 
-                  el("span",{},[String(s.val)+"%"]) 
-              ]), 
-              el("div",{class:"bar"},[ 
-                  el("div",{class:"fill", style:`width:${s.val}%`}) 
-              ]) 
+              el("div",{class:"statTop"},[ el("span",{html: s.label}), el("span",{},[String(s.val)+"%"]) ]), 
+              el("div",{class:"bar"},[ el("div",{class:"fill", style:`width:${s.val}%`}) ]) 
           ]);
-          
           if(unlocked){
             stat.appendChild(el("div",{style:"display:flex;gap:10px;margin-top:8px;"},[
               el("input",{class:"input", value:s.label, onInput:(e)=>{ s.label=e.target.value; scheduleCloudSave(); }}),
@@ -1255,35 +1082,21 @@
           return stat;
         }))
       ]);
-      return box;
     }
 
     function renderRoulette(){
       const r = activeProfile.data?.roulette || {options:[],history:[]};
-      
       const result = el("div",{class:"result", id:"rr"},[currentRouletteResult]);
       const btnSpin = el("button",{class:"btn primary", onClick:()=>{
         if(!r.options.length) return toast("Aucune option");
-        currentRouletteResult = "EN ATTENTE…";
-        result.textContent = currentRouletteResult;
-        result.classList.add("spin");
-        
-        let c=0; 
-        const it = setInterval(()=>{ 
+        currentRouletteResult = "EN ATTENTE…"; result.textContent = currentRouletteResult; result.classList.add("spin");
+        let c=0; const it = setInterval(()=>{ 
             result.textContent = r.options[Math.floor(Math.random()*r.options.length)].text; 
             if(c++>14){ 
-                clearInterval(it); 
-                const chosen = r.options[Math.floor(Math.random()*r.options.length)]; 
-                currentRouletteResult = ">> " + chosen.text + " <<"; 
-                result.textContent = currentRouletteResult; 
-                result.classList.remove("spin");
-                r.history.unshift({at:Date.now(), text:chosen.text}); 
-                r.history = r.history.slice(0,50);
-                scheduleCloudSave(); 
-                // Ne plus re-render tout l'écran ici pour ne pas écraser l'affichage du résultat
-                // On met juste à jour l'historique visuellement si on veut, mais c'est mieux de laisser tel quel 
-                // jusqu'au prochain changement d'onglet pour garder l'effet WOW.
-                renderApp(); 
+                clearInterval(it); const chosen = r.options[Math.floor(Math.random()*r.options.length)]; 
+                currentRouletteResult = ">> " + chosen.text + " <<"; result.textContent = currentRouletteResult; result.classList.remove("spin");
+                r.history.unshift({at:Date.now(), text:chosen.text}); r.history = r.history.slice(0,50);
+                scheduleCloudSave(); renderApp(); 
             } 
         }, 90);
       }},[el("i",{class:"fa-solid fa-dice"})," Lancer"]);
@@ -1296,28 +1109,12 @@
               el("div",{style:"font-weight:900"},["Options"]), 
               unlocked ? el("button",{class:"btn small primary", onClick:()=>{ 
                   const txt = prompt("Quelle action voulez-vous ajouter ?");
-                  if(!txt) return;
-                  r.options.push({id:uid(), text:txt, weight:1}); 
-                  scheduleCloudSave(); 
-                  renderApp(); 
+                  if(!txt) return; r.options.push({id:uid(), text:txt, weight:1}); scheduleCloudSave(); renderApp(); 
               }},["+ Ajouter"]) : null 
           ]),
           el("div",{style:"display:flex;flex-wrap:wrap;gap:10px"}, r.options.map(o=> 
-              el("div",{class:"tag"},[
-                  o.text, 
-                  unlocked ? el("i",{class:"fa-solid fa-xmark", style:"margin-left:10px;cursor:pointer;", onClick:()=>{ r.options=r.options.filter(x=>x.id!==o.id); scheduleCloudSave(); renderApp(); }}) : null
-              ])
+              el("div",{class:"tag"},[ o.text, unlocked ? el("i",{class:"fa-solid fa-xmark", style:"margin-left:10px;cursor:pointer;", onClick:()=>{ r.options=r.options.filter(x=>x.id!==o.id); scheduleCloudSave(); renderApp(); }}) : null ])
           ))
-        ]),
-        el("div",{class:"panel"},[
-          el("div",{style:"font-weight:900;margin-bottom:10px"},["Historique"]),
-          el("div",{style:"display:flex;flex-direction:column;gap:8px"}, (r.history||[]).slice(0,12).map(h=>{
-            const d = new Date(h.at);
-            return el("div",{style:"display:flex;gap:10px;align-items:center;flex-wrap:wrap"},[
-              el("span",{class:"chip"},[d.toLocaleString()]),
-              el("span",{style:"color:#bbb"},[h.text])
-            ]);
-          }))
         ])
       ]);
     }
@@ -1325,20 +1122,12 @@
     function renderTabsSettings(){
       const tabs = activeProfile.tabs || [];
       return el("div",{},[
-        el("div",{class:"sectionTitle"},[ 
-            el("span",{},["Onglets — Configuration"]), 
-            el("span",{class:"ref"},["customizable"]) 
-        ]),
+        el("div",{class:"sectionTitle"},[ el("span",{},["Onglets — Configuration"]), el("span",{class:"ref"},["customizable"]) ]),
         el("div",{class:"panel"},[
-          el("div",{class:"muted",style:"line-height:1.7;margin-bottom:12px"},[
-            "Ici tu peux renommer, masquer (enabled), et choisir la visibilité publique de chaque onglet."
-          ]),
+          el("div",{class:"muted",style:"line-height:1.7;margin-bottom:12px"},["Ici tu peux renommer, masquer (enabled), et choisir la visibilité publique de chaque onglet."]),
           el("div",{style:"display:flex;flex-direction:column;gap:12px"}, tabs.map((t,idx)=>{
             return el("div",{class:"timelineItem"},[
-              el("div",{style:"display:flex;justify-content:space-between;"},[ 
-                  el("div",{style:"font-weight:900;color:var(--gold)"},[`${idx+1}. ${t.title}`]), 
-                  el("span",{class:"chip"},[t.type]) 
-              ]),
+              el("div",{style:"display:flex;justify-content:space-between;"},[ el("div",{style:"font-weight:900;color:var(--gold)"},[`${idx+1}. ${t.title}`]), el("span",{class:"chip"},[t.type]) ]),
               el("div",{style:"display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px"},[
                 el("input",{class:"input", value:t.title, onInput:(e)=>{ t.title=e.target.value; scheduleCloudSave(); renderTabsNav(); }}),
                 el("input",{class:"input", value:t.icon||"", onInput:(e)=>{ t.icon=e.target.value; scheduleCloudSave(); renderTabsNav(); }})
@@ -1348,16 +1137,8 @@
                 el("label",{class:"switch"},[ el("input",{type:"checkbox", checked:!!t.visiblePublic, onChange:(e)=>{ t.visiblePublic=e.target.checked; scheduleCloudSave(); renderTabsNav(); }}), el("div",{class:"slider"}), el("span",{},["Public"]) ])
               ]),
               el("div",{style:"display:flex;justify-content:flex-end;gap:10px;margin-top:12px;flex-wrap:wrap"},[
-                el("button",{class:"btn small", disabled: idx===0, onClick:()=>{
-                  const x = tabs[idx-1]; tabs[idx-1]=tabs[idx]; tabs[idx]=x;
-                  deepSet(activeProfile,"tabs",tabs);
-                  scheduleCloudSave(); renderApp();
-                }},[el("i",{class:"fa-solid fa-arrow-up"}),""]),
-                el("button",{class:"btn small", disabled: idx===tabs.length-1, onClick:()=>{
-                  const x = tabs[idx+1]; tabs[idx+1]=tabs[idx]; tabs[idx]=x;
-                  deepSet(activeProfile,"tabs",tabs);
-                  scheduleCloudSave(); renderApp();
-                }},[el("i",{class:"fa-solid fa-arrow-down"}),""])
+                el("button",{class:"btn small", disabled: idx===0, onClick:()=>{ const x = tabs[idx-1]; tabs[idx-1]=tabs[idx]; tabs[idx]=x; deepSet(activeProfile,"tabs",tabs); scheduleCloudSave(); renderApp(); }},[el("i",{class:"fa-solid fa-arrow-up"}),""]),
+                el("button",{class:"btn small", disabled: idx===tabs.length-1, onClick:()=>{ const x = tabs[idx+1]; tabs[idx+1]=tabs[idx]; tabs[idx]=x; deepSet(activeProfile,"tabs",tabs); scheduleCloudSave(); renderApp(); }},[el("i",{class:"fa-solid fa-arrow-down"}),""])
               ])
             ]);
           }))
@@ -1367,169 +1148,97 @@
 
     function renderLore(){
       const lore = activeProfile.data?.lore?.sections || [];
-      const root = el("div",{},[
+      return el("div",{},[
         el("div",{class:"panel"},[
           el("div",{style:"display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px"},[
             el("div",{style:"font-weight:900"},["Sections d’histoire"]),
-            unlocked ? el("button",{class:"btn small primary", onClick:()=>{
-              lore.unshift({id:uid(), title:"Nouvelle section", text:"", date:""});
-              deepSet(activeProfile,"data.lore.sections", lore);
-              scheduleCloudSave();
-              renderApp();
-            }},[el("i",{class:"fa-solid fa-plus"})," Ajouter"]) : el("span",{class:"chip ro"},["Lecture"])
+            unlocked ? el("button",{class:"btn small primary", onClick:()=>{ lore.unshift({id:uid(), title:"Nouvelle section", text:"", date:""}); deepSet(activeProfile,"data.lore.sections", lore); scheduleCloudSave(); renderApp(); }},[el("i",{class:"fa-solid fa-plus"})," Ajouter"]) : el("span",{class:"chip ro"},["Lecture"])
           ]),
           el("div",{class:"grid3"}, lore.map(sec=>{
             const card = el("div",{class:"panel", style:"margin:0"},[
               el("div",{style:"display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px"},[
                 el("div",{style:"font-weight:900;color:var(--gold)"},[sec.title]),
-                unlocked ? el("button",{class:"btn small danger", onClick:()=>{
-                  deepSet(activeProfile,"data.lore.sections", lore.filter(x=>x.id!==sec.id));
-                  scheduleCloudSave();
-                  renderApp();
-                }},[el("i",{class:"fa-solid fa-trash"})]) : null
+                unlocked ? el("button",{class:"btn small danger", onClick:()=>{ deepSet(activeProfile,"data.lore.sections", lore.filter(x=>x.id!==sec.id)); scheduleCloudSave(); renderApp(); }},[el("i",{class:"fa-solid fa-trash"})]) : null
               ]),
               unlocked ? el("input",{class:"input", value:sec.title, onInput:(e)=>{ sec.title=e.target.value; scheduleCloudSave(); }}) : null,
               unlocked ? el("input",{class:"input", value:sec.date||"", placeholder:"date (optionnel)", style:"margin-top:10px", onInput:(e)=>{ sec.date=e.target.value; scheduleCloudSave(); }}) : null,
               el("div",{class:"muted",style:"font-size:12px;margin:10px 0 8px"},["Texte"]),
-              unlocked
-                ? el("textarea",{class:"input", style:"min-height:160px;font-family:Montserrat;font-size:14px;line-height:1.7", onInput:(e)=>{ sec.text=e.target.value; scheduleCloudSave(); }},[])
-                : el("div",{style:"color:#bbb;line-height:1.8"},[sec.text||""])
+              unlocked ? el("textarea",{class:"input", style:"min-height:160px;font-family:Montserrat;font-size:14px;line-height:1.7", onInput:(e)=>{ sec.text=e.target.value; scheduleCloudSave(); }},[]) : el("div",{style:"color:#bbb;line-height:1.8"},[sec.text||""])
             ]);
-
-            if(unlocked){
-              card.querySelector("textarea").value = sec.text || "";
-            }
+            if(unlocked){ card.querySelector("textarea").value = sec.text || ""; }
             return card;
           }))
         ])
       ]);
-      return root;
     }
 
     function renderGoals(){
       const goals = activeProfile.data?.goals || {court:[], long:[]};
-
       const column = (title, key)=> {
         const list = goals[key] || [];
-        const col = el("div",{class:"panel"},[
+        return el("div",{class:"panel"},[
           el("div",{style:"display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px"},[
             el("div",{style:"font-weight:900;color:var(--gold)"},[title]),
-            unlocked ? el("button",{class:"btn small primary", onClick:()=>{
-              list.unshift({id:uid(), text:"Nouvel objectif", done:false});
-              goals[key]=list;
-              deepSet(activeProfile,"data.goals",goals);
-              scheduleCloudSave();
-              renderApp();
-            }},[el("i",{class:"fa-solid fa-plus"})," Ajouter"]) : null
+            unlocked ? el("button",{class:"btn small primary", onClick:()=>{ list.unshift({id:uid(), text:"Nouvel objectif", done:false}); goals[key]=list; deepSet(activeProfile,"data.goals",goals); scheduleCloudSave(); renderApp(); }},[el("i",{class:"fa-solid fa-plus"})," Ajouter"]) : null
           ]),
           el("div",{}, list.map(g=>{
-            const item = el("div",{class:"timelineItem"},[
+            return el("div",{class:"timelineItem"},[
               el("div",{style:"display:flex;gap:10px;align-items:center;justify-content:space-between"},[
                 el("div",{style:`flex:1;color:#ddd;${g.done?"text-decoration:line-through;opacity:.7":""}`},[g.text]),
                 unlocked ? el("div",{style:"display:flex;gap:8px"},[
-                  el("button",{class:"btn small", onClick:()=>{
-                    g.done=!g.done;
-                    scheduleCloudSave();
-                    renderApp();
-                  }},[el("i",{class:"fa-solid fa-square-check"}),""]),
-                  el("button",{class:"btn small danger", onClick:()=>{
-                    goals[key]=list.filter(x=>x.id!==g.id);
-                    deepSet(activeProfile,"data.goals",goals);
-                    scheduleCloudSave();
-                    renderApp();
-                  }},[el("i",{class:"fa-solid fa-trash"})])
+                  el("button",{class:"btn small", onClick:()=>{ g.done=!g.done; scheduleCloudSave(); renderApp(); }},[el("i",{class:"fa-solid fa-square-check"}),""]),
+                  el("button",{class:"btn small danger", onClick:()=>{ goals[key]=list.filter(x=>x.id!==g.id); deepSet(activeProfile,"data.goals",goals); scheduleCloudSave(); renderApp(); }},[el("i",{class:"fa-solid fa-trash"})])
                 ]) : null
               ]),
               unlocked ? el("input",{class:"input", value:g.text, style:"margin-top:10px;font-family:Montserrat", onInput:(e)=>{ g.text=e.target.value; scheduleCloudSave(); }}) : null
             ]);
-            return item;
           }))
         ]);
-        return col;
       };
-
-      return el("div",{class:"grid2"},[
-        column("Court terme","court"),
-        column("Long terme","long")
-      ]);
+      return el("div",{class:"grid2"},[ column("Court terme","court"), column("Long terme","long") ]);
     }
 
     function renderTimeline(){
-      const t = activeProfile.data?.timeline || {events:[]};
-      const events = t.events || [];
-
-      const root = el("div",{class:"panel"},[
+      const events = activeProfile.data?.timeline?.events || [];
+      return el("div",{class:"panel"},[
         el("div",{style:"display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px"},[
           el("div",{style:"font-weight:900"},["Timeline RP"]),
-          unlocked ? el("button",{class:"btn small primary", onClick:()=>{
-            events.unshift({id:uid(), at:Date.now(), title:"Nouvel événement", text:"", tags:["PARIS RP"]});
-            deepSet(activeProfile,"data.timeline.events", events);
-            scheduleCloudSave();
-            renderApp();
-          }},[el("i",{class:"fa-solid fa-plus"})," Ajouter"]) : null
+          unlocked ? el("button",{class:"btn small primary", onClick:()=>{ events.unshift({id:uid(), at:Date.now(), title:"Nouvel événement", text:"", tags:["PARIS RP"]}); deepSet(activeProfile,"data.timeline.events", events); scheduleCloudSave(); renderApp(); }},[el("i",{class:"fa-solid fa-plus"})," Ajouter"]) : null
         ]),
         el("div",{style:"display:flex;flex-direction:column;gap:12px"}, events.map(ev=>{
           const date = new Date(ev.at || Date.now());
           const item = el("div",{class:"timelineItem"},[
-            el("div",{class:"tlHead"},[
-              el("div",{style:"font-weight:900;color:var(--gold)"},[ev.title]),
-              el("span",{class:"chip"},[date.toLocaleString()])
-            ]),
+            el("div",{class:"tlHead"},[ el("div",{style:"font-weight:900;color:var(--gold)"},[ev.title]), el("span",{class:"chip"},[date.toLocaleString()]) ]),
             el("div",{style:"color:#bbb;line-height:1.8;margin-top:8px"},[ev.text || ""]),
             el("div",{class:"tagRow"}, (ev.tags||[]).map(tag=>el("span",{class:"tag"},[tag])))
           ]);
-
           if(unlocked){
             item.appendChild(el("div",{style:"margin-top:10px;display:grid;gap:10px"},[
               el("input",{class:"input", value:ev.title, onInput:(e)=>{ ev.title=e.target.value; scheduleCloudSave(); }}),
               el("textarea",{class:"input", style:"min-height:120px;font-family:Montserrat;font-size:14px;line-height:1.7", onInput:(e)=>{ ev.text=e.target.value; scheduleCloudSave(); }},[]),
-              el("input",{class:"input", value:(ev.tags||[]).join(", "), placeholder:"tags séparés par virgule", onInput:(e)=>{
-                ev.tags = e.target.value.split(",").map(x=>x.trim()).filter(Boolean);
-                scheduleCloudSave();
-                renderApp();
-              }}),
-              el("div",{style:"display:flex;justify-content:flex-end"},[
-                el("button",{class:"btn small danger", onClick:()=>{
-                  deepSet(activeProfile,"data.timeline.events", events.filter(x=>x.id!==ev.id));
-                  scheduleCloudSave();
-                  renderApp();
-                }},[el("i",{class:"fa-solid fa-trash"})," Suppr"])
-              ])
+              el("input",{class:"input", value:(ev.tags||[]).join(", "), placeholder:"tags séparés par virgule", onInput:(e)=>{ ev.tags = e.target.value.split(",").map(x=>x.trim()).filter(Boolean); scheduleCloudSave(); renderApp(); }}),
+              el("div",{style:"display:flex;justify-content:flex-end"},[ el("button",{class:"btn small danger", onClick:()=>{ deepSet(activeProfile,"data.timeline.events", events.filter(x=>x.id!==ev.id)); scheduleCloudSave(); renderApp(); }},[el("i",{class:"fa-solid fa-trash"})," Suppr"]) ])
             ]));
             item.querySelector("textarea").value = ev.text || "";
           }
-
           return item;
         }))
       ]);
-      return root;
     }
 
     function renderRelations(){
-      const rel = activeProfile.data?.relations || {list:[]};
-      const list = rel.list || [];
-
-      const root = el("div",{class:"panel"},[
+      const list = activeProfile.data?.relations?.list || [];
+      return el("div",{class:"panel"},[
         el("div",{style:"display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px"},[
           el("div",{style:"font-weight:900"},["Relations"]),
-          unlocked ? el("button",{class:"btn small primary", onClick:()=>{
-            list.unshift({id:uid(), name:"Nouveau contact", tag:"Neutre", note:"", img:""});
-            deepSet(activeProfile,"data.relations.list", list);
-            scheduleCloudSave();
-            renderApp();
-          }},[el("i",{class:"fa-solid fa-plus"})," Ajouter"]) : null
+          unlocked ? el("button",{class:"btn small primary", onClick:()=>{ list.unshift({id:uid(), name:"Nouveau contact", tag:"Neutre", note:"", img:""}); deepSet(activeProfile,"data.relations.list", list); scheduleCloudSave(); renderApp(); }},[el("i",{class:"fa-solid fa-plus"})," Ajouter"]) : null
         ]),
         el("div",{class:"grid3"}, list.map(r=>{
           const tagColor = r.tag==="Allié" ? "rgba(46,204,113,.25)" : r.tag==="Ennemi" ? "rgba(231,76,60,.25)" : "rgba(180,180,180,.15)";
           const card = el("div",{class:"panel", style:"margin:0"},[
             el("div",{style:"display:flex;gap:12px;align-items:center"},[
-              el("div",{class:"avatar",style:"width:54px;height:54px;border-color:rgba(212,175,55,.45)"},[
-                el("img",{src:r.img||"", onError:(e)=>{ e.target.style.opacity = '0'; }})
-              ]),
-              el("div",{},[
-                el("div",{style:"font-weight:900"},[r.name]),
-                el("span",{class:"tag", style:`border-color:${tagColor}`},[r.tag])
-              ])
+              el("div",{class:"avatar",style:"width:54px;height:54px;border-color:rgba(212,175,55,.45)"},[ el("img",{src:r.img||"", onError:(e)=>{ e.target.style.opacity = '0'; }}) ]),
+              el("div",{},[ el("div",{style:"font-weight:900"},[r.name]), el("span",{class:"tag", style:`border-color:${tagColor}`},[r.tag]) ])
             ]),
             el("div",{style:"margin-top:10px;color:#bbb;line-height:1.7"},[r.note||""])
           ]);
@@ -1537,248 +1246,112 @@
           if(unlocked){
             card.appendChild(el("div",{style:"margin-top:10px;display:grid;gap:10px"},[
               el("input",{class:"input", value:r.name, onInput:(e)=>{ r.name=e.target.value; scheduleCloudSave(); }}),
-              el("select",{class:"input", onChange:(e)=>{ r.tag=e.target.value; scheduleCloudSave(); renderApp(); }},[
-                el("option",{value:"Allié"},["Allié"]),
-                el("option",{value:"Ennemi"},["Ennemi"]),
-                el("option",{value:"Neutre"},["Neutre"])
-              ]),
+              el("select",{class:"input", onChange:(e)=>{ r.tag=e.target.value; scheduleCloudSave(); renderApp(); }},[ el("option",{value:"Allié"},["Allié"]), el("option",{value:"Ennemi"},["Ennemi"]), el("option",{value:"Neutre"},["Neutre"]) ]),
               el("div", {style:"display:flex; gap:10px; align-items:center;"}, [
                 el("input",{class:"input", style:"flex:1;", value:r.img||"", placeholder:"image url ou import...", onInput:(e)=>{ r.img=e.target.value; scheduleCloudSave(); renderApp(); }}),
                 el("button", {class:"btn small", onClick:()=> {
-                  const fi = document.createElement('input');
-                  fi.type = 'file'; fi.accept = 'image/*';
-                  fi.onchange = (e) => window.processImageUpload(e.target.files[0], (base64) => {
-                    r.img = base64;
-                    scheduleCloudSave();
-                    renderApp();
-                    toast("Image contact ajoutée");
-                  });
-                  fi.click();
+                  const fi = document.createElement('input'); fi.type = 'file'; fi.accept = 'image/*';
+                  fi.onchange = (e) => window.processImageUpload(e.target.files[0], (base64) => { r.img = base64; scheduleCloudSave(); renderApp(); toast("Image contact ajoutée"); }); fi.click();
                 }}, [el("i",{class:"fa-solid fa-upload"})])
               ]),
               el("textarea",{class:"input", style:"min-height:90px;font-family:Montserrat;font-size:14px;line-height:1.7", onInput:(e)=>{ r.note=e.target.value; scheduleCloudSave(); }},[]),
-              el("div",{style:"display:flex;justify-content:flex-end"},[
-                el("button",{class:"btn small danger", onClick:()=>{
-                  deepSet(activeProfile,"data.relations.list", list.filter(x=>x.id!==r.id));
-                  scheduleCloudSave();
-                  renderApp();
-                }},[el("i",{class:"fa-solid fa-trash"})," Suppr"])
-              ])
+              el("div",{style:"display:flex;justify-content:flex-end"},[ el("button",{class:"btn small danger", onClick:()=>{ deepSet(activeProfile,"data.relations.list", list.filter(x=>x.id!==r.id)); scheduleCloudSave(); renderApp(); }},[el("i",{class:"fa-solid fa-trash"})," Suppr"]) ])
             ]));
-            card.querySelector("textarea").value = r.note || "";
-            card.querySelector("select").value = r.tag || "Neutre";
+            card.querySelector("textarea").value = r.note || ""; card.querySelector("select").value = r.tag || "Neutre";
           }
-
           return card;
         }))
       ]);
-
-      return root;
     }
 
     function renderCustomNote(){
       const n = activeProfile.data?.custom_note || {html:""};
       return el("div",{class:"panel"},[
-        el("div",{style:"display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px"},[
-          el("div",{style:"font-weight:900"},["Carnet (rich text)"]),
-          el("span",{class:"chip"},["Tu peux écrire librement"])
-        ]),
-        editableDivBlock(n.html, (html)=>{
-          deepSet(activeProfile,"data.custom_note.html", html);
-          scheduleCloudSave();
-        })
+        el("div",{style:"display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px"},[ el("div",{style:"font-weight:900"},["Carnet (rich text)"]), el("span",{class:"chip"},["Tu peux écrire librement"]) ]),
+        editableDivBlock(n.html, (html)=>{ deepSet(activeProfile,"data.custom_note.html", html); scheduleCloudSave(); })
       ]);
     }
 
     function renderCustomCanvas(){
       const st = activeProfile.data?.custom_canvas || {strokes:[], background:"#0a0a0d"};
-
       const wrap = el("div",{},[
         el("div",{class:"panel"},[
           el("div",{style:"display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px"},[
             el("div",{style:"font-weight:900"},["Dessin (Canvas)"]),
             el("div",{style:"display:flex;gap:10px;flex-wrap:wrap;align-items:center"},[
               unlocked ? el("button",{class:"btn small", onClick:()=>exportCanvasPNG()},[el("i",{class:"fa-solid fa-file-image"})," PNG"]) : null,
-              unlocked ? el("button",{class:"btn small danger", onClick:()=>{
-                st.strokes = [];
-                deepSet(activeProfile,"data.custom_canvas", st);
-                scheduleCloudSave();
-                renderApp();
-              }},[el("i",{class:"fa-solid fa-eraser"})," Clear"]) : null
+              unlocked ? el("button",{class:"btn small danger", onClick:()=>{ st.strokes = []; deepSet(activeProfile,"data.custom_canvas", st); scheduleCloudSave(); renderApp(); }},[el("i",{class:"fa-solid fa-eraser"})," Clear"]) : null
             ])
           ]),
-          
           !unlocked ? el("div",{class:"muted", style:"margin-bottom:15px; font-style:italic; font-size:13px; text-align:center; padding:10px; background:rgba(212,175,55,0.1); border-radius:8px; color:var(--gold);"}, ["🔒 Déverrouillez le profil en haut à droite pour pouvoir dessiner."]) : null,
-          
-          el("div",{class:"canvasWrap"},[
-            el("canvas",{id:"cvs"})
-          ]),
+          el("div",{class:"canvasWrap"},[ el("canvas",{id:"cvs"}) ]),
           unlocked ? el("div",{style:"display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;align-items:center"},[
-            el("label",{class:"chip"},["Couleur"]),
-            el("input",{id:"penColor", type:"color", value:"#d4af37"}),
-            el("label",{class:"chip"},["Taille"]),
-            el("input",{id:"penSize", type:"range", min:"1", max:"18", value:"4"})
+            el("label",{class:"chip"},["Couleur"]), el("input",{id:"penColor", type:"color", value:"#d4af37"}), el("label",{class:"chip"},["Taille"]), el("input",{id:"penSize", type:"range", min:"1", max:"18", value:"4"})
           ]) : null
         ])
       ]);
-
-      setTimeout(()=>initCanvas(st), 50);
-      return wrap;
+      setTimeout(()=>initCanvas(st), 50); return wrap;
     }
 
     function initCanvas(st){
-      const canvas = $("cvs");
-      if(!canvas) return;
-
-      const ctx = canvas.getContext("2d");
-      function resize(){
-        const rect = canvas.getBoundingClientRect();
-        const dpr = window.devicePixelRatio || 1;
-        canvas.width = Math.floor(rect.width * dpr);
-        canvas.height = Math.floor(rect.height * dpr);
-        ctx.setTransform(dpr,0,0,dpr,0,0);
-        redraw();
-      }
-
+      const canvas = $("cvs"); if(!canvas) return; const ctx = canvas.getContext("2d");
+      function resize(){ const rect = canvas.getBoundingClientRect(); const dpr = window.devicePixelRatio || 1; canvas.width = Math.floor(rect.width * dpr); canvas.height = Math.floor(rect.height * dpr); ctx.setTransform(dpr,0,0,dpr,0,0); redraw(); }
       function redraw(){
-        const rect = canvas.getBoundingClientRect();
-        ctx.clearRect(0,0,rect.width,rect.height);
-        ctx.fillStyle = st.background || "#0a0a0d";
-        ctx.fillRect(0,0,rect.width,rect.height);
-
+        const rect = canvas.getBoundingClientRect(); ctx.clearRect(0,0,rect.width,rect.height); ctx.fillStyle = st.background || "#0a0a0d"; ctx.fillRect(0,0,rect.width,rect.height);
         for(const s of (st.strokes||[])){
-          ctx.strokeStyle = s.color;
-          ctx.lineWidth = s.size;
-          ctx.lineCap = "round";
-          ctx.lineJoin = "round";
-          ctx.beginPath();
-          for(let i=0;i<s.points.length;i++){
-            const p = s.points[i];
-            if(i===0) ctx.moveTo(p.x, p.y);
-            else ctx.lineTo(p.x, p.y);
-          }
-          ctx.stroke();
+          ctx.strokeStyle = s.color; ctx.lineWidth = s.size; ctx.lineCap = "round"; ctx.lineJoin = "round"; ctx.beginPath();
+          for(let i=0;i<s.points.length;i++){ const p = s.points[i]; if(i===0) ctx.moveTo(p.x, p.y); else ctx.lineTo(p.x, p.y); } ctx.stroke();
         }
       }
-
-      window.addEventListener("resize", resize, {passive:true});
-      resize();
-
-      if(!unlocked){
-        canvas.style.cursor = "not-allowed";
-        return;
-      }
-
-      let drawing = false;
-      let cur = null;
-
-      const getPoint = (e)=>{
-        const rect = canvas.getBoundingClientRect();
-        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-        return { x: clientX - rect.left, y: clientY - rect.top };
-      };
-
-      const colorEl = $("penColor");
-      const sizeEl = $("penSize");
-
-      const start = (e)=>{
-        drawing = true;
-        const p = getPoint(e);
-        cur = { id: uid(), color: colorEl?.value || "#d4af37", size: Number(sizeEl?.value||4), points:[p] };
-        st.strokes = st.strokes || [];
-        st.strokes.push(cur);
-        redraw();
-        e.preventDefault();
-      };
-      const move = (e)=>{
-        if(!drawing || !cur) return;
-        cur.points.push(getPoint(e));
-        redraw();
-        e.preventDefault();
-      };
-      const end = ()=>{
-        drawing = false;
-        cur = null;
-        deepSet(activeProfile,"data.custom_canvas", st);
-        scheduleCloudSave();
-      };
-
-      canvas.addEventListener("pointerdown", start);
-      canvas.addEventListener("pointermove", move);
-      window.addEventListener("pointerup", end);
-
-      canvas.addEventListener("touchstart", start, {passive:false});
-      canvas.addEventListener("touchmove", move, {passive:false});
-      window.addEventListener("touchend", end);
+      window.addEventListener("resize", resize, {passive:true}); resize();
+      if(!unlocked){ canvas.style.cursor = "not-allowed"; return; }
+      let drawing = false; let cur = null;
+      const getPoint = (e)=>{ const rect = canvas.getBoundingClientRect(); const clientX = e.touches ? e.touches[0].clientX : e.clientX; const clientY = e.touches ? e.touches[0].clientY : e.clientY; return { x: clientX - rect.left, y: clientY - rect.top }; };
+      const colorEl = $("penColor"); const sizeEl = $("penSize");
+      const start = (e)=>{ drawing = true; const p = getPoint(e); cur = { id: uid(), color: colorEl?.value || "#d4af37", size: Number(sizeEl?.value||4), points:[p] }; st.strokes = st.strokes || []; st.strokes.push(cur); redraw(); e.preventDefault(); };
+      const move = (e)=>{ if(!drawing || !cur) return; cur.points.push(getPoint(e)); redraw(); e.preventDefault(); };
+      const end = ()=>{ drawing = false; cur = null; deepSet(activeProfile,"data.custom_canvas", st); scheduleCloudSave(); };
+      canvas.addEventListener("pointerdown", start); canvas.addEventListener("pointermove", move); window.addEventListener("pointerup", end);
+      canvas.addEventListener("touchstart", start, {passive:false}); canvas.addEventListener("touchmove", move, {passive:false}); window.addEventListener("touchend", end);
     }
 
     function exportCanvasPNG(){
-      const canvas = $("cvs");
-      if(!canvas) return;
-      const a = document.createElement("a");
-      a.download = `canvas_${activeKey}.png`;
-      a.href = canvas.toDataURL("image/png");
-      a.click();
+      const canvas = $("cvs"); if(!canvas) return; const a = document.createElement("a");
+      a.download = `canvas_${activeKey}.png`; a.href = canvas.toDataURL("image/png"); a.click();
     }
 
     function renderCustomBoard(){
-      const b = activeProfile.data?.custom_board || {columns:[]};
-      const cols = b.columns || [];
-
-      const root = el("div",{class:"panel"},[
+      const cols = activeProfile.data?.custom_board?.columns || [];
+      return el("div",{class:"panel"},[
         el("div",{style:"display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px"},[
           el("div",{style:"font-weight:900"},["Tableau (Kanban RP)"]),
-          unlocked ? el("button",{class:"btn small primary", onClick:()=>{
-            cols.push({id:uid(), title:"Nouvelle colonne", cards:[]});
-            deepSet(activeProfile,"data.custom_board.columns", cols);
-            scheduleCloudSave();
-            renderApp();
-          }},[el("i",{class:"fa-solid fa-plus"})," Colonne"]) : null
+          unlocked ? el("button",{class:"btn small primary", onClick:()=>{ cols.push({id:uid(), title:"Nouvelle colonne", cards:[]}); deepSet(activeProfile,"data.custom_board.columns", cols); scheduleCloudSave(); renderApp(); }},[el("i",{class:"fa-solid fa-plus"})," Colonne"]) : null
         ]),
         el("div",{class:"grid3"}, cols.map(col=>{
           const cards = col.cards || [];
-          const box = el("div",{class:"panel", style:"margin:0"},[
+          return el("div",{class:"panel", style:"margin:0"},[
             el("div",{style:"display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px"},[
               el("div",{style:"font-weight:900;color:var(--gold)"},[col.title]),
-              unlocked ? el("button",{class:"btn small danger", onClick:()=>{
-                deepSet(activeProfile,"data.custom_board.columns", cols.filter(x=>x.id!==col.id));
-                scheduleCloudSave();
-                renderApp();
-              }},[el("i",{class:"fa-solid fa-trash"})]) : null
+              unlocked ? el("button",{class:"btn small danger", onClick:()=>{ deepSet(activeProfile,"data.custom_board.columns", cols.filter(x=>x.id!==col.id)); scheduleCloudSave(); renderApp(); }},[el("i",{class:"fa-solid fa-trash"})]) : null
             ]),
             unlocked ? el("input",{class:"input", value:col.title, onInput:(e)=>{ col.title=e.target.value; scheduleCloudSave(); }}) : null,
-            unlocked ? el("button",{class:"btn small primary", style:"margin-top:10px", onClick:()=>{
-              cards.unshift({id:uid(), text:"Nouvelle carte"});
-              col.cards = cards;
-              scheduleCloudSave();
-              renderApp();
-            }},[el("i",{class:"fa-solid fa-plus"})," Carte"]) : null,
+            unlocked ? el("button",{class:"btn small primary", style:"margin-top:10px", onClick:()=>{ cards.unshift({id:uid(), text:"Nouvelle carte"}); col.cards = cards; scheduleCloudSave(); renderApp(); }},[el("i",{class:"fa-solid fa-plus"})," Carte"]) : null,
             el("div",{style:"display:flex;flex-direction:column;gap:10px;margin-top:10px"}, cards.map(cd=>{
               const item = el("div",{class:"timelineItem"},[
                 el("div",{style:"display:flex;justify-content:space-between;gap:10px;align-items:center"},[
                   el("div",{style:"flex:1;color:#ddd"},[cd.text]),
-                  unlocked ? el("button",{class:"btn small danger", onClick:()=>{
-                    col.cards = cards.filter(x=>x.id!==cd.id);
-                    scheduleCloudSave();
-                    renderApp();
-                  }},[el("i",{class:"fa-solid fa-trash"})]) : null
+                  unlocked ? el("button",{class:"btn small danger", onClick:()=>{ col.cards = cards.filter(x=>x.id!==cd.id); scheduleCloudSave(); renderApp(); }},[el("i",{class:"fa-solid fa-trash"})]) : null
                 ])
               ]);
-              if(unlocked){
-                item.appendChild(el("input",{class:"input", value:cd.text, style:"margin-top:10px;font-family:Montserrat", onInput:(e)=>{ cd.text=e.target.value; scheduleCloudSave(); }}));
-              }
+              if(unlocked){ item.appendChild(el("input",{class:"input", value:cd.text, style:"margin-top:10px;font-family:Montserrat", onInput:(e)=>{ cd.text=e.target.value; scheduleCloudSave(); }})); }
               return item;
             }))
           ]);
-          return box;
         }))
       ]);
-      return root;
     }
 
-    // === FONCTIONS GLOBALES (Modal, Déverrouillage) ===
-    function openUnlockModal(){ $("uPin").value = ""; modal($("mUnlock"), true); }
+    function openUnlockModal(){ $("uPin").value = ""; modal($("mUnlock"), true); setTimeout(()=> $("uPin").focus(), 50); }
     
     function unlock(){
       const pin = ($("uPin").value || "").trim();
@@ -1792,8 +1365,7 @@
     
     function openCreateModal(){ 
       if(!isGlobalCreationAllowed) return toast("La création de dossier est fermée par l'administration.");
-      modal($("mCreate"), true); 
-      fillDuplicateSelect(); 
+      modal($("mCreate"), true); fillDuplicateSelect(); 
     }
     
     async function createProfile(){
@@ -1817,14 +1389,9 @@
     }
 
     function exportActive(){
-      const json = JSON.stringify(activeProfile, null, 2);
-      const blob = new Blob([json], {type:"application/json"});
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = `profil_${activeProfile.key}_${new Date().toISOString().slice(0,10)}.json`;
-      a.click();
-      setTimeout(()=>URL.revokeObjectURL(a.href), 1200);
-      toast("Export OK");
+      const json = JSON.stringify(activeProfile, null, 2); const blob = new Blob([json], {type:"application/json"}); const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob); a.download = `profil_${activeProfile.key}_${new Date().toISOString().slice(0,10)}.json`; a.click();
+      setTimeout(()=>URL.revokeObjectURL(a.href), 1200); toast("Export OK");
     }
 
     async function importActive(){
@@ -1840,13 +1407,7 @@
     }
 
     function printProfile(){
-      const w = window.open("", "_blank");
-      const p = activeProfile;
-      const name = p.displayName || p.key;
-      const idt = p.data?.identite || {};
-      const lore = p.data?.lore?.sections || [];
-      const timeline = p.data?.timeline?.events || [];
-
+      const w = window.open("", "_blank"); const p = activeProfile; const name = p.displayName || p.key; const idt = p.data?.identite || {}; const lore = p.data?.lore?.sections || []; const timeline = p.data?.timeline?.events || [];
       const idtHtml = `
         <p><strong>Nom complet :</strong> ${idt.fullName||""}</p>
         <p><strong>Âge :</strong> ${idt.age||""}</p>
@@ -1856,7 +1417,6 @@
         <p><strong>Physique :</strong> ${idt.phys||""} - ${idt.sign||""}</p>
         <p><strong>Voix :</strong> ${idt.voice||""}</p>
       `;
-
       const loreHtml = lore.map(s => `<h3>${escapeHtml(s.title)}</h3><p>${escapeHtml(s.text)}</p>`).join('');
       const tlHtml = timeline.map(e => `<li><strong>${new Date(e.at).toLocaleDateString()} - ${escapeHtml(e.title)}:</strong> ${escapeHtml(e.text)}</li>`).join('');
 
@@ -1869,30 +1429,19 @@
           h3{margin-top:20px; font-size:16px; color:#555;}
           .stamp{position:fixed; top:30px; right:40px; border:3px solid #d00; color:#d00; padding:10px 15px; transform:rotate(8deg); font-weight:900; font-size:18px; border-radius:4px;}
           .ref{color:#666; font-family:monospace; margin-bottom:30px;}
-          p{margin:8px 0;}
-          ul{padding-left:20px;}
-          li{margin-bottom:10px;}
+          p{margin:8px 0;} ul{padding-left:20px;} li{margin-bottom:10px;}
         </style></head><body>
         <div class="stamp">GRANDLINE // CONFIDENTIEL</div>
         <h1>DOSSIER : ${escapeHtml(name)}</h1>
         <div class="ref">REF: ${escapeHtml(p.meta?.ref||"INCONNUE")} | EXPORT OFFICIEL PARIS RP</div>
-        
-        <h2>1. Identité Civile</h2>
-        ${idtHtml}
-
-        <h2>2. Histoire et Rapports</h2>
-        ${loreHtml || "<p>Aucune donnée d'histoire.</p>"}
-
-        <h2>3. Chronologie (Timeline)</h2>
-        <ul>${tlHtml || "<li>Aucun événement enregistré.</li>"}</ul>
-        
+        <h2>1. Identité Civile</h2>${idtHtml}
+        <h2>2. Histoire et Rapports</h2>${loreHtml || "<p>Aucune donnée d'histoire.</p>"}
+        <h2>3. Chronologie (Timeline)</h2><ul>${tlHtml || "<li>Aucun événement enregistré.</li>"}</ul>
         <script>setTimeout(() => window.print(), 500);<\/script>
         </body></html>
       `);
       w.document.close();
     }
-
-    function escapeHtml(s){ return String(s ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;"); }
   </script>
 </body>
 </html>
