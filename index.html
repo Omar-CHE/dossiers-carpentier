@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SST SYSTEM | DOSSIERS</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;1,400&family=Montserrat:wght@300;400;600;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root{
+      --bg-color:#040406; --panel-bg:#0c0c10; --panel-light:#14141a;
+      --gold:#D4AF37; --gold-dim:rgba(212,175,55,.15);
+      --text-main:#ececec; --text-muted:#8a8a8a;
+      --danger:#e74c3c; --success:#2ecc71; --info:#3498db;
+      --border:1px solid #1f1f26;
+      --focus: 0 0 0 3px rgba(212,175,55,.35);
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      background:radial-gradient(circle at 50% 0%, #111118 0%, #040406 75%);
+      background-color:var(--bg-color);
+      color:var(--text-main);
+      font-family:'Montserrat',sans-serif;
+      display:flex;justify-content:center;align-items:center;
+      height:100vh;overflow:hidden;
+    }
+
+    a{color:var(--gold)}
+    :focus-visible{outline:none; box-shadow: var(--focus); border-radius:10px}
+
+    ::-webkit-scrollbar{width:6px}
+    ::-webkit-scrollbar-track{background:var(--bg-color)}
+    ::-webkit-scrollbar-thumb{background:#333;border-radius:10px}
+    ::-webkit-scrollbar-thumb:hover{background:var(--gold)}
+
+    /* LOGIN */
+    #login-screen{
+      position:fixed;inset:0;z-index:9999;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      transition:.5s;
+      background:radial-gradient(circle at 50% 0%, #111118 0%, #040406 75%);
+      padding:22px;
+    }
+    .login-title{
+      font-family:'Playfair Display',serif;color:var(--gold);
+      font-size:44px;letter-spacing:4px;margin-bottom:10px;text-align:center;
+    }
+    .login-subtitle{
+      font-family:'Share Tech Mono';color:var(--text-muted);font-size:13px;letter-spacing:2px;
+      margin-bottom:22px;text-align:center;
+    }
+
+    .login-toolbar{
+      width:min(1100px, 96vw);
+      display:flex;gap:10px;flex-wrap:wrap;justify-content:center;
+      margin-bottom:18px;
+    }
+    .search{
+      display:flex;align-items:center;gap:10px;
+      background:#0a0a0d;border:1px solid #1a1a20;border-radius:999px;padding:10px 14px;
+      min-width:min(520px, 92vw);
+    }
+    .search input{flex:1;background:transparent;border:none;color:#ddd;font-family:'Share Tech Mono';font-size:12px}
+    .kbd{font-family:'Share Tech Mono';font-size:11px;color:#999;border:1px solid #2a2a33;border-bottom-width:3px;border-radius:8px;padding:2px 8px;background:#0a0a0d}
+
+    .profiles-container{
+      width:min(1200px, 98vw);
+      display:grid;
+      grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));
+      gap:16px;
+    }
+    .profile-card{
+      background:linear-gradient(180deg, rgba(20,20,26,.95), rgba(12,12,16,.9));
+      border:1px solid #1f1f26;
+      border-radius:14px;
+      padding:18px;
+      cursor:pointer;
+      transition:.25s;
+      position:relative;
+      overflow:hidden;
+      min-height: 160px;
+    }
+    .profile-card:hover{border-color:rgba(212,175,55,.7); transform:translateY(-4px); box-shadow:0 18px 40px rgba(0,0,0,.55)}
+    .profile-top{display:flex; gap:14px; align-items:center}
+    .profile-pic{
+      width:70px;height:70px;border-radius:50%;
+      border:2px solid #26262f;overflow:hidden;background:#000;flex-shrink:0;
+    }
+    .profile-pic img{width:100%;height:100%;object-fit:cover}
+    .profile-name{font-weight:900; font-size:16px; color:#fff; letter-spacing:1px}
+    .profile-role{font-size:12px;color:var(--text-muted); margin-top:4px; line-height:1.4}
+    .badge{
+      position:absolute; top:12px; right:12px;
+      font-family:'Share Tech Mono'; font-size:11px;
+      padding:6px 10px; border-radius:999px;
+      border:1px solid #25252f;
+      background:#0a0a0d; color:#bbb;
+    }
+    .badge.public{border-color:rgba(52,152,219,.35); color:#a6d6ff}
+    .badge.local{border-color:rgba(46,204,113,.25); color:#b6f3cd}
+    .badge.locked{border-color:rgba(231,76,60,.25); color:#ffb7ae}
+
+    .card-actions{
+      display:flex;gap:10px;flex-wrap:wrap;
+      margin-top:14px;
+    }
+
+    /* BUTTONS */
+    .btn{
+      display:inline-flex; align-items:center; gap:10px;
+      border-radius:12px; cursor:pointer;
+      padding:10px 14px;
+      border:1px solid #2a2a33;
+      background:#0a0a0d;
+      color:#ddd;
+      font-weight:800;
+      font-size:12px;
+      text-transform:uppercase;
+      letter-spacing:1px;
+      transition:.2s;
+    }
+    .btn:hover{border-color:#4a4a55; color:#fff}
+    .btn.primary{border-color:rgba(212,175,55,.9); background:rgba(212,175,55,.12); color:var(--gold)}
+    .btn.primary:hover{background:rgba(212,175,55,.22)}
+    .btn.danger{border-color:rgba(231,76,60,.5); background:rgba(231,76,60,.08); color:#ffb1aa}
+    .btn.danger:hover{background:rgba(231,76,60,.14)}
+    .btn.small{padding:8px 10px; font-size:11px; border-radius:10px}
+
+    /* APP */
+    .app-container{
+      width:98vw;height:95vh;max-width:1850px;
+      background:rgba(12,12,16,.92);
+      border:1px solid #1f1f26;
+      border-radius:14px;
+      box-shadow:0 40px 110px rgba(0,0,0,1);
+      display:none; overflow:hidden; position:relative; opacity:0;
+      animation:fadeInApp .45s forwards;
+    }
+    @keyframes fadeInApp{to{opacity:1}}
+
+    .sidebar{width:310px;background:#07070a;border-right:1px solid #1f1f26;display:flex;flex-direction:column}
+    .sidebar-header{padding:26px 18px;text-align:center;border-bottom:1px solid #1f1f26}
+    .sidebar-header h2{font-family:'Playfair Display',serif;color:var(--gold);font-size:20px;letter-spacing:2px}
+    .sidebar-header p{font-size:9px;font-family:'Share Tech Mono';color:var(--text-muted);letter-spacing:3px;margin-top:8px}
+
+    .nav-links{display:flex;flex-direction:column;padding:10px 0;flex:1;overflow-y:auto}
+    .nav-btn{
+      background:transparent;border:none;color:var(--text-muted);
+      padding:14px 18px;text-align:left;
+      font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;
+      cursor:pointer;transition:.2s;display:flex;align-items:center;gap:12px;border-left:3px solid transparent;
+    }
+    .nav-btn i{font-size:16px;width:20px}
+    .nav-btn:hover{background:rgba(255,255,255,.03);color:var(--text-main)}
+    .nav-btn.active{background:linear-gradient(90deg,var(--gold-dim) 0%,transparent 100%);color:var(--gold);border-left:3px solid var(--gold)}
+    .nav-btn.bottom{margin-top:auto;border-top:1px solid #1f1f26}
+    .nav-btn.logout{color:#ffb1aa}
+    .nav-btn.logout:hover{background:rgba(231,76,60,.09); color:#ffd2cd}
+
+    .main-content{flex:1;overflow-y:auto;padding:28px 44px}
+
+    .topbar{
+      position:sticky; top:0; z-index:20;
+      background:linear-gradient(180deg, rgba(12,12,16,.96), rgba(12,12,16,.70));
+      backdrop-filter: blur(10px);
+      border-bottom:1px solid #1f1f26;
+      padding:12px 44px;
+      margin:-28px -44px 22px;
+      display:flex; align-items:center; justify-content:space-between;
+      gap:12px; flex-wrap:wrap;
+    }
+    .chip{
+      display:inline-flex; align-items:center; gap:10px;
+      font-family:'Share Tech Mono'; font-size:11px; color:#bbb;
+      background:#0a0a0d; border:1px solid #1a1a20;
+      padding:6px 10px; border-radius:999px;
+    }
+    .chip.ok{border-color:rgba(46,204,113,.25); color:#b6f3cd}
+    .chip.ro{border-color:rgba(52,152,219,.25); color:#a6d6ff}
+    .chip.edit{border-color:rgba(212,175,55,.30); color:#ffe7a1}
+    .chip.lock{border-color:rgba(231,76,60,.25); color:#ffb7ae}
+
+    .tab-section{display:none; animation:slideUp .35s ease-out forwards}
+    .tab-section.active{display:block}
+    @keyframes slideUp{from{opacity:0; transform:translateY(18px)} to{opacity:1; transform:translateY(0)}}
+
+    .section-title{
+      font-family:'Playfair Display',serif;
+      font-size:42px; color:#fff;
+      margin-bottom:20px; padding-bottom:14px;
+      border-bottom:1px solid #1a1a20;
+      display:flex; justify-content:space-between; align-items:flex-end; gap:12px; flex-wrap:wrap;
+    }
+    .section-title .ref{font-family:'Share Tech Mono'; font-size:13px; color:rgba(212,175,55,.8); opacity:.75}
+
+    .grid-2{display:grid; grid-template-columns:1fr 1fr; gap:18px}
+    .card{background:rgba(20,20,26,.92); border:1px solid #1f1f26; border-radius:14px; padding:20px; margin-bottom:16px}
+    .card-title{
+      font-size:11px; color:rgba(212,175,55,.9);
+      text-transform:uppercase; letter-spacing:3px;
+      margin-bottom:14px;
+      display:flex; justify-content:space-between; align-items:center; gap:10px;
+    }
+
+    .profile-img-container{width:100%; height:380px; border-radius:14px; overflow:hidden; border:1px solid #1a1a20; background:#050507}
+    .profile-img-container img{width:100%; height:100%; object-fit:cover; object-position:top}
+
+    /* Editable fields */
+    .field{
+      display:inline-block;
+      padding:4px 8px;
+      border-radius:10px;
+      border:1px dashed transparent;
+      min-height:22px;
+      transition:.15s;
+    }
+    body.edit-unlocked .field{border-color:#2a2a33; cursor:text}
+    body.edit-unlocked .field:hover{border-color:rgba(212,175,55,.35)}
+    .field[contenteditable="true"]:focus{background:#0a0a0d; border-color:rgba(212,175,55,.7)}
+
+    /* Toast */
+    #toast{position:fixed; bottom:36px; left:50%; transform:translateX(-50%) translateY(120px); opacity:0;
+      background:var(--gold); color:#000; padding:12px 18px; border-radius:999px; font-weight:900; font-size:13px; z-index:9999; transition:.35s;
+    }
+    #toast.show{transform:translateX(-50%) translateY(0); opacity:1}
+
+    /* Modals */
+    .modal{display:none; position:fixed; inset:0; z-index:2000; background:rgba(0,0,0,.88); backdrop-filter:blur(8px); padding:18px; align-items:center; justify-content:center}
+    .modal.active{display:flex}
+    .modal-content{
+      width:min(820px, 98vw);
+      background:rgba(20,20,26,.96);
+      border:1px solid rgba(212,175,55,.65);
+      border-radius:16px;
+      padding:20px;
+    }
+    .modal-content h3{font-family:'Playfair Display'; color:var(--gold); font-size:24px; margin-bottom:10px}
+    .form-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+    .form-group{margin-bottom:10px}
+    .form-group label{display:block; font-size:11px; text-transform:uppercase; letter-spacing:1px; color:#888; margin-bottom:8px}
+    .form-group input, .form-group select, .form-group textarea{
+      width:100%;
+      background:#07070a;
+      border:1px solid #222;
+      color:#fff;
+      padding:12px;
+      border-radius:12px;
+      font-family:'Montserrat';
+    }
+    .form-group textarea{min-height:100px; resize:vertical}
+    .modal-actions{display:flex; justify-content:flex-end; gap:10px; margin-top:12px; flex-wrap:wrap}
+
+    @media (max-width: 1000px){
+      .grid-2{grid-template-columns:1fr}
+      .sidebar{width:260px}
+      .main-content{padding:22px 18px}
+      .topbar{padding:12px 18px; margin:-22px -18px 18px}
+    }
+  </style>
+</head>
+<body>
+
+  <!-- LOGIN -->
+  <div id="login-screen" aria-label="Écran de sélection de profil">
+    <h1 class="login-title">DOSSIERS</h1>
+    <p class="login-subtitle">LECTURE PUBLIQUE // ÉDITION VERROUILLÉE PAR PIN</p>
+
+    <div class="login-toolbar">
+      <div class="search" title="Recherche (/)">
+        <i class="fa-solid fa-magnifying-glass" style="color:#666"></i>
+        <input id="login-search" placeholder="Rechercher un profil (nom, rôle…)" />
+        <span class="kbd">/</span>
+      </div>
+      <button class="btn primary" onclick="openModal('modalCreateProfile')"><i class="fa-solid fa-user-plus"></i> Créer profil</button>
+      <button class="btn" onclick="openModal('modalImportProfile')"><i class="fa-solid fa-file-import"></i> Import JSON</button>
+      <button class="btn" onclick="openModal('modalHelp')"><i class="fa-solid fa-circle-info"></i> Aide</button>
+    </div>
+
+    <div class="profiles-container" id="profiles"></div>
+
+    <div style="margin-top:16px; width:min(1200px, 98vw); display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; color:#777; font-size:12px">
+      <div><span class="kbd">Tip</span> Clique un profil pour lire. Clique <strong>Déverrouiller</strong> dans l’app pour éditer.</div>
+      <div id="login-storage"></div>
+    </div>
+  </div>
+
+  <!-- APP -->
+  <div class="app-container" id="main-app">
+    <nav class="sidebar">
+      <div class="sidebar-header">
+        <h2 id="ui-sidebar-name">CARPENTIER O.S</h2>
+        <p>v5.0 SYSTEM // PUBLIC VIEW</p>
+      </div>
+
+      <div class="nav-links">
+        <button class="nav-btn active" onclick="showTab('profil', this)"><i class="fa-solid fa-id-card"></i> 01. Identité</button>
+        <button class="nav-btn" onclick="showTab('caractere', this)"><i class="fa-solid fa-brain"></i> 02. Caractère</button>
+        <button class="nav-btn" onclick="showTab('lore', this)"><i class="fa-solid fa-scroll"></i> 03. Histoire (Lore)</button>
+        <button class="nav-btn" onclick="showTab('objectifs', this)"><i class="fa-solid fa-bullseye"></i> 04. Objectifs</button>
+        <button class="nav-btn" onclick="showTab('journal', this)"><i class="fa-solid fa-keyboard"></i> 05. Journal RP</button>
+
+        <button class="nav-btn bottom logout" onclick="logout()"><i class="fa-solid fa-power-off"></i> Retour profils</button>
+      </div>
+    </nav>
+
+    <main class="main-content">
+      <div class="topbar">
+        <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center">
+          <span class="chip ro" id="ui-mode-chip"><i class="fa-solid fa-eye"></i> LECTURE</span>
+          <span class="chip"><i class="fa-solid fa-user"></i> <span id="ui-active-profile"></span></span>
+          <span class="chip"><i class="fa-solid fa-fingerprint"></i> REF: <span id="ui-ref-id"></span></span>
+          <span class="chip ok" id="ui-save-chip"><i class="fa-solid fa-cloud"></i> OK</span>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap">
+          <button class="btn small primary" id="btn-unlock" onclick="openUnlock()"><i class="fa-solid fa-lock"></i> Déverrouiller</button>
+          <button class="btn small" onclick="lockEditing()"><i class="fa-solid fa-lock-open"></i> Verrouiller</button>
+          <button class="btn small" onclick="openModal('modalProfileTools')"><i class="fa-solid fa-screwdriver-wrench"></i> Outils</button>
+        </div>
+      </div>
+
+      <!-- IDENTITE -->
+      <section id="profil" class="tab-section active">
+        <div class="section-title"><span>Identité Civile</span><span class="ref" id="ui-subref"></span></div>
+
+        <div class="grid-2">
+          <div class="card" style="padding:10px;">
+            <div class="profile-img-container">
+              <img id="ui-photo" src="" alt="Profil">
+            </div>
+            <div style="display:flex; justify-content:flex-end; margin-top:10px">
+              <button class="btn small" onclick="openModal('modalEditMeta')"><i class="fa-solid fa-pen"></i> Photo / Réfs</button>
+            </div>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:16px">
+            <div class="card">
+              <div class="card-title">État Civil <span style="color:#777;font-size:12px;text-transform:none;letter-spacing:0">édition → déverrouiller</span></div>
+              <p style="margin-bottom:10px;"><strong>Nom complet :</strong> <span id="ui-full-name" class="field" data-path="identity.fullName"></span></p>
+              <p style="margin-bottom:10px;"><strong>Âge :</strong> <span id="ui-age" class="field" data-path="identity.age"></span></p>
+              <p style="margin-bottom:10px;"><strong>Lieu de naissance :</strong> <span id="ui-birthplace" class="field" data-path="identity.birthplace"></span></p>
+              <p style="margin-bottom:10px;"><strong>Origines :</strong> <span id="ui-origins" class="field" data-path="identity.origins"></span></p>
+              <p><strong>Situation :</strong> <span id="ui-role" class="field" data-path="identity.role"></span></p>
+            </div>
+
+            <div class="card">
+              <div class="card-title">Attributs Physiques</div>
+              <p style="margin-bottom:10px;"><strong>Apparence :</strong> <span id="ui-phys" class="field" data-path="identity.phys"></span></p>
+              <p style="margin-bottom:10px;"><strong>Signe distinctif :</strong> <span id="ui-sign" class="field" data-path="identity.sign"></span></p>
+              <p><strong>Particularité Vocale :</strong> <span id="ui-voice" class="field" data-path="identity.voice" style="color:var(--gold)"></span></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CARACTERE -->
+      <section id="caractere" class="tab-section">
+        <div class="section-title"><span>Analyse Psychologique</span><span class="ref" id="ui-psy-ref"></span></div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title">Traits de Personnalité</div>
+            <div id="ui-stats-container" style="color:#bbb; line-height:1.6"></div>
+          </div>
+          <div class="card">
+            <div class="card-title">Description Psychologique</div>
+            <p id="ui-psy1" class="field" data-path="psy.psy1" style="color:#bbb; line-height:1.75"></p>
+            <p id="ui-psy2" class="field" data-path="psy.psy2" style="color:#bbb; line-height:1.75; margin-top:14px"></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- LORE -->
+      <section id="lore" class="tab-section">
+        <div class="section-title"><span>Dossier Background</span><span class="ref" id="ui-lore-ref"></span></div>
+        <div class="card" id="lore-container"></div>
+      </section>
+
+      <!-- OBJECTIFS -->
+      <section id="objectifs" class="tab-section">
+        <div class="section-title"><span>Objectifs</span><button class="btn primary" onclick="openModal('modalGoal')"><i class="fa-solid fa-plus"></i> Nouveau</button></div>
+        <div class="grid-2" id="goal-container"></div>
+      </section>
+
+      <!-- JOURNAL -->
+      <section id="journal" class="tab-section">
+        <div class="section-title"><span>Journal RP</span><span class="ref">autosave</span></div>
+        <div class="card" style="padding:0; border:none; background:transparent">
+          <textarea id="journal-input"
+            style="width:100%;height:62vh;background:#0a0a0d;border:1px solid #1a1a20;color:#ddd;padding:18px;border-radius:14px;resize:none;line-height:1.85;font-size:16px;"
+            placeholder="Cher journal..."></textarea>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- MODALS -->
+  <div class="modal" id="modalUnlock">
+    <div class="modal-content" role="dialog" aria-modal="true" aria-label="Déverrouillage édition">
+      <h3>Déverrouiller l’édition</h3>
+      <p style="color:#bbb; line-height:1.6; margin-bottom:12px">
+        Ce dossier est <strong>public en lecture</strong>. Pour modifier, entre le PIN du profil.
+      </p>
+      <div class="form-grid">
+        <div class="form-group" style="grid-column:1/-1">
+          <label>PIN</label>
+          <input id="unlockPin" inputmode="numeric" placeholder="ex: 1234" />
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn" onclick="closeModal('modalUnlock')">Annuler</button>
+        <button class="btn primary" onclick="unlockEditing()"><i class="fa-solid fa-key"></i> Déverrouiller</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="modalCreateProfile">
+    <div class="modal-content" role="dialog" aria-modal="true" aria-label="Créer profil">
+      <h3>Créer un profil (visiteur)</h3>
+      <p style="color:#bbb; line-height:1.6; margin-bottom:12px">
+        Ce profil sera stocké <strong>dans ton navigateur</strong> (local). Tu peux lui mettre un PIN pour protéger l’édition.
+      </p>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Nom du profil (affiché)</label>
+          <input id="newDisplayName" placeholder="Ex: Omar">
+        </div>
+        <div class="form-group">
+          <label>Clé (slug, unique)</label>
+          <input id="newKey" placeholder="ex: omar" style="font-family:'Share Tech Mono'">
+        </div>
+        <div class="form-group" style="grid-column:1/-1">
+          <label>Avatar (URL ou fichier) — tu peux modifier après</label>
+          <input id="newAvatar" placeholder="ex: avatar.png ou https://...">
+        </div>
+        <div class="form-group">
+          <label>PIN (optionnel, recommandé)</label>
+          <input id="newPin" inputmode="numeric" placeholder="ex: 4321">
+        </div>
+        <div class="form-group">
+          <label>Dupliquer depuis</label>
+          <select id="newDuplicateFrom"></select>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn" onclick="closeModal('modalCreateProfile')">Annuler</button>
+        <button class="btn primary" onclick="createProfile()"><i class="fa-solid fa-user-plus"></i> Créer</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="modalEditMeta">
+    <div class="modal-content" role="dialog" aria-modal="true" aria-label="Modifier photo et références">
+      <h3>Profil — Photo & Références</h3>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Nom sidebar</label>
+          <input id="editSidebar" />
+        </div>
+        <div class="form-group">
+          <label>REF</label>
+          <input id="editRef" />
+        </div>
+        <div class="form-group">
+          <label>Réf psycho</label>
+          <input id="editPsyRef" />
+        </div>
+        <div class="form-group">
+          <label>Réf lore</label>
+          <input id="editLoreRef" />
+        </div>
+        <div class="form-group" style="grid-column:1/-1">
+          <label>Photo (URL/path)</label>
+          <input id="editImg" />
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn" onclick="closeModal('modalEditMeta')">Fermer</button>
+        <button class="btn primary" onclick="saveMeta()"><i class="fa-solid fa-floppy-disk"></i> Sauvegarder</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="modalGoal">
+    <div class="modal-content" role="dialog" aria-modal="true" aria-label="Nouveau objectif">
+      <h3>Nouveau Objectif</h3>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Titre</label>
+          <input id="goalInput" placeholder="Ex: Acheter un scooter">
+        </div>
+        <div class="form-group">
+          <label>Type</label>
+          <select id="goalType">
+            <option value="court">Court terme</option>
+            <option value="long">Long terme</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn" onclick="closeModal('modalGoal')">Annuler</button>
+        <button class="btn primary" onclick="addGoal()"><i class="fa-solid fa-plus"></i> Ajouter</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="modalProfileTools">
+    <div class="modal-content" role="dialog" aria-modal="true" aria-label="Outils profil">
+      <h3>Outils Profil</h3>
+      <div class="card" style="margin:0 0 12px">
+        <div class="card-title">Sauvegarde</div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap">
+          <button class="btn" onclick="exportProfile()"><i class="fa-solid fa-file-export"></i> Export JSON</button>
+          <button class="btn" onclick="openModal('modalImportProfile')"><i class="fa-solid fa-file-import"></i> Import JSON</button>
+        </div>
+      </div>
+      <div class="card" style="margin:0 0 12px">
+        <div class="card-title">Profil visiteur</div>
+        <p style="color:#bbb; line-height:1.6; margin-bottom:10px">
+          Les profils visiteurs sont locaux à ton navigateur. Tu peux supprimer le tien ici.
+        </p>
+        <button class="btn danger" onclick="deleteActiveProfile()"><i class="fa-solid fa-trash"></i> Supprimer ce profil</button>
+      </div>
+      <div class="modal-actions">
+        <button class="btn" onclick="closeModal('modalProfileTools')">Fermer</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="modalImportProfile">
+    <div class="modal-content" role="dialog" aria-modal="true" aria-label="Import JSON">
+      <h3>Importer JSON</h3>
+      <p style="color:#bbb; line-height:1.6; margin-bottom:12px">
+        Import écrase le profil ciblé (selon le champ <code style="color:var(--gold)">key</code> du JSON).
+      </p>
+      <div class="form-group">
+        <label>Coller le JSON</label>
+        <textarea id="importJson"></textarea>
+      </div>
+      <div class="modal-actions">
+        <button class="btn" onclick="closeModal('modalImportProfile')">Annuler</button>
+        <button class="btn primary" onclick="importProfile()"><i class="fa-solid fa-file-import"></i> Importer</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="modalHelp">
+    <div class="modal-content" role="dialog" aria-modal="true" aria-label="Aide">
+      <h3>Aide</h3>
+      <div class="card" style="margin:0">
+        <div class="card-title">Lecture / édition</div>
+        <p style="color:#bbb; line-height:1.8">
+          - Tout le monde peut <strong>lire</strong> les profils publics (Harry/Seya).<br>
+          - Pour <strong>modifier</strong> : clique <em>Déverrouiller</em> et entre le PIN.<br>
+          - Les profils visiteurs peuvent être créés et modifiés dans ton navigateur.
+        </p>
+      </div>
+      <div class="modal-actions">
+        <button class="btn primary" onclick="closeModal('modalHelp')">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast">OK</div>
+
+  <script>
+    /***********************
+     * CONFIG PIN (fixe)
+     ***********************/
+    const PIN_HARRY = "15122004";
+    const PIN_SEYA  = "11111110";
+
+    /***********************
+     * Storage
+     ***********************/
+    const STORAGE_NS = "carpentierOS:v5";
+    const EDIT_SESSION_NS = "carpentierOS:v5:editSession"; // per browser tab/session
+
+    const isStructuredCloneSupported = typeof structuredClone === "function";
+    const clone = (obj) => isStructuredCloneSupported ? structuredClone(obj) : JSON.parse(JSON.stringify(obj));
+
+    function uid(){
+      const rnd = (typeof crypto !== "undefined" && crypto.getRandomValues) ? crypto.getRandomValues(new Uint32Array(2)) : [Date.now(), Math.random()*1e9];
+      return "id_" + rnd[0].toString(16) + rnd[1].toString(16);
+    }
+
+    function escapeHtml(s){ return String(s ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;"); }
+    function escapeAttr(s){ return escapeHtml(s).replaceAll('"','&quot;'); }
+
+    const defaultProfiles = {
+      harry: {
+        key:"harry",
+        public:true,
+        displayName:"HARRY",
+        meta:{ sidebar:"HARRY O.S", refId:"HC-151204", psyRef:"SYNDROME CHIHUAHUA", loreRef:"L'EST PARISIEN", img:"photo harry.png" }, // <- IMAGE ICI
+        pinHash:"", // not used (fixed PIN)
+        identity:{
+          fullName:"CARPENTIER Harry",
+          age:"21 ans (15/12/2004)",
+          birthplace:"Paris 19ème (Hôpital Robert Debré)",
+          origins:"Franco-Algérien (Mère DZ : Myriam)",
+          role:"Chef de famille (précaire) / Faux Caïd",
+          phys:"1m75 (Plutôt frêle)",
+          sign:"Moustache taillée (pour paraître plus vieux).",
+          voice:"Voix extrêmement aiguë de naissance, zéro virilité."
+        },
+        psy:{
+          psy1:"Harry est l'incarnation même du <strong>Chihuahua</strong> : il aboie très fort, essaie d'intimider avec un argot de banlieue, mais fuit dès que la menace devient réelle. Il est terrifié par la violence physique et perd tous ses moyens sous la pression.",
+          psy2:"Sa plus grande faiblesse est son <strong>honnêteté pathologique</strong> : incapable de mentir sous le stress, il finit par tout avouer."
+        },
+        stats:[
+          { id: uid(), label:"Courage (Froid & Calculé)", val:5 },
+          { id: uid(), label:"Lâcheté / Survie", val:95 },
+          { id: uid(), label:"Sincérité (Stress-induced honesty)", val:100 },
+          { id: uid(), label:"Dévouement pour Seya", val:100 }
+        ],
+        lore:{
+          sections:[
+            { id: uid(), title:"Les Origines : Le 19ème Arrondissement", text:"Harry est né et a grandi dans les barres d'HLM du 19ème arrondissement de Paris. Son père a disparu, sa mère Myriam s'est tuée à la tâche." },
+            { id: uid(), title:"Le Drame de Seya", text:"À la naissance de sa petite sœur Seya, une anoxie lui laisse un retard mental. La vie d'Harry a changé : il est devenu son garde du corps inefficace et son seul repère." },
+            { id: uid(), title:"L'Arrivée à Paris RP", text:"Myriam est décédée. Menacés d'expulsion, Harry a pris Seya et a décidé de tenter sa chance dans le grand bain de GrandLine." }
+          ]
+        },
+        goals:[],
+        journal:""
+      },
+
+      seya: {
+        key:"seya",
+        public:true,
+        displayName:"SEYA",
+        meta:{ sidebar:"SEYA O.S", refId:"SC-19", psyRef:"L'ÉPINE ATTACHANTE", loreRef:"L'EST PARISIEN", img:"photo seya.png" }, // <- IMAGE ICI
+        pinHash:"",
+        identity:{
+          fullName:"CARPENTIER Seya",
+          age:"19 ans",
+          birthplace:"Paris 19ème",
+          origins:"Franco-Algérienne",
+          role:"Petite sœur surprotégée",
+          phys:"Petite, souvent cachée derrière son frère",
+          sign:"Regard fuyant, souvent perdue ou hyperactive.",
+          voice:"Voix très aiguë, parle très fort et sans filtre."
+        },
+        psy:{
+          psy1:"À cause d'une anoxie, Seya a un <strong>retard mental</strong>. Elle vit le monde comme une enfant : elle est extrêmement spontanée, n'a aucun filtre social et dit ce qu'elle pense sans réaliser les conséquences.",
+          psy2:"Elle est d'une <strong>jalousie maladive</strong>. Si quelqu'un (surtout une fille) s'approche de son frère, elle peut faire des crises mémorables. Elle fait confiance aveuglément aux mauvaises personnes."
+        },
+        stats:[
+          { id: uid(), label:"Naïveté & Vulnérabilité", val:100 },
+          { id: uid(), label:"Émotivité (Pleurs/Rires intenses)", val:100 },
+          { id: uid(), label:"Jalousie (Dès qu'on approche Harry)", val:100 },
+          { id: uid(), label:"Dévouement pour Harry", val:100 }
+        ],
+        lore:{
+          sections:[
+            { id: uid(), title:"Une enfance dans l'ombre", text:"Pour Seya, le 19ème n'était pas un enfer mais un terrain de jeu bruyant. Elle n'a jamais compris la dureté de la vie de sa mère ni les sacrifices de son frère." },
+            { id: uid(), title:"L'Ancre Harry", text:"Harry est son Dieu, son héros absolu. Elle ne se rend pas du tout compte qu'il est lâche. Pour elle, c'est le roi de Paris." },
+            { id: uid(), title:"L'objectif à GrandLine", text:"Elle suit son frère partout. Son but ? Se faire des amis bizarres, et surtout prouver à Harry qu'elle est 'une grande' et qu'elle peut l'aider." }
+          ]
+        },
+        goals:[],
+        journal:""
+      }
+    };
+
+    const defaultState = {
+      version:5,
+      profiles: defaultProfiles
+    };
+
+    let state = loadState();
+    let activeKey = null;
+    let editUnlocked = false;
+
+    // save debounce
+    let saveT = null;
+
+    /***********************
+     * Toast / modal
+     ***********************/
+    function notify(msg){
+      const t = document.getElementById("toast");
+      t.innerText = msg;
+      t.classList.add("show");
+      setTimeout(()=>t.classList.remove("show"), 1600);
+    }
+    function openModal(id){ document.getElementById(id).classList.add("active"); }
+    function closeModal(id){ document.getElementById(id).classList.remove("active"); }
+
+    function setSaveChip(mode="ok"){
+      const chip = document.getElementById("ui-save-chip");
+      if(mode==="busy"){ chip.className="chip"; chip.innerHTML='<i class="fa-solid fa-arrows-rotate"></i> SAVE'; }
+      else { chip.className="chip ok"; chip.innerHTML='<i class="fa-solid fa-cloud"></i> OK'; }
+    }
+    function setModeChip(){
+      const chip = document.getElementById("ui-mode-chip");
+      if(editUnlocked){
+        chip.className="chip edit";
+        chip.innerHTML='<i class="fa-solid fa-pen"></i> ÉDITION';
+        document.body.classList.add("edit-unlocked");
+      }else{
+        chip.className="chip ro";
+        chip.innerHTML='<i class="fa-solid fa-eye"></i> LECTURE';
+        document.body.classList.remove("edit-unlocked");
+      }
+      // enable/disable contenteditable
+      document.querySelectorAll(".field").forEach(el=>{
+        el.setAttribute("contenteditable", editUnlocked ? "true" : "false");
+      });
+      // journal readonly
+      const journal = document.getElementById("journal-input");
+      if(journal) journal.readOnly = !editUnlocked;
+    }
+
+    /***********************
+     * Storage
+     ***********************/
+    function loadState(){
+      try{
+        const raw = localStorage.getItem(STORAGE_NS);
+        if(!raw){
+          localStorage.setItem(STORAGE_NS, JSON.stringify(defaultState));
+          return clone(defaultState);
+        }
+        const parsed = JSON.parse(raw);
+        const merged = {
+          ...clone(defaultState),
+          ...parsed,
+          profiles: { ...clone(defaultState.profiles), ...(parsed.profiles||{}) }
+        };
+        // ensure required base profiles exist
+        if(!merged.profiles.harry) merged.profiles.harry = clone(defaultProfiles.harry);
+        if(!merged.profiles.seya) merged.profiles.seya = clone(defaultProfiles.seya);
+        return merged;
+      }catch(e){
+        localStorage.setItem(STORAGE_NS, JSON.stringify(defaultState));
+        return clone(defaultState);
+      }
+    }
+
+    function saveState(){
+      localStorage.setItem(STORAGE_NS, JSON.stringify(state));
+    }
+
+    function scheduleSave(){
+      setSaveChip("busy");
+      clearTimeout(saveT);
+      saveT = setTimeout(()=>{
+        saveState();
+        setSaveChip("ok");
+      }, 250);
+    }
+
+    /***********************
+     * Edit session (per profile)
+     ***********************/
+    function loadEditSession(){
+      try{
+        const raw = sessionStorage.getItem(EDIT_SESSION_NS);
+        return raw ? JSON.parse(raw) : {};
+      }catch{ return {}; }
+    }
+    function saveEditSession(obj){
+      sessionStorage.setItem(EDIT_SESSION_NS, JSON.stringify(obj));
+    }
+    function isProfileUnlocked(key){
+      const s = loadEditSession();
+      const exp = s?.[key]?.exp || 0;
+      return Date.now() < exp;
+    }
+    function setProfileUnlocked(key, minutes=30){
+      const s = loadEditSession();
+      s[key] = { exp: Date.now() + minutes*60*1000 };
+      saveEditSession(s);
+    }
+    function clearProfileUnlocked(key){
+      const s = loadEditSession();
+      delete s[key];
+      saveEditSession(s);
+    }
+
+    /***********************
+     * Login render
+     ***********************/
+    function storageInfo(){
+      const bytes = new Blob([JSON.stringify(state)]).size;
+      return (bytes/1024).toFixed(1) + " KB local";
+    }
+
+    function renderLogin(){
+      document.getElementById("login-storage").innerText = storageInfo();
+
+      const q = (document.getElementById("login-search").value || "").trim().toLowerCase();
+      const profiles = Object.values(state.profiles)
+        .sort((a,b)=> (b.public===true)-(a.public===true) || (a.displayName||a.key).localeCompare(b.displayName||b.key));
+
+      const filtered = !q ? profiles : profiles.filter(p=>{
+        const hay = `${p.displayName||""} ${p.key||""} ${p.identity?.role||""}`.toLowerCase();
+        return hay.includes(q);
+      });
+
+      const html = filtered.map(p=>{
+        const badge = p.public ? `<span class="badge public">PUBLIC</span>` : `<span class="badge local">VISITEUR</span>`;
+        const locked = (p.key==="harry" || p.key==="seya" || !!p.pinHash) ? `<span class="badge locked" style="right:92px">PIN</span>` : "";
+        const img = p.meta?.img || "";
+        const role = p.identity?.role || "";
+        return `
+          <div class="profile-card" tabindex="0" role="button" aria-label="Ouvrir ${escapeAttr(p.displayName||p.key)}" onclick="login('${escapeAttr(p.key)}')">
+            ${badge}${locked}
+            <div class="profile-top">
+              <div class="profile-pic">
+                <img src="${escapeAttr(img)}" onerror="this.src='https://via.placeholder.com/150/0a0a0c/333?text=${encodeURIComponent((p.displayName||p.key).slice(0,10))}'">
+              </div>
+              <div>
+                <div class="profile-name">${escapeHtml(p.displayName || p.key)}</div>
+                <div class="profile-role">${escapeHtml(role)}</div>
+              </div>
+            </div>
+
+            <div class="card-actions" onclick="event.stopPropagation()">
+              <button class="btn small" onclick="openDuplicateModal('${escapeAttr(p.key)}')"><i class="fa-solid fa-clone"></i> Dupliquer</button>
+              ${(!p.public && p.key!=="harry" && p.key!=="seya") ? `<button class="btn small danger" onclick="deleteProfile('${escapeAttr(p.key)}')"><i class="fa-solid fa-trash"></i> Suppr</button>` : ``}
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      document.getElementById("profiles").innerHTML = html || `<div style="color:#777">Aucun profil.</div>`;
+
+      // populate duplicate select
+      const sel = document.getElementById("newDuplicateFrom");
+      sel.innerHTML = profiles.map(p=>`<option value="${escapeAttr(p.key)}">${escapeHtml(p.displayName||p.key)} (${p.key})</option>`).join("");
+    }
+
+    /***********************
+     * Login / logout
+     ***********************/
+    function login(key){
+      activeKey = key;
+      editUnlocked = isProfileUnlocked(activeKey); // restore session unlock if any
+
+      // transition
+      const loginScreen = document.getElementById("login-screen");
+      loginScreen.style.opacity = "0";
+      setTimeout(()=>{
+        loginScreen.style.display = "none";
+        document.getElementById("main-app").style.display = "flex";
+        showTab("profil", document.querySelector(".nav-btn"));
+        hydrateUI();
+      }, 450);
+    }
+
+    function logout(){
+      activeKey = null;
+      editUnlocked = false;
+      document.getElementById("main-app").style.display="none";
+      const ls = document.getElementById("login-screen");
+      ls.style.display="flex";
+      setTimeout(()=>ls.style.opacity="1", 30);
+      renderLogin();
+    }
+
+    function showTab(id, btn){
+      document.querySelectorAll(".tab-section").forEach(s=>s.classList.remove("active"));
+      document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("active"));
+      document.getElementById(id).classList.add("active");
+      btn.classList.add("active");
+    }
+
+    /***********************
+     * Active profile helpers
+     ***********************/
+    function profile(){ return state.profiles[activeKey]; }
+
+    function hydrateUI(){
+      // header
+      document.getElementById("ui-sidebar-name").innerText = profile().meta?.sidebar || "DOSSIER";
+      document.getElementById("ui-active-profile").innerText = profile().displayName || profile().key;
+      document.getElementById("ui-ref-id").innerText = profile().meta?.refId || "-";
+      document.getElementById("ui-subref").innerText = profile().meta?.refId || "";
+      document.getElementById("ui-psy-ref").innerText = profile().meta?.psyRef || "";
+      document.getElementById("ui-lore-ref").innerText = profile().meta?.loreRef || "";
+
+      // identity
+      document.getElementById("ui-photo").src = profile().meta?.img || "";
+      setField("ui-full-name", "identity.fullName");
+      setField("ui-age", "identity.age");
+      setField("ui-birthplace", "identity.birthplace");
+      setField("ui-origins", "identity.origins");
+      setField("ui-role", "identity.role");
+      setField("ui-phys", "identity.phys");
+      setField("ui-sign", "identity.sign");
+      setField("ui-voice", "identity.voice");
+
+      // psy
+      setField("ui-psy1", "psy.psy1", true);
+      setField("ui-psy2", "psy.psy2", true);
+
+      // stats
+      document.getElementById("ui-stats-container").innerHTML =
+        (profile().stats||[]).map(s=>{
+          return `<div style="margin-bottom:10px">
+            <div style="display:flex;justify-content:space-between;color:#9a9a9a;font-size:12px;margin-bottom:6px">
+              <span>${escapeHtml(s.label)}</span><span>${s.val}%</span>
+            </div>
+            <div style="height:8px;background:#08080a;border:1px solid #1a1a20;border-radius:999px;overflow:hidden">
+              <div style="height:100%;width:${s.val}%;background:var(--gold)"></div>
+            </div>
+          </div>`;
+        }).join("");
+
+      // lore
+      document.getElementById("lore-container").innerHTML =
+        (profile().lore?.sections||[]).map(sec=>`
+          <div style="margin-bottom:18px">
+            <div class="card-title" style="margin-bottom:8px">${escapeHtml(sec.title)}</div>
+            <div style="color:#bbb;line-height:1.8">${escapeHtml(sec.text)}</div>
+          </div>
+        `).join("") || `<div style="color:#777">Aucune section.</div>`;
+
+      // goals
+      renderGoals();
+
+      // journal
+      const journal = document.getElementById("journal-input");
+      journal.value = profile().journal || "";
+      journal.oninput = ()=>{
+        if(!editUnlocked) return;
+        profile().journal = journal.value;
+        scheduleSave();
+      };
+
+      // preload meta modal
+      preloadMetaModal();
+
+      // wire fields (inline edit)
+      wireInlineFields();
+
+      // edit mode
+      setModeChip();
+
+      notify(editUnlocked ? "ÉDITION DÉVERROUILLÉE" : "LECTURE SEULE");
+    }
+
+    function getPath(obj, path){
+      return path.split(".").reduce((a,k)=>a?.[k], obj);
+    }
+    function setPath(obj, path, val){
+      const parts = path.split(".");
+      let cur = obj;
+      for(let i=0;i<parts.length-1;i++){
+        const k = parts[i];
+        if(typeof cur[k] !== "object" || cur[k]===null) cur[k] = {};
+        cur = cur[k];
+      }
+      cur[parts[parts.length-1]] = val;
+    }
+    function setField(elId, path, allowHtml=false){
+      const el = document.getElementById(elId);
+      const v = getPath(profile(), path) ?? "";
+      el.innerHTML = allowHtml ? String(v) : escapeHtml(String(v));
+    }
+
+    function wireInlineFields(){
+      document.querySelectorAll(".field").forEach(el=>{
+        el.onblur = ()=>{
+          if(!editUnlocked) return;
+          const path = el.dataset.path;
+          if(!path) return;
+          // we keep HTML (so strong/br allowed)
+          const html = el.innerHTML.trim();
+          setPath(profile(), path, html);
+          scheduleSave();
+          notify("SAUVEGARDÉ");
+          // update header if needed
+          if(path.startsWith("identity.") || path==="meta.refId") {
+            document.getElementById("ui-active-profile").innerText = profile().displayName || profile().key;
+          }
+        };
+        el.onkeydown = (e)=>{
+          if(!editUnlocked) return;
+          if(e.key==="Enter"){
+            e.preventDefault();
+            el.blur();
+          }
+        };
+      });
+    }
+
+    /***********************
+     * Unlock / lock editing
+     ***********************/
+    function openUnlock(){
+      document.getElementById("unlockPin").value="";
+      openModal("modalUnlock");
+      setTimeout(()=>document.getElementById("unlockPin").focus(), 50);
+    }
+
+    function unlockEditing(){
+      const pin = (document.getElementById("unlockPin").value || "").trim();
+      const k = profile().key;
+
+      if(k==="harry"){
+        if(pin !== PIN_HARRY) return notify("PIN incorrect");
+      } else if(k==="seya"){
+        if(pin !== PIN_SEYA) return notify("PIN incorrect");
+      } else {
+        // visitor profile: if no pin set, allow unlock with empty OR let them set one later
+        const expected = profile().pinHash || "";
+        if(expected){
+          if(simpleHash(pin) !== expected) return notify("PIN incorrect");
+        } else {
+          // if profile has no pin, accept any pin (or empty) and set it if provided
+          if(pin){
+            profile().pinHash = simpleHash(pin);
+            scheduleSave();
+            notify("PIN enregistré pour ce profil");
+          }
+        }
+      }
+
+      editUnlocked = true;
+      setProfileUnlocked(activeKey, 45); // 45 minutes session
+      closeModal("modalUnlock");
+      setModeChip();
+      notify("ÉDITION ACTIVÉE");
+    }
+
+    function lockEditing(){
+      editUnlocked = false;
+      clearProfileUnlocked(activeKey);
+      setModeChip();
+      notify("ÉDITION VERROUILLÉE");
+    }
+
+    // simple hash (not secure, just to avoid storing raw pin)
+    function simpleHash(pin){
+      // DJB2
+      let h = 5381;
+      for(let i=0;i<pin.length;i++) h = ((h<<5)+h) + pin.charCodeAt(i);
+      return "h" + (h >>> 0).toString(16);
+    }
+
+    /***********************
+     * Meta modal
+     ***********************/
+    function preloadMetaModal(){
+      document.getElementById("editSidebar").value = profile().meta?.sidebar || "";
+      document.getElementById("editRef").value = profile().meta?.refId || "";
+      document.getElementById("editPsyRef").value = profile().meta?.psyRef || "";
+      document.getElementById("editLoreRef").value = profile().meta?.loreRef || "";
+      document.getElementById("editImg").value = profile().meta?.img || "";
+    }
+
+    function saveMeta(){
+      if(!editUnlocked) return notify("Déverrouille pour modifier");
+      profile().meta = profile().meta || {};
+      profile().meta.sidebar = document.getElementById("editSidebar").value.trim();
+      profile().meta.refId = document.getElementById("editRef").value.trim();
+      profile().meta.psyRef = document.getElementById("editPsyRef").value.trim();
+      profile().meta.loreRef = document.getElementById("editLoreRef").value.trim();
+      profile().meta.img = document.getElementById("editImg").value.trim();
+
+      scheduleSave();
+      closeModal("modalEditMeta");
+      hydrateUI();
+      notify("PROFIL MIS À JOUR");
+    }
+
+    /***********************
+     * Goals (simple)
+     ***********************/
+    function renderGoals(){
+      const container = document.getElementById("goal-container");
+      const goals = profile().goals || [];
+      let htmlCourt = `<div class="card"><div class="card-title">Court terme</div>`;
+      let htmlLong  = `<div class="card"><div class="card-title">Long terme</div>`;
+
+      goals.forEach(g=>{
+        const item = `
+          <div style="display:flex; gap:10px; align-items:center; padding:10px; border:1px solid #1a1a20; background:#0a0a0d; border-radius:12px; margin-bottom:10px; opacity:${g.done?0.6:1}">
+            <button class="btn small" onclick="toggleGoal('${g.id}')" ${editUnlocked?"":"disabled"} style="opacity:${editUnlocked?1:0.5}">
+              <i class="fa-solid ${g.done?'fa-square-check':'fa-square'}"></i>
+            </button>
+            <div style="flex:1; color:#bbb; ${g.done?'text-decoration:line-through':''}">${escapeHtml(g.text)}</div>
+            <button class="btn small danger" onclick="deleteGoal('${g.id}')" ${editUnlocked?"":"disabled"} style="opacity:${editUnlocked?1:0.5}">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>`;
+        (g.type==="court" ? htmlCourt : htmlLong) += item;
+      });
+
+      container.innerHTML = htmlCourt + `</div>` + htmlLong + `</div>`;
+    }
+
+    function addGoal(){
+      if(!editUnlocked) return notify("Déverrouille pour modifier");
+      const text = document.getElementById("goalInput").value.trim();
+      if(!text) return;
+      const type = document.getElementById("goalType").value;
+
+      profile().goals = profile().goals || [];
+      profile().goals.push({ id: uid(), text, type, done:false });
+
+      document.getElementById("goalInput").value="";
+      scheduleSave();
+      closeModal("modalGoal");
+      renderGoals();
+      notify("OBJECTIF AJOUTÉ");
+    }
+
+    function toggleGoal(id){
+      if(!editUnlocked) return;
+      profile().goals = (profile().goals||[]).map(g=> g.id===id ? ({...g, done:!g.done}) : g);
+      scheduleSave();
+      renderGoals();
+    }
+    function deleteGoal(id){
+      if(!editUnlocked) return;
+      profile().goals = (profile().goals||[]).filter(g=>g.id!==id);
+      scheduleSave();
+      renderGoals();
+    }
+
+    /***********************
+     * Profile create / duplicate / delete
+     ***********************/
+    function slugify(s){
+      return (s||"")
+        .toLowerCase()
+        .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+        .replace(/[^a-z0-9]+/g,"-")
+        .replace(/(^-|-$)/g,"")
+        .slice(0, 24) || ("user-"+Math.floor(Math.random()*9999));
+    }
+
+    function openDuplicateModal(fromKey){
+      openModal("modalCreateProfile");
+      const base = state.profiles[fromKey];
+      document.getElementById("newDisplayName").value = (base?.displayName ? base.displayName + " Copy" : "Nouveau profil");
+      document.getElementById("newKey").value = slugify((base?.displayName || base?.key || "profil") + "-copy");
+      document.getElementById("newAvatar").value = base?.meta?.img || "";
+      document.getElementById("newPin").value = "";
+      document.getElementById("newDuplicateFrom").value = fromKey;
+    }
+
+    function createProfile(){
+      const displayName = document.getElementById("newDisplayName").value.trim() || "Visiteur";
+      const keyRaw = document.getElementById("newKey").value.trim();
+      const key = slugify(keyRaw || displayName);
+      const avatar = document.getElementById("newAvatar").value.trim();
+      const pin = (document.getElementById("newPin").value || "").trim();
+      const from = document.getElementById("newDuplicateFrom").value;
+
+      if(state.profiles[key]) return notify("Clé déjà utilisée (slug). Change le champ Clé.");
+
+      const base = state.profiles[from] ? clone(state.profiles[from]) : null;
+      const p = base ? base : {
+        key, public:false, displayName,
+        meta:{ sidebar: displayName.toUpperCase()+" O.S", refId:"", psyRef:"", loreRef:"", img:avatar },
+        identity:{ fullName: displayName, age:"", birthplace:"", origins:"", role:"", phys:"", sign:"", voice:"" },
+        psy:{ psy1:"", psy2:"" },
+        stats:[],
+        lore:{ sections:[] },
+        goals:[],
+        journal:""
+      };
+
+      // enforce visitor profile settings
+      p.key = key;
+      p.public = false;
+      p.displayName = displayName;
+      p.meta = p.meta || {};
+      p.meta.img = avatar || p.meta.img || "";
+      p.pinHash = pin ? simpleHash(pin) : (p.pinHash || "");
+
+      // avoid importing fixed profiles' keys etc
+      state.profiles[key] = p;
+      scheduleSave();
+      closeModal("modalCreateProfile");
+      renderLogin();
+      notify("PROFIL CRÉÉ");
+    }
+
+    function deleteProfile(key){
+      if(key==="harry" || key==="seya") return notify("Impossible");
+      if(!confirm("Supprimer ce profil (local navigateur) ?")) return;
+      delete state.profiles[key];
+      scheduleSave();
+      renderLogin();
+      notify("SUPPRIMÉ");
+    }
+
+    function deleteActiveProfile(){
+      const k = activeKey;
+      if(!k) return;
+      if(profile().public) return notify("Impossible (profil public)");
+      closeModal("modalProfileTools");
+      logout();
+      deleteProfile(k);
+    }
+
+    /***********************
+     * Export / import
+     ***********************/
+    function exportProfile(){
+      const p = profile();
+      const json = JSON.stringify(p, null, 2);
+
+      // download
+      const blob = new Blob([json], {type:"application/json"});
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `profil_${p.key}_${new Date().toISOString().slice(0,10)}.json`;
+      a.click();
+      setTimeout(()=>URL.revokeObjectURL(a.href), 1200);
+
+      notify("EXPORT OK");
+    }
+
+    function importProfile(){
+      try{
+        const raw = document.getElementById("importJson").value.trim();
+        const obj = JSON.parse(raw);
+        if(!obj.key) throw new Error("JSON doit contenir .key");
+
+        // Protect: don't allow overwriting harry/seya unless user unlocks and uses correct pin afterwards
+        state.profiles[obj.key] = obj;
+        scheduleSave();
+        closeModal("modalImportProfile");
+        renderLogin();
+        notify("IMPORT OK");
+      }catch(e){
+        alert("Import impossible: " + e.message);
+      }
+    }
+
+    /***********************
+     * Keyboard / init
+     ***********************/
+    document.getElementById("login-search").addEventListener("input", renderLogin);
+    document.addEventListener("keydown", (e)=>{
+      if(e.key==="/" && document.activeElement?.tagName!=="INPUT" && document.activeElement?.tagName!=="TEXTAREA"){
+        e.preventDefault();
+        document.getElementById("login-search").focus();
+      }
+      if(e.key==="Escape"){
+        document.querySelectorAll(".modal.active").forEach(m=>m.classList.remove("active"));
+      }
+    });
+
+    // initial
+    renderLogin();
+  </script>
+</body>
+</html>
