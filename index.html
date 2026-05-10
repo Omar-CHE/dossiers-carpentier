@@ -316,9 +316,47 @@
     body.edit .editable{border-color:#2a2a33; cursor:text}
     body.edit .editable:focus{background:#0a0a0d; border-color:rgba(212,175,55,.7); outline:none}
 
+    /* ====== CORRECTION DES BOUTONS SWITCH ====== */
     .toggleRow{display:flex;align-items:center;justify-content:space-between;gap:12px}
-    .switch{display:inline-flex;align-items:center;gap:10px}
-    .switch input{width:18px;height:18px}
+    .switch{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      cursor:pointer;
+      user-select: none;
+    }
+    .switch input{
+      display:none; /* On cache la case moche bleue */
+    }
+    .slider {
+      width: 42px;
+      height: 22px;
+      background-color: #1a1a20;
+      border-radius: 20px;
+      position: relative;
+      transition: .3s;
+      border: 1px solid #333;
+    }
+    .slider::before {
+      content: "";
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background-color: #777;
+      top: 3px;
+      left: 4px;
+      transition: .3s;
+    }
+    .switch input:checked + .slider {
+      background-color: var(--goldDim);
+      border-color: var(--gold);
+    }
+    .switch input:checked + .slider::before {
+      transform: translateX(18px);
+      background-color: var(--gold);
+    }
+    /* ============================================ */
 
     .stat{margin-bottom:12px}
     .statTop{display:flex;justify-content:space-between;gap:10px;color:#a6a6a6;font-size:12px;margin-bottom:6px}
@@ -570,6 +608,7 @@
           <button class="btn danger" id="deleteProfileBtn"><i class="fa-solid fa-trash"></i> Supprimer ce dossier</button>
         </div>
       </div>
+
       <div class="modalActions">
         <button class="btn primary" id="tClose">Fermer</button>
       </div>
@@ -980,12 +1019,13 @@
       nav.textContent = "";
 
       const tabs = visibleTabsForViewer();
-      // ======= CORRECTION BUG ONGLETS =======
-      // On ne reset pas l'onglet si l'utilisateur est sur la page de config !
+      
+      // ======= CORRECTION BUG ONGLETS CONFIG =======
+      // Ne reset pas l'onglet si l'utilisateur est sur la page de config !
       if(currentTabId !== "__tabs_settings__" && !tabs.find(t=>t.id===currentTabId) && tabs.length) {
         currentTabId = tabs[0].id;
       }
-      // =======================================
+      // ==============================================
 
       for(const t of tabs){
         const btn = document.createElement("button");
@@ -1023,11 +1063,15 @@
       renderTabContent();
     }
 
+    // ======= CORRECTION DE LA FONCTION DE BASE (CHECKBOXES & INPUTS) =======
     function el(tag, attrs={}, children=[]){
       const node = document.createElement(tag);
       for(const [k,v] of Object.entries(attrs)){
         if(k==="class") node.className = v;
         else if(k==="html") node.innerHTML = v;
+        else if(k==="checked") node.checked = !!v; // Répare les checkboxes (bleues)
+        else if(k==="value") node.value = v; 
+        else if(k==="disabled") node.disabled = !!v;
         else if(k.startsWith("on") && typeof v==="function") node.addEventListener(k.slice(2).toLowerCase(), v);
         else node.setAttribute(k, v);
       }
@@ -1037,6 +1081,7 @@
       }
       return node;
     }
+    // =========================================================================
 
     function editableDiv(value, onCommit){
       const d = el("div", { class:"editable", tabindex:"0" });
@@ -1723,9 +1768,7 @@
       return !!t?.visiblePublic;
     }
 
-    /******************************************************************
-     * 11) Tabs settings
-     ******************************************************************/
+    // ======= CORRECTION DES ONGLETS DE CONFIGURATION =======
     function renderTabsSettings(){
       const tabs = activeProfile.tabs || [];
 
@@ -1747,20 +1790,24 @@
               el("div",{style:"display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px"},[
                 el("div",{},[
                   el("div",{class:"fieldLabel"},["Titre"]),
-                  el("input",{class:"input", value:t.title, onInput:(e)=>{ t.title=e.target.value; scheduleCloudSave(); renderApp(); }})
+                  // Ne recharge plus toute l'app pendant qu'on tape, juste la barre de gauche
+                  el("input",{class:"input", value:t.title, onInput:(e)=>{ t.title=e.target.value; scheduleCloudSave(); renderTabsNav(); }})
                 ]),
                 el("div",{},[
-                  el("div",{class:"fieldLabel"},["Icône (FontAwesome)"]),
-                  el("input",{class:"input", value:t.icon||"", onInput:(e)=>{ t.icon=e.target.value; scheduleCloudSave(); renderApp(); }})
+                  el("div",{class:"fieldLabel"},["Icône (FontAwesome, ex: fa-scroll)"]),
+                  el("input",{class:"input", value:t.icon||"", onInput:(e)=>{ t.icon=e.target.value; scheduleCloudSave(); renderTabsNav(); }})
                 ])
               ]),
               el("div",{style:"display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;align-items:center"},[
+                // NOUVELLES CASES A COCHER "SWITCH"
                 el("label",{class:"switch"},[
-                  el("input",{type:"checkbox", checked:!!t.enabled, onChange:(e)=>{ t.enabled=e.target.checked; scheduleCloudSave(); renderApp(); }}),
+                  el("input",{type:"checkbox", checked:!!t.enabled, onChange:(e)=>{ t.enabled=e.target.checked; scheduleCloudSave(); renderTabsNav(); }}),
+                  el("div",{class:"slider"}),
                   el("span",{},["Activé"])
                 ]),
                 el("label",{class:"switch"},[
-                  el("input",{type:"checkbox", checked:!!t.visiblePublic, onChange:(e)=>{ t.visiblePublic=e.target.checked; scheduleCloudSave(); renderApp(); }}),
+                  el("input",{type:"checkbox", checked:!!t.visiblePublic, onChange:(e)=>{ t.visiblePublic=e.target.checked; scheduleCloudSave(); renderTabsNav(); }}),
+                  el("div",{class:"slider"}),
                   el("span",{},["Public (lecture)"])
                 ])
               ]),
@@ -1783,10 +1830,8 @@
       ]);
       return root;
     }
+    // ========================================================
 
-    /******************************************************************
-     * 12) Unlock logic (PIN)
-     ******************************************************************/
     function openUnlockModal(){
       $("uPin").value = "";
       modal($("mUnlock"), true);
@@ -1826,9 +1871,6 @@
       renderApp();
     }
 
-    /******************************************************************
-     * 13) Create profile
-     ******************************************************************/
     function openCreateModal(){
       modal($("mCreate"), true);
       $("cName").value = "";
@@ -1857,7 +1899,7 @@
       
       p.key = key;
       p.displayName = name;
-      if (p.data && p.data.identite) p.data.identite.fullName = name;
+      p.data.identite.fullName = name;
       p.public = true;
       p.meta = p.meta || {};
       p.meta.img = img || p.meta.img || "";
@@ -1878,9 +1920,6 @@
       await refreshProfilesList();
     }
 
-    /******************************************************************
-     * 14) Tools: export/import/print/delete
-     ******************************************************************/
     function exportActive(){
       const json = JSON.stringify(activeProfile, null, 2);
       const blob = new Blob([json], {type:"application/json"});
@@ -1907,7 +1946,7 @@
       }
     }
 
-    // ==== CORRECTION IMPRESSION PDF PROPRE ====
+    // ======= CORRECTION IMPRESSION PDF PROPRE =======
     function printProfile(){
       const w = window.open("", "_blank");
       const p = activeProfile;
@@ -1965,9 +2004,6 @@
       return String(s ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");
     }
 
-    /******************************************************************
-     * 15) Wire events + init
-     ******************************************************************/
     $("q").addEventListener("input", renderLanding);
     $("btnCreate").addEventListener("click", openCreateModal);
     $("btnHelp").addEventListener("click", ()=>modal($("mHelp"), true));
