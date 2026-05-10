@@ -34,15 +34,15 @@
     a{color:var(--gold)}
 
     .logo-main {
-      height: 60px; 
+      height: 90px; 
       width: auto;
-      max-width: 250px;
+      max-width: 300px;
       object-fit: contain; 
       display: block;
       filter: drop-shadow(0 0 10px rgba(212,175,55, 0.5));
     }
     .logo-sidebar {
-      height: 40px; 
+      height: 80px; 
       width: auto;
       max-width: 200px;
       object-fit: contain; 
@@ -316,7 +316,6 @@
     body.edit .editable{border-color:#2a2a33; cursor:text}
     body.edit .editable:focus{background:#0a0a0d; border-color:rgba(212,175,55,.7); outline:none}
 
-    /* ====== CORRECTION DES BOUTONS SWITCH ====== */
     .toggleRow{display:flex;align-items:center;justify-content:space-between;gap:12px}
     .switch{
       display:inline-flex;
@@ -326,7 +325,7 @@
       user-select: none;
     }
     .switch input{
-      display:none; /* On cache la case moche bleue */
+      display:none;
     }
     .slider {
       width: 42px;
@@ -356,7 +355,6 @@
       transform: translateX(18px);
       background-color: var(--gold);
     }
-    /* ============================================ */
 
     .stat{margin-bottom:12px}
     .statTop{display:flex;justify-content:space-between;gap:10px;color:#a6a6a6;font-size:12px;margin-bottom:6px}
@@ -1020,12 +1018,9 @@
 
       const tabs = visibleTabsForViewer();
       
-      // ======= CORRECTION BUG ONGLETS CONFIG =======
-      // Ne reset pas l'onglet si l'utilisateur est sur la page de config !
       if(currentTabId !== "__tabs_settings__" && !tabs.find(t=>t.id===currentTabId) && tabs.length) {
         currentTabId = tabs[0].id;
       }
-      // ==============================================
 
       for(const t of tabs){
         const btn = document.createElement("button");
@@ -1063,13 +1058,12 @@
       renderTabContent();
     }
 
-    // ======= CORRECTION DE LA FONCTION DE BASE (CHECKBOXES & INPUTS) =======
     function el(tag, attrs={}, children=[]){
       const node = document.createElement(tag);
       for(const [k,v] of Object.entries(attrs)){
         if(k==="class") node.className = v;
         else if(k==="html") node.innerHTML = v;
-        else if(k==="checked") node.checked = !!v; // Répare les checkboxes (bleues)
+        else if(k==="checked") node.checked = !!v; 
         else if(k==="value") node.value = v; 
         else if(k==="disabled") node.disabled = !!v;
         else if(k.startsWith("on") && typeof v==="function") node.addEventListener(k.slice(2).toLowerCase(), v);
@@ -1081,7 +1075,6 @@
       }
       return node;
     }
-    // =========================================================================
 
     function editableDiv(value, onCommit){
       const d = el("div", { class:"editable", tabindex:"0" });
@@ -1149,12 +1142,16 @@
         el("div",{class:"panel"},[
           el("div",{class:"fieldLabel"},["Photo (URL/path)"]),
           el("input",{class:"input", id:"imgUrl", value: idt.img || activeProfile.meta?.img || ""}),
+          
+          /* === NOUVEAU TEXTE D'AIDE === */
+          el("div",{class:"muted",style:"margin-top:8px; line-height:1.5; font-size:11px;"},[
+              "Comment faire ? Collez ici un lien web direct vers une image (ex: https://lien.com/image.png) ou tapez le nom exact d'un fichier présent sur votre GitHub (ex: photo_harry.png)."
+          ]),
+          /* ============================ */
+          
           el("div",{style:"margin-top:12px;display:flex;gap:12px;align-items:center;flex-wrap:wrap"},[
             el("div",{class:"avatar",style:"width:92px;height:92px"},[
               el("img",{id:"imgPreview", src: activeProfile.meta?.img || "", onError: (e) => e.target.style.opacity = '0' })
-            ]),
-            el("div",{class:"muted",style:"line-height:1.6;font-size:12px"},[
-              "Aperçu image. (Tu peux changer l’URL si tu es déverrouillé.)"
             ])
           ])
         ]),
@@ -1433,6 +1430,9 @@
       ]);
 
       return el("div",{},[
+        /* === NOUVEAU TEXTE D'AIDE === */
+        el("p", {class:"muted", style:"margin-bottom: 15px; font-size: 13px; font-style: italic;"}, ["Utilisez cet outil pour des choix aléatoires ou de type roulette pour les réactions de votre personnage."]),
+        /* ============================ */
         el("div",{class:"panel"},[
           result,
           el("div",{style:"margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center"},[
@@ -1768,7 +1768,6 @@
       return !!t?.visiblePublic;
     }
 
-    // ======= CORRECTION DES ONGLETS DE CONFIGURATION =======
     function renderTabsSettings(){
       const tabs = activeProfile.tabs || [];
 
@@ -1790,7 +1789,6 @@
               el("div",{style:"display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px"},[
                 el("div",{},[
                   el("div",{class:"fieldLabel"},["Titre"]),
-                  // Ne recharge plus toute l'app pendant qu'on tape, juste la barre de gauche
                   el("input",{class:"input", value:t.title, onInput:(e)=>{ t.title=e.target.value; scheduleCloudSave(); renderTabsNav(); }})
                 ]),
                 el("div",{},[
@@ -1799,7 +1797,6 @@
                 ])
               ]),
               el("div",{style:"display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;align-items:center"},[
-                // NOUVELLES CASES A COCHER "SWITCH"
                 el("label",{class:"switch"},[
                   el("input",{type:"checkbox", checked:!!t.enabled, onChange:(e)=>{ t.enabled=e.target.checked; scheduleCloudSave(); renderTabsNav(); }}),
                   el("div",{class:"slider"}),
@@ -1830,7 +1827,6 @@
       ]);
       return root;
     }
-    // ========================================================
 
     function openUnlockModal(){
       $("uPin").value = "";
@@ -1946,7 +1942,6 @@
       }
     }
 
-    // ======= CORRECTION IMPRESSION PDF PROPRE =======
     function printProfile(){
       const w = window.open("", "_blank");
       const p = activeProfile;
@@ -2028,7 +2023,6 @@
     $("iOk").addEventListener("click", importActive);
     $("print").addEventListener("click", printProfile);
 
-    // ======= NOUVEL EVENT POUR SUPPRIMER LE PROFIL =======
     $("deleteProfileBtn").addEventListener("click", async ()=>{
       if(!unlocked) return toast("Déverrouille le profil d'abord");
       if(activeKey === "harry" || activeKey === "seya") return toast("Impossible de supprimer les profils de base");
