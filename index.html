@@ -18,10 +18,16 @@
       --focus:0 0 0 3px rgba(212,175,55,.35);
       --shadow: 0 40px 120px rgba(0,0,0,1);
     }
-    *{box-sizing:border-box;margin:0;padding:0}
+
+    *{
+        box-sizing:border-box;
+        margin:0;
+        padding:0;
+    }
     
     body{
-      height:100vh; overflow:hidden;
+      height:100vh; 
+      overflow:hidden;
       font-family:Montserrat,system-ui;
       color:var(--text);
       background:
@@ -29,10 +35,24 @@
         url('fond.png') center/cover fixed;
     }
     
-    button, input, textarea, select{font-family:inherit}
-    :focus-visible{outline:none;box-shadow:var(--focus);border-radius:12px}
-    a{color:var(--gold); text-decoration: none;}
-    a:hover{text-decoration: underline;}
+    button, input, textarea, select{
+        font-family:inherit;
+    }
+
+    :focus-visible{
+        outline:none;
+        box-shadow:var(--focus);
+        border-radius:12px;
+    }
+
+    a {
+        color:var(--gold); 
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
 
     .logo-main {
       height: 90px; 
@@ -42,6 +62,7 @@
       display: block;
       filter: drop-shadow(0 0 10px rgba(212,175,55, 0.5));
     }
+
     .logo-sidebar {
       height: 80px; 
       width: auto;
@@ -71,11 +92,9 @@
     .btn.primary{border-color:rgba(212,175,55,.9);background:var(--goldDim);color:var(--gold)}
     .btn.primary:hover{background:rgba(212,175,55,.20)}
     .btn.danger{border-color:rgba(231,76,60,.55);background:rgba(231,76,60,.08);color:#ffbdb7}
-    
     .btn.twitch{border-color:#9146ff;background:rgba(145,70,255,0.15);color:#b380ff;}
     .btn.twitch:hover{background:rgba(145,70,255,0.3); color:#fff;}
     .hrp-pseudo{font-size:10px; color:#b380ff; margin-top:3px; font-weight:700; text-transform:uppercase; letter-spacing:1px;}
-    
     .btn.small{padding:8px 10px;font-size:11px;border-radius:12px}
     .btn:disabled{opacity:.45;cursor:not-allowed}
 
@@ -130,7 +149,10 @@
       padding:22px;
       overflow:auto;
     }
-    .landingWrap{width:min(1280px, 98vw); position: relative;}
+    .landingWrap{
+        width:min(1280px, 98vw); 
+        position: relative;
+    }
     .hero{
       border:1px solid #1f1f26;
       background:
@@ -158,9 +180,9 @@
       display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; align-items:flex-start;
       margin-bottom:18px;
     }
-    .brand{ display:flex; flex-direction:column; gap:8px; }
-    
-    /* === POLICE BEBAS NEUE POUR PARIS RP === */
+    .brand{
+      display:flex; flex-direction:column; gap:8px;
+    }
     .brandTitle{
       font-family:"Bebas Neue", sans-serif;
       color:var(--gold);
@@ -254,8 +276,6 @@
       text-align:center;
       border-bottom:1px solid #1f1f26;
     }
-    
-    /* === POLICE BEBAS NEUE POUR LE NOM DANS LA SIDEBAR === */
     .sbHead h2{
       font-family:"Bebas Neue", sans-serif;
       color:var(--gold);
@@ -272,6 +292,17 @@
     .sbMeta{
       display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:12px;
     }
+    
+    /* === CORRECTION BUG SCROLL MENU LATERALE === */
+    #tabsNav {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+    #tabsNav::-webkit-scrollbar { width: 5px; }
+    #tabsNav::-webkit-scrollbar-thumb { background: #1f1f26; border-radius: 10px; }
+    /* =========================================== */
+
     .sbBtn{
       border:none;
       background:transparent;
@@ -285,6 +316,7 @@
       font-size:12px;
       display:flex; align-items:center; gap:12px;
       border-left:3px solid transparent;
+      width: 100%;
     }
     .sbBtn:hover{background:rgba(255,255,255,.03); color:var(--text)}
     .sbBtn.active{background:linear-gradient(90deg,var(--goldDim),transparent); color:var(--gold); border-left:3px solid var(--gold)}
@@ -710,6 +742,9 @@
 
     const $ = (id)=>document.getElementById(id);
 
+    // Variables globales
+    let currentRouletteResult = "EN ATTENTE…"; 
+
     function toast(msg){
       const t = $("toast");
       t.textContent = msg;
@@ -1095,6 +1130,7 @@
         btn.innerHTML = `<i class="fa-solid ${t.icon||"fa-folder"}"></i> ${t.title}`;
         btn.addEventListener("click", ()=>{ 
             currentTabId = t.id; 
+            currentRouletteResult = "EN ATTENTE…"; 
             renderApp(); 
         });
         nav.appendChild(btn);
@@ -1113,7 +1149,6 @@
     }
 
     function renderAppHeader(){
-      // === AFFICHAGE DU VRAI NOM DU PERSONNAGE ===
       const fullName = activeProfile.data?.identite?.fullName || activeProfile.displayName || activeProfile.key;
       $("sbName").textContent = fullName.toUpperCase();
       
@@ -1287,7 +1322,6 @@
         ]),
         
         el("div",{},[
-          // SECTION RP
           el("div",{class:"panel"},[
             el("div",{class:"fieldLabel", style:"font-weight:900; color:var(--gold); border-bottom:1px solid #222; padding-bottom:5px; margin-bottom:15px;"},["SECTION RP"]),
             el("div",{class:"fieldLabel"},["Nom complet"]), 
@@ -1309,7 +1343,6 @@
             editableDiv(idt.voice, (v)=>{ deepSet(activeProfile,"data.identite.voice",v); scheduleCloudSave(); })
           ]),
           
-          // SECTION HRP
           hrpPanel
         ])
       ]);
@@ -1370,17 +1403,25 @@
 
     function renderRoulette(){
       const r = activeProfile.data?.roulette || {options:[],history:[]};
-      const result = el("div",{class:"result", id:"rr"},["EN ATTENTE…"]);
+      
+      const result = el("div",{class:"result", id:"rr"},[currentRouletteResult]);
       const btnSpin = el("button",{class:"btn primary", onClick:()=>{
         if(!r.options.length) return toast("Aucune option");
+        currentRouletteResult = "EN ATTENTE…";
+        result.textContent = currentRouletteResult;
+        result.classList.add("spin");
+        
         let c=0; 
         const it = setInterval(()=>{ 
             result.textContent = r.options[Math.floor(Math.random()*r.options.length)].text; 
             if(c++>14){ 
                 clearInterval(it); 
                 const chosen = r.options[Math.floor(Math.random()*r.options.length)]; 
-                result.textContent = ">> " + chosen.text + " <<"; 
+                currentRouletteResult = ">> " + chosen.text + " <<"; 
+                result.textContent = currentRouletteResult; 
+                result.classList.remove("spin");
                 r.history.unshift({at:Date.now(), text:chosen.text}); 
+                r.history = r.history.slice(0,50);
                 scheduleCloudSave(); 
                 renderApp(); 
             } 
@@ -1425,7 +1466,7 @@
           el("div",{style:"display:flex;flex-direction:column;gap:12px"}, tabs.map((t,idx)=>{
             return el("div",{class:"timelineItem"},[
               el("div",{style:"display:flex;justify-content:space-between;"},[ 
-                  el("div",{style:"font-weight:900;color:var(--gold)"},[t.title]), 
+                  el("div",{style:"font-weight:900;color:var(--gold)"},[`${idx+1}. ${t.title}`]), 
                   el("span",{class:"chip"},[t.type]) 
               ]),
               el("div",{style:"display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px"},[
@@ -1435,6 +1476,18 @@
               el("div",{style:"display:flex;gap:14px;margin-top:10px;"},[
                 el("label",{class:"switch"},[ el("input",{type:"checkbox", checked:!!t.enabled, onChange:(e)=>{ t.enabled=e.target.checked; scheduleCloudSave(); renderTabsNav(); }}), el("div",{class:"slider"}), el("span",{},["Activé"]) ]),
                 el("label",{class:"switch"},[ el("input",{type:"checkbox", checked:!!t.visiblePublic, onChange:(e)=>{ t.visiblePublic=e.target.checked; scheduleCloudSave(); renderTabsNav(); }}), el("div",{class:"slider"}), el("span",{},["Public"]) ])
+              ]),
+              el("div",{style:"display:flex;justify-content:flex-end;gap:10px;margin-top:12px;flex-wrap:wrap"},[
+                el("button",{class:"btn small", disabled: idx===0, onClick:()=>{
+                  const x = tabs[idx-1]; tabs[idx-1]=tabs[idx]; tabs[idx]=x;
+                  deepSet(activeProfile,"tabs",tabs);
+                  scheduleCloudSave(); renderApp();
+                }},[el("i",{class:"fa-solid fa-arrow-up"}),""]),
+                el("button",{class:"btn small", disabled: idx===tabs.length-1, onClick:()=>{
+                  const x = tabs[idx+1]; tabs[idx+1]=tabs[idx]; tabs[idx]=x;
+                  deepSet(activeProfile,"tabs",tabs);
+                  scheduleCloudSave(); renderApp();
+                }},[el("i",{class:"fa-solid fa-arrow-down"}),""])
               ])
             ]);
           }))
@@ -1877,7 +1930,6 @@
       await setDoc(ref, p); toast("Profil créé !"); modal($("mCreate"), false); await refreshProfilesList();
     }
 
-    // Export/Import
     function exportActive(){
       const json = JSON.stringify(activeProfile, null, 2);
       const blob = new Blob([json], {type:"application/json"});
