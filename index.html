@@ -19,17 +19,37 @@
       --shadow: 0 40px 120px rgba(0,0,0,1);
     }
     *{box-sizing:border-box;margin:0;padding:0}
+    
+    /* ======= ARRIÈRE-PLAN PARIS RP ======= */
     body{
       height:100vh; overflow:hidden;
       font-family:Montserrat,system-ui;
       color:var(--text);
+      /* Le dégradé sombre permet de lire le texte, l'image 'fond.jpg' est derrière */
       background:
-        radial-gradient(circle at 50% 0%, #111118 0%, #040406 75%),
-        var(--bg);
+        linear-gradient(to bottom, rgba(4, 4, 6, 0.85), rgba(4, 4, 6, 0.98)),
+        url('fond.png') center/cover fixed;
     }
+    
     button, input, textarea, select{font-family:inherit}
     :focus-visible{outline:none;box-shadow:var(--focus);border-radius:12px}
     a{color:var(--gold)}
+
+    /* ======= LOGOS GRANDLINE ======= */
+    .logo-main {
+      height: 60px; /* Taille pour la page d'accueil */
+      width: auto;
+      display: block;
+      margin-bottom: 10px;
+      filter: drop-shadow(0 0 10px rgba(212,175,55, 0.5));
+    }
+    .logo-sidebar {
+      height: 40px; /* Taille plus petite pour le menu sur le côté */
+      width: auto;
+      display: block;
+      margin: 0 auto 15px auto;
+      filter: drop-shadow(0 0 5px rgba(212,175,55, 0.5));
+    }
 
     /* ---------- GLOBAL UI ---------- */
     .btn{
@@ -93,7 +113,7 @@
       border:1px solid #1f1f26;
       background:
         radial-gradient(circle at 50% 0%, rgba(212,175,55,.09), transparent 55%),
-        linear-gradient(180deg, rgba(20,20,26,.9), rgba(12,12,16,.88));
+        linear-gradient(180deg, rgba(20,20,26,.95), rgba(12,12,16,.92));
       border-radius:22px;
       padding:22px;
       box-shadow:var(--shadow);
@@ -117,7 +137,7 @@
       margin-bottom:18px;
     }
     .brand{
-      display:flex; flex-direction:column; gap:10px;
+      display:flex; flex-direction:column; gap:8px;
     }
     .brandTitle{
       font-family:"Playfair Display",serif;
@@ -165,8 +185,11 @@
     }
     .card:hover{border-color:rgba(212,175,55,.65); transform:translateY(-3px); box-shadow:0 18px 40px rgba(0,0,0,.6)}
     .row{display:flex; gap:12px; align-items:center}
+    
+    /* ======= CORRECTION DU VISAGE CENTRÉ ======= */
     .avatar{width:70px;height:70px;border-radius:50%;background:#000;border:2px solid #26262f;overflow:hidden;flex-shrink:0}
-    .avatar img{width:100%;height:100%;object-fit:cover}
+    .avatar img{width:100%;height:100%;object-fit:cover; object-position:center;} /* object-position:center répare Seya */
+    
     .name{font-weight:900;color:#fff;font-size:16px;letter-spacing:.8px}
     .role{color:var(--muted);font-size:12px;line-height:1.4;margin-top:4px}
     .badges{display:flex; gap:8px; margin-top:10px; flex-wrap:wrap}
@@ -275,6 +298,9 @@
     .panel{border:1px solid #1f1f26; background:rgba(20,20,26,.92); border-radius:18px; padding:18px; margin-bottom:14px}
     .grid2{display:grid; grid-template-columns:1fr 1fr; gap:14px}
     .grid3{display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:14px}
+    
+    #imgPreview { object-fit: cover; object-position: center; } /* Centre l'image principale du profil */
+
     @media (max-width: 1100px){
       .grid2{grid-template-columns:1fr}
       .sidebar{width:270px}
@@ -386,6 +412,7 @@
         <div class="heroInner">
           <div class="heroTop">
             <div class="brand">
+              <img src="logo.png" alt="Logo GrandLine" class="logo-main" onerror="this.style.display='none'">
               <div class="brandTitle">GRANDLINE</div>
               <div class="brandSub">
                 PARIS RP // DOSSIERS PERSONNAGES<br>
@@ -427,6 +454,7 @@
     <div class="app">
       <aside class="sidebar">
         <div class="sbHead">
+          <img src="logo.png" alt="Logo" class="logo-sidebar" onerror="this.style.display='none'">
           <h2 id="sbName">DOSSIER</h2>
           <p>v7.0 // GRANDLINE FILESYSTEM</p>
           <div class="sbMeta">
@@ -628,7 +656,6 @@
     }
 
     function hashPin(pin){
-      // Not cryptographically secure; used only to avoid storing raw PIN.
       let h = 5381;
       for(let i=0;i<pin.length;i++) h = ((h<<5)+h) + pin.charCodeAt(i);
       return "h" + (h>>>0).toString(16);
@@ -673,11 +700,10 @@
         tags: ["GRANDLINE", "PARIS RP"]
       },
       security: {
-        pinHash: "", // for visitors
-        fixedPin: false // for harry/seya
+        pinHash: "", 
+        fixedPin: false 
       },
       tabs: [
-        // 7 base tabs
         { id:"identite", type:"identite", title:"Identité", icon:"fa-id-card", visiblePublic:true, enabled:true },
         { id:"stats", type:"stats", title:"Stats", icon:"fa-chart-simple", visiblePublic:true, enabled:true },
         { id:"lore", type:"lore", title:"Histoire", icon:"fa-scroll", visiblePublic:true, enabled:true },
@@ -685,54 +711,21 @@
         { id:"roulette", type:"roulette", title:"Roulette", icon:"fa-dice", visiblePublic:true, enabled:true },
         { id:"timeline", type:"timeline", title:"Timeline", icon:"fa-timeline", visiblePublic:true, enabled:true },
         { id:"relations", type:"relations", title:"Relations", icon:"fa-users", visiblePublic:true, enabled:true },
-        // 3 custom tabs
         { id:"custom1", type:"custom_note", title:"Carnet", icon:"fa-feather", visiblePublic:false, enabled:true },
         { id:"custom2", type:"custom_canvas", title:"Dessin", icon:"fa-pen-nib", visiblePublic:false, enabled:true },
         { id:"custom3", type:"custom_board", title:"Tableau", icon:"fa-table-columns", visiblePublic:false, enabled:true }
       ],
       data: {
-        identite: {
-          fullName: name,
-          age: "",
-          birthdate: "",
-          birthplace: "",
-          origins: "",
-          role: "",
-          faction: "GRANDLINE",
-          voice: "",
-          phys: "",
-          sign: ""
-        },
-        stats: [
-          { id:uid(), label:"Courage", val:50 },
-          { id:uid(), label:"Charisme", val:50 },
-          { id:uid(), label:"Endurance", val:50 }
-        ],
-        lore: {
-          sections: []
-        },
-        goals: {
-          court: [],
-          long: []
-        },
-        roulette: {
-          options: [],
-          history: []
-        },
-        timeline: {
-          events: []
-        },
-        relations: {
-          nodes: [], // can be used for graph later
-          list: []
-        },
+        identite: { fullName: name, age: "", birthdate: "", birthplace: "", origins: "", role: "", faction: "GRANDLINE", voice: "", phys: "", sign: "" },
+        stats: [ { id:uid(), label:"Courage", val:50 }, { id:uid(), label:"Charisme", val:50 }, { id:uid(), label:"Endurance", val:50 } ],
+        lore: { sections: [] },
+        goals: { court: [], long: [] },
+        roulette: { options: [], history: [] },
+        timeline: { events: [] },
+        relations: { nodes: [], list: [] },
         custom_note: { html:"<p>Écris ton lore, tes scènes, tes secrets…</p>" },
         custom_canvas: { strokes:[], background:"#0a0a0d" },
-        custom_board: { columns:[
-          { id:uid(), title:"À faire", cards:[] },
-          { id:uid(), title:"En cours", cards:[] },
-          { id:uid(), title:"Fait", cards:[] }
-        ]}
+        custom_board: { columns:[ { id:uid(), title:"À faire", cards:[] }, { id:uid(), title:"En cours", cards:[] }, { id:uid(), title:"Fait", cards:[] } ]}
       },
       updatedAt: Date.now()
     });
@@ -741,25 +734,16 @@
       const p = defaultProfile("harry", "HARRY");
       p.public = true;
       p.meta.ref = "HC-151204";
-      p.meta.img = "photo harry.png"; // change here
+      p.meta.img = "photo harry.png"; 
       p.security.fixedPin = true;
       p.data.identite = {
-        fullName:"CARPENTIER Harry",
-        age:"21 ans",
-        birthdate:"2004-12-15",
-        birthplace:"Paris 19ème (Hôpital Robert Debré)",
-        origins:"Franco-Algérien",
-        role:"Chef de famille (précaire) / Faux Caïd",
-        faction:"PARIS RP",
-        voice:"Voix très aiguë, zéro virilité.",
-        phys:"1m75 (plutôt frêle)",
-        sign:"Moustache taillée (pour paraître plus vieux)."
+        fullName:"CARPENTIER Harry", age:"21 ans", birthdate:"2004-12-15", birthplace:"Paris 19ème (Hôpital Robert Debré)",
+        origins:"Franco-Algérien", role:"Chef de famille (précaire) / Faux Caïd", faction:"PARIS RP",
+        voice:"Voix très aiguë, zéro virilité.", phys:"1m75 (plutôt frêle)", sign:"Moustache taillée (pour paraître plus vieux)."
       };
       p.data.stats = [
-        { id:uid(), label:"Courage (Froid & Calculé)", val:5 },
-        { id:uid(), label:"Survie / Instinct", val:95 },
-        { id:uid(), label:"Sincérité (panique)", val:100 },
-        { id:uid(), label:"Dévouement (Seya)", val:100 }
+        { id:uid(), label:"Courage (Froid & Calculé)", val:5 }, { id:uid(), label:"Survie / Instinct", val:95 },
+        { id:uid(), label:"Sincérité (panique)", val:100 }, { id:uid(), label:"Dévouement (Seya)", val:100 }
       ];
       p.data.lore.sections = [
         { id:uid(), title:"Les Origines : Le 19ème", text:"Harry est né et a grandi dans les barres d'HLM du 19ème arrondissement de Paris. Son père a disparu, sa mère Myriam s'est tuée à la tâche.", date:"" },
@@ -767,10 +751,8 @@
         { id:uid(), title:"Arrivée dans PARIS RP", text:"Après la mort de Myriam et la menace d’expulsion, Harry part dans la ville — pas pour conquérir… mais pour survivre.", date:"" }
       ];
       p.data.roulette.options = [
-        { id:uid(), text:"Fuir en hurlant", weight:2 },
-        { id:uid(), text:"Tout avouer par panique", weight:3 },
-        { id:uid(), text:"Se donner un rôle de caïd", weight:2 },
-        { id:uid(), text:"Appeler Seya", weight:1 }
+        { id:uid(), text:"Fuir en hurlant", weight:2 }, { id:uid(), text:"Tout avouer par panique", weight:3 },
+        { id:uid(), text:"Se donner un rôle de caïd", weight:2 }, { id:uid(), text:"Appeler Seya", weight:1 }
       ];
       return p;
     };
@@ -779,25 +761,16 @@
       const p = defaultProfile("seya", "SEYA");
       p.public = true;
       p.meta.ref = "SC-19";
-      p.meta.img = "photo seya.png"; // change here
+      p.meta.img = "photo seya.png";
       p.security.fixedPin = true;
       p.data.identite = {
-        fullName:"CARPENTIER Seya",
-        age:"19 ans",
-        birthdate:"",
-        birthplace:"Paris 19ème",
-        origins:"Franco-Algérienne",
-        role:"Petite sœur surprotégée",
-        faction:"PARIS RP",
-        voice:"Voix très aiguë, parle sans filtre.",
-        phys:"Petite, souvent cachée derrière Harry",
-        sign:"Regard fuyant, hyperactive."
+        fullName:"CARPENTIER Seya", age:"19 ans", birthdate:"", birthplace:"Paris 19ème",
+        origins:"Franco-Algérienne", role:"Petite sœur surprotégée", faction:"PARIS RP",
+        voice:"Voix très aiguë, parle sans filtre.", phys:"Petite, souvent cachée derrière Harry", sign:"Regard fuyant, hyperactive."
       };
       p.data.stats = [
-        { id:uid(), label:"Naïveté", val:100 },
-        { id:uid(), label:"Émotivité", val:100 },
-        { id:uid(), label:"Jalousie", val:100 },
-        { id:uid(), label:"Dévouement (Harry)", val:100 }
+        { id:uid(), label:"Naïveté", val:100 }, { id:uid(), label:"Émotivité", val:100 },
+        { id:uid(), label:"Jalousie", val:100 }, { id:uid(), label:"Dévouement (Harry)", val:100 }
       ];
       p.data.lore.sections = [
         { id:uid(), title:"Une enfance dans l'ombre", text:"Pour Seya, le 19ème n’était pas un enfer mais un terrain de jeu bruyant. Elle n’a jamais compris les sacrifices de sa mère.", date:"" },
@@ -805,10 +778,8 @@
         { id:uid(), title:"PARIS RP", text:"Elle suit Harry partout. Elle veut prouver qu'elle peut l'aider — même si elle attire souvent le chaos.", date:"" }
       ];
       p.data.roulette.options = [
-        { id:uid(), text:"Faire une crise de jalousie", weight:3 },
-        { id:uid(), text:"Se mettre à pleurer très fort", weight:2 },
-        { id:uid(), text:"Insulter sans faire exprès", weight:2 },
-        { id:uid(), text:"Faire un gros câlin à Harry", weight:1 }
+        { id:uid(), text:"Faire une crise de jalousie", weight:3 }, { id:uid(), text:"Se mettre à pleurer très fort", weight:2 },
+        { id:uid(), text:"Insulter sans faire exprès", weight:2 }, { id:uid(), text:"Faire un gros câlin à Harry", weight:1 }
       ];
       return p;
     };
@@ -838,7 +809,6 @@
     /******************************************************************
      * 5) Firestore paths
      ******************************************************************/
-    // profiles collection: profiles/{profileKey}
     const profilesCol = collection(db, "profiles");
 
     async function ensureBaseProfilesExist(){
@@ -853,13 +823,12 @@
     /******************************************************************
      * 6) App state
      ******************************************************************/
-    let profilesCache = new Map(); // key -> profile object
+    let profilesCache = new Map();
     let activeKey = null;
     let activeProfile = null;
     let unlocked = false;
     let unsubscribeActive = null;
 
-    // debounced save
     let saveTimer = null;
     function setSaveState(text){
       $("saveChip").innerHTML = `<i class="fa-solid fa-floppy-disk"></i> ${text}`;
@@ -888,22 +857,24 @@
       $("modeChip").innerHTML = unlocked
         ? '<i class="fa-solid fa-pen"></i> ÉDITION'
         : '<i class="fa-solid fa-eye"></i> LECTURE';
+      
+      // Update image input field status
+      const imgInput = $("imgUrl");
+      if(imgInput) imgInput.disabled = !unlocked;
     }
 
     function modal(el, show){ el.classList.toggle("show", !!show); }
 
     function storageInfo(){
-      // approximate info based on cached profiles
       const obj = Array.from(profilesCache.values());
       const bytes = new Blob([JSON.stringify(obj)]).size;
       $("storage").textContent = (bytes/1024).toFixed(1) + " KB cache";
     }
 
     /******************************************************************
-     * 7) Render landing list (from Firestore)
+     * 7) Render landing list
      ******************************************************************/
     async function refreshProfilesList(){
-      // newest first (updatedAt)
       const qy = query(profilesCol, orderBy("updatedAt", "desc"), limit(50));
       const snap = await getDocs(qy);
 
@@ -928,7 +899,6 @@
           opt.textContent = `${p.displayName || p.key} (${p.key})`;
           sel.appendChild(opt);
         });
-      // default to harry
       if(sel.options.length) sel.value = "harry";
     }
 
@@ -1014,7 +984,7 @@
     }
 
     /******************************************************************
-     * 8) Open profile (live subscription)
+     * 8) Open profile
      ******************************************************************/
     function openProfile(key){
       activeKey = key;
@@ -1024,7 +994,6 @@
       $("landing").style.display = "none";
       $("app").style.display = "flex";
 
-      // unsubscribe old
       if(unsubscribeActive) unsubscribeActive();
 
       const ref = doc(db, "profiles", key);
@@ -1053,13 +1022,12 @@
     }
 
     /******************************************************************
-     * 9) Tabs framework (10 tabs, customizable per profile)
+     * 9) Tabs framework
      ******************************************************************/
     let currentTabId = "identite";
 
     function visibleTabsForViewer(){
       const tabs = activeProfile.tabs || [];
-      // for viewer: only enabled tabs that are public OR unlocked (owner)
       return tabs.filter(t => t.enabled && (t.visiblePublic || unlocked));
     }
 
@@ -1081,7 +1049,6 @@
         nav.appendChild(btn);
       }
 
-      // Settings tab (only when unlocked)
       if(unlocked){
         const s = document.createElement("button");
         s.className = "sbBtn";
@@ -1147,7 +1114,6 @@
       const root = $("tabContent");
       root.textContent = "";
 
-      // tab settings panel
       if(currentTabId === "__tabs_settings__"){
         root.appendChild(renderTabsSettings());
         return;
@@ -1159,7 +1125,6 @@
         return;
       }
 
-      // Enforce visibility: if not public and not unlocked, show blocked
       if(!tab.visiblePublic && !unlocked){
         root.appendChild(el("div",{class:"panel"},[
           el("div",{style:"font-weight:900;margin-bottom:6px"},["Onglet privé"]),
@@ -1168,13 +1133,11 @@
         return;
       }
 
-      // Title
       root.appendChild(el("div",{class:"sectionTitle"},[
         el("span",{html:tab.title}),
         el("span",{class:"ref"},[tab.type.toUpperCase()])
       ]));
 
-      // Render by type
       const type = tab.type;
       if(type==="identite") root.appendChild(renderIdentite());
       else if(type==="stats") root.appendChild(renderStats());
@@ -1232,7 +1195,7 @@
         ])
       ]);
 
-      // wire image input
+      // Connexion de l'input image
       setTimeout(()=>{
         const input = $("imgUrl");
         const preview = $("imgPreview");
@@ -1530,7 +1493,6 @@
     }
 
     function renderRelations(){
-      // for now: list-based; graph comes in v7.1
       const rel = activeProfile.data?.relations || {list:[]};
       const list = rel.list || [];
 
@@ -1578,7 +1540,6 @@
               ])
             ]));
             card.querySelector("textarea").value = r.note || "";
-            // set select value
             card.querySelector("select").value = r.tag || "Neutre";
           }
 
@@ -1886,7 +1847,6 @@
         if(expected){
           if(hashPin(pin) !== expected) return toast("PIN incorrect");
         } else {
-          // First time: set pinHash
           if(!pin) return toast("Choisis un PIN");
           p.security.pinHash = hashPin(pin);
           scheduleCloudSave();
@@ -1935,7 +1895,7 @@
       if(exists.exists()) return toast("ID déjà pris (change la clé)");
 
       const base = profilesCache.get(from) || harryProfile();
-      const p = JSON.parse(JSON.stringify(base)); // deep copy (safe)
+      const p = JSON.parse(JSON.stringify(base));
       p.key = key;
       p.displayName = name;
       p.public = true;
@@ -1947,7 +1907,6 @@
       p.security.pinHash = hashPin(pin);
       p.updatedAt = Date.now();
 
-      // reset some stuff
       p.data.timeline.events = [];
       p.data.goals.court = [];
       p.data.goals.long = [];
@@ -1989,7 +1948,6 @@
     }
 
     function printProfile(){
-      // simplistic print: open new window with basic layout (v7.1 will be better)
       const w = window.open("", "_blank");
       const name = activeProfile.displayName || activeProfile.key;
       w.document.write(`
@@ -2053,7 +2011,6 @@
     $("iOk").addEventListener("click", importActive);
     $("print").addEventListener("click", printProfile);
 
-    // keyboard
     document.addEventListener("keydown", (e)=>{
       if(e.key==="/" && document.activeElement?.tagName!=="INPUT" && document.activeElement?.tagName!=="TEXTAREA"){
         e.preventDefault(); $("q").focus();
