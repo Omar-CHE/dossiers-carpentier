@@ -57,7 +57,7 @@
     .logo-main {
       height: 90px; 
       width: auto;
-      max-width: 100%;
+      max-width: 300px;
       object-fit: contain; 
       display: block;
       filter: drop-shadow(0 0 10px rgba(212,175,55, 0.5));
@@ -72,6 +72,20 @@
       margin: 0 auto 15px auto;
       filter: drop-shadow(0 0 5px rgba(212,175,55, 0.5));
     }
+
+    /* === STYLE DE L'AVATAR DANS LA SIDEBAR === */
+    .avatar-sidebar {
+      height: 100px;
+      width: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+      margin: 0 auto 15px auto;
+      border: 2px solid var(--goldDim);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    }
+    /* ========================================= */
 
     .btn{
       display:inline-flex; align-items:center; gap:10px;
@@ -114,6 +128,26 @@
       text-decoration: none;
     }
     .credit-landing a:hover { text-decoration: underline; }
+
+    /* === CREDIT DISCRET SIDEBAR === */
+    .dev-credit-sidebar {
+      font-family: "Share Tech Mono", monospace;
+      font-size: 10px;
+      color: #444;
+      text-align: center;
+      margin-top: 15px;
+      padding-top: 10px;
+      border-top: 1px solid #1f1f26;
+    }
+    .dev-credit-sidebar a {
+      color: #666;
+      text-decoration: none;
+      transition: 0.2s;
+    }
+    .dev-credit-sidebar a:hover {
+      color: var(--gold);
+    }
+    /* ============================== */
 
     .input{
       width:100%;
@@ -268,7 +302,6 @@
       position: relative;
     }
     
-    /* === MENU LATÉRAL === */
     .sidebar{
       width:320px;
       background:#07070a;
@@ -344,8 +377,8 @@
       display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;
     }
     
-    #mobileMenuBtn { display: none; } /* Caché sur PC */
-    .sidebar-overlay { display: none; } /* Caché sur PC */
+    #mobileMenuBtn { display: none; }
+    .sidebar-overlay { display: none; }
 
     .sectionTitle{
       font-family:"Playfair Display",serif;
@@ -362,9 +395,6 @@
     
     #imgPreview { object-fit: cover; object-position: center; }
 
-    /* ========================================= */
-    /* ======== ADAPTATION POUR MOBILE ========= */
-    /* ========================================= */
     @media (max-width: 1100px){
       .grid2{grid-template-columns:1fr}
       .search{min-width:unset}
@@ -373,19 +403,15 @@
     @media (max-width: 768px) {
       .appShell { padding: 0; }
       .app { border-radius: 0; border: none; flex-direction: column; }
-      
-      /* Le menu se cache à gauche */
       .sidebar { 
         position: fixed; 
         top: 0; 
-        left: -320px; /* Caché */
+        left: -320px;
         height: 100%; 
         width: 280px; 
         box-shadow: var(--shadow);
       }
-      .sidebar.open { left: 0; } /* Visible */
-      
-      /* L'ombre derrière le menu quand il est ouvert */
+      .sidebar.open { left: 0; }
       .sidebar-overlay {
         display: none; 
         position: fixed; inset: 0; 
@@ -394,28 +420,17 @@
         backdrop-filter: blur(3px);
       }
       .sidebar-overlay.open { display: block; }
-      
-      /* Bouton Hamburger */
       #mobileMenuBtn { display: inline-flex !important; }
-      
       .topbar { margin: 0; padding: 12px 18px; border-radius: 0 0 18px 18px; }
       .main { padding: 18px; }
-      
       .grid3, .formGrid { grid-template-columns: 1fr; }
-      
-      /* Polices adaptées */
       .brandTitle { font-size: 38px; }
       .sectionTitle { font-size: 28px; }
-      
-      /* Anti-zoom iOS (force la police à 16px minimum dans les cases) */
       .input, .editable, textarea, select { font-size: 16px !important; }
-      
       .modal { padding: 10px; }
       .modalBox { padding: 14px; max-height: 90vh; overflow-y: auto; }
-      
       .credit-landing { bottom: 10px; right: 10px; font-size: 11px; }
     }
-    /* ========================================= */
 
     .fieldLabel{color:#9a9a9a; font-size:12px; margin-bottom:8px}
     .editable{
@@ -598,7 +613,8 @@
 
       <aside class="sidebar">
         <div class="sbHead">
-          <img src="logo.png" alt="Logo" class="logo-sidebar" onerror="this.style.display='none'">
+          <img id="sbProfileImage" src="logo.png" alt="Avatar" class="logo-sidebar" style="display:none;">
+          
           <h2 id="sbName">DOSSIER</h2>
           <p>v7.0 // GRANDLINE FILESYSTEM</p>
           <div class="sbMeta">
@@ -611,6 +627,7 @@
 
         <div class="sbBottom">
           <button class="sbBtn logout" id="back"><i class="fa-solid fa-house"></i> Retour accueil</button>
+          <div class="dev-credit-sidebar">Dev par <a href="https://www.twitch.tv/ruubix" target="_blank">Ruubix</a></div>
         </div>
       </aside>
 
@@ -1191,7 +1208,6 @@
             currentTabId = t.id; 
             currentRouletteResult = "EN ATTENTE…"; 
             
-            // Ferme le menu sur mobile
             document.querySelector(".sidebar").classList.remove("open");
             $("sidebarOverlay").classList.remove("open");
             
@@ -1207,7 +1223,6 @@
         s.addEventListener("click", ()=>{ 
             currentTabId = "__tabs_settings__"; 
             
-            // Ferme le menu sur mobile
             document.querySelector(".sidebar").classList.remove("open");
             $("sidebarOverlay").classList.remove("open");
             
@@ -1224,6 +1239,26 @@
       $("activeName").textContent = (activeProfile.displayName || activeProfile.key);
       $("sbRef").textContent = activeProfile.meta?.ref || "—";
       $("sbPublic").innerHTML = `<i class="fa-solid fa-globe"></i> Public (lecture)`;
+
+      // === REMPLACEMENT DU LOGO PAR L'AVATAR DANS LA SIDEBAR ===
+      const sbAvatar = $("sbProfileImage");
+      const imgUrl = activeProfile.meta?.img;
+      
+      if (imgUrl) {
+          sbAvatar.src = imgUrl;
+          sbAvatar.className = "avatar-sidebar"; 
+      } else {
+          sbAvatar.src = "logo.png";
+          sbAvatar.className = "logo-sidebar"; 
+      }
+      
+      sbAvatar.style.display = "block";
+      
+      sbAvatar.onerror = function() {
+          this.src = "logo.png";
+          this.className = "logo-sidebar";
+      };
+      // ==========================================================
     }
 
     function renderApp(){ 
@@ -1372,6 +1407,7 @@
                 if(preview) { preview.src = base64; preview.style.opacity = '1'; }
                 scheduleCloudSave(); 
                 toast("Image uploadée !");
+                renderAppHeader(); // Met à jour l'avatar sidebar direct
               });
               fi.click();
             }}, [el("i",{class:"fa-solid fa-upload"})," Parcourir"]) : null
@@ -1429,6 +1465,7 @@
           preview.src = url;
           preview.style.opacity = '1';
           scheduleCloudSave();
+          renderAppHeader(); // Met à jour l'avatar sidebar direct
         });
       },0);
 
@@ -1978,13 +2015,11 @@
 
     // === FONCTIONS GLOBALES (Modal, Menu Mobile) ===
     
-    // Gérer l'ouverture du menu latéral sur mobile
     $("mobileMenuBtn").addEventListener("click", () => {
         document.querySelector(".sidebar").classList.add("open");
         $("sidebarOverlay").classList.add("open");
     });
     
-    // Fermer le menu si on clique sur le fond sombre
     $("sidebarOverlay").addEventListener("click", () => {
         document.querySelector(".sidebar").classList.remove("open");
         $("sidebarOverlay").classList.remove("open");
