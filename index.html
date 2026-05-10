@@ -128,6 +128,7 @@
     .btn.danger{border-color:rgba(231,76,60,.5); background:rgba(231,76,60,.08); color:#ffb1aa}
     .btn.danger:hover{background:rgba(231,76,60,.14)}
     .btn.small{padding:8px 10px; font-size:11px; border-radius:10px}
+    .btn:disabled{opacity:.45; cursor:not-allowed}
 
     /* APP */
     .app-container{
@@ -181,7 +182,6 @@
     .chip.ok{border-color:rgba(46,204,113,.25); color:#b6f3cd}
     .chip.ro{border-color:rgba(52,152,219,.25); color:#a6d6ff}
     .chip.edit{border-color:rgba(212,175,55,.30); color:#ffe7a1}
-    .chip.lock{border-color:rgba(231,76,60,.25); color:#ffb7ae}
 
     .tab-section{display:none; animation:slideUp .35s ease-out forwards}
     .tab-section.active{display:block}
@@ -253,6 +253,22 @@
     .form-group textarea{min-height:100px; resize:vertical}
     .modal-actions{display:flex; justify-content:flex-end; gap:10px; margin-top:12px; flex-wrap:wrap}
 
+    /* Error banner */
+    #fatal-error{
+      display:none;
+      position:fixed; left:18px; right:18px; top:18px; z-index:3000;
+      background:rgba(231,76,60,.15);
+      border:1px solid rgba(231,76,60,.45);
+      color:#ffd2cd;
+      padding:14px 16px;
+      border-radius:14px;
+      font-family:'Share Tech Mono';
+      font-size:12px;
+      line-height:1.6;
+      white-space:pre-wrap;
+    }
+    #fatal-error strong{color:#fff}
+
     @media (max-width: 1000px){
       .grid-2{grid-template-columns:1fr}
       .sidebar{width:260px}
@@ -262,6 +278,8 @@
   </style>
 </head>
 <body>
+
+  <div id="fatal-error"></div>
 
   <!-- LOGIN -->
   <div id="login-screen" aria-label="Écran de sélection de profil">
@@ -274,9 +292,9 @@
         <input id="login-search" placeholder="Rechercher un profil (nom, rôle…)" />
         <span class="kbd">/</span>
       </div>
-      <button class="btn primary" onclick="openModal('modalCreateProfile')"><i class="fa-solid fa-user-plus"></i> Créer profil</button>
-      <button class="btn" onclick="openModal('modalImportProfile')"><i class="fa-solid fa-file-import"></i> Import JSON</button>
-      <button class="btn" onclick="openModal('modalHelp')"><i class="fa-solid fa-circle-info"></i> Aide</button>
+      <button class="btn primary" id="btn-open-create"><i class="fa-solid fa-user-plus"></i> Créer profil</button>
+      <button class="btn" id="btn-open-import"><i class="fa-solid fa-file-import"></i> Import JSON</button>
+      <button class="btn" id="btn-open-help"><i class="fa-solid fa-circle-info"></i> Aide</button>
     </div>
 
     <div class="profiles-container" id="profiles"></div>
@@ -292,17 +310,17 @@
     <nav class="sidebar">
       <div class="sidebar-header">
         <h2 id="ui-sidebar-name">CARPENTIER O.S</h2>
-        <p>v5.0 SYSTEM // PUBLIC VIEW</p>
+        <p>v5.0.1 SYSTEM // PUBLIC VIEW</p>
       </div>
 
       <div class="nav-links">
-        <button class="nav-btn active" onclick="showTab('profil', this)"><i class="fa-solid fa-id-card"></i> 01. Identité</button>
-        <button class="nav-btn" onclick="showTab('caractere', this)"><i class="fa-solid fa-brain"></i> 02. Caractère</button>
-        <button class="nav-btn" onclick="showTab('lore', this)"><i class="fa-solid fa-scroll"></i> 03. Histoire (Lore)</button>
-        <button class="nav-btn" onclick="showTab('objectifs', this)"><i class="fa-solid fa-bullseye"></i> 04. Objectifs</button>
-        <button class="nav-btn" onclick="showTab('journal', this)"><i class="fa-solid fa-keyboard"></i> 05. Journal RP</button>
+        <button class="nav-btn active" data-tab="profil"><i class="fa-solid fa-id-card"></i> 01. Identité</button>
+        <button class="nav-btn" data-tab="caractere"><i class="fa-solid fa-brain"></i> 02. Caractère</button>
+        <button class="nav-btn" data-tab="lore"><i class="fa-solid fa-scroll"></i> 03. Histoire (Lore)</button>
+        <button class="nav-btn" data-tab="objectifs"><i class="fa-solid fa-bullseye"></i> 04. Objectifs</button>
+        <button class="nav-btn" data-tab="journal"><i class="fa-solid fa-keyboard"></i> 05. Journal RP</button>
 
-        <button class="nav-btn bottom logout" onclick="logout()"><i class="fa-solid fa-power-off"></i> Retour profils</button>
+        <button class="nav-btn bottom logout" id="btn-logout"><i class="fa-solid fa-power-off"></i> Retour profils</button>
       </div>
     </nav>
 
@@ -315,9 +333,9 @@
           <span class="chip ok" id="ui-save-chip"><i class="fa-solid fa-cloud"></i> OK</span>
         </div>
         <div style="display:flex; gap:10px; flex-wrap:wrap">
-          <button class="btn small primary" id="btn-unlock" onclick="openUnlock()"><i class="fa-solid fa-lock"></i> Déverrouiller</button>
-          <button class="btn small" onclick="lockEditing()"><i class="fa-solid fa-lock-open"></i> Verrouiller</button>
-          <button class="btn small" onclick="openModal('modalProfileTools')"><i class="fa-solid fa-screwdriver-wrench"></i> Outils</button>
+          <button class="btn small primary" id="btn-unlock"><i class="fa-solid fa-lock"></i> Déverrouiller</button>
+          <button class="btn small" id="btn-lock"><i class="fa-solid fa-lock-open"></i> Verrouiller</button>
+          <button class="btn small" id="btn-tools"><i class="fa-solid fa-screwdriver-wrench"></i> Outils</button>
         </div>
       </div>
 
@@ -331,7 +349,7 @@
               <img id="ui-photo" src="" alt="Profil">
             </div>
             <div style="display:flex; justify-content:flex-end; margin-top:10px">
-              <button class="btn small" onclick="openModal('modalEditMeta')"><i class="fa-solid fa-pen"></i> Photo / Réfs</button>
+              <button class="btn small" id="btn-edit-meta"><i class="fa-solid fa-pen"></i> Photo / Réfs</button>
             </div>
           </div>
 
@@ -380,7 +398,7 @@
 
       <!-- OBJECTIFS -->
       <section id="objectifs" class="tab-section">
-        <div class="section-title"><span>Objectifs</span><button class="btn primary" onclick="openModal('modalGoal')"><i class="fa-solid fa-plus"></i> Nouveau</button></div>
+        <div class="section-title"><span>Objectifs</span><button class="btn primary" id="btn-open-goal"><i class="fa-solid fa-plus"></i> Nouveau</button></div>
         <div class="grid-2" id="goal-container"></div>
       </section>
 
@@ -410,8 +428,8 @@
         </div>
       </div>
       <div class="modal-actions">
-        <button class="btn" onclick="closeModal('modalUnlock')">Annuler</button>
-        <button class="btn primary" onclick="unlockEditing()"><i class="fa-solid fa-key"></i> Déverrouiller</button>
+        <button class="btn" data-close="modalUnlock">Annuler</button>
+        <button class="btn primary" id="btn-do-unlock"><i class="fa-solid fa-key"></i> Déverrouiller</button>
       </div>
     </div>
   </div>
@@ -432,7 +450,7 @@
           <input id="newKey" placeholder="ex: omar" style="font-family:'Share Tech Mono'">
         </div>
         <div class="form-group" style="grid-column:1/-1">
-          <label>Avatar (URL ou fichier) — tu peux modifier après</label>
+          <label>Avatar (URL ou fichier)</label>
           <input id="newAvatar" placeholder="ex: avatar.png ou https://...">
         </div>
         <div class="form-group">
@@ -445,8 +463,8 @@
         </div>
       </div>
       <div class="modal-actions">
-        <button class="btn" onclick="closeModal('modalCreateProfile')">Annuler</button>
-        <button class="btn primary" onclick="createProfile()"><i class="fa-solid fa-user-plus"></i> Créer</button>
+        <button class="btn" data-close="modalCreateProfile">Annuler</button>
+        <button class="btn primary" id="btn-do-create"><i class="fa-solid fa-user-plus"></i> Créer</button>
       </div>
     </div>
   </div>
@@ -477,8 +495,8 @@
         </div>
       </div>
       <div class="modal-actions">
-        <button class="btn" onclick="closeModal('modalEditMeta')">Fermer</button>
-        <button class="btn primary" onclick="saveMeta()"><i class="fa-solid fa-floppy-disk"></i> Sauvegarder</button>
+        <button class="btn" data-close="modalEditMeta">Fermer</button>
+        <button class="btn primary" id="btn-save-meta"><i class="fa-solid fa-floppy-disk"></i> Sauvegarder</button>
       </div>
     </div>
   </div>
@@ -500,8 +518,8 @@
         </div>
       </div>
       <div class="modal-actions">
-        <button class="btn" onclick="closeModal('modalGoal')">Annuler</button>
-        <button class="btn primary" onclick="addGoal()"><i class="fa-solid fa-plus"></i> Ajouter</button>
+        <button class="btn" data-close="modalGoal">Annuler</button>
+        <button class="btn primary" id="btn-add-goal"><i class="fa-solid fa-plus"></i> Ajouter</button>
       </div>
     </div>
   </div>
@@ -512,8 +530,8 @@
       <div class="card" style="margin:0 0 12px">
         <div class="card-title">Sauvegarde</div>
         <div style="display:flex; gap:10px; flex-wrap:wrap">
-          <button class="btn" onclick="exportProfile()"><i class="fa-solid fa-file-export"></i> Export JSON</button>
-          <button class="btn" onclick="openModal('modalImportProfile')"><i class="fa-solid fa-file-import"></i> Import JSON</button>
+          <button class="btn" id="btn-export"><i class="fa-solid fa-file-export"></i> Export JSON</button>
+          <button class="btn" id="btn-open-import-2"><i class="fa-solid fa-file-import"></i> Import JSON</button>
         </div>
       </div>
       <div class="card" style="margin:0 0 12px">
@@ -521,10 +539,10 @@
         <p style="color:#bbb; line-height:1.6; margin-bottom:10px">
           Les profils visiteurs sont locaux à ton navigateur. Tu peux supprimer le tien ici.
         </p>
-        <button class="btn danger" onclick="deleteActiveProfile()"><i class="fa-solid fa-trash"></i> Supprimer ce profil</button>
+        <button class="btn danger" id="btn-delete-active"><i class="fa-solid fa-trash"></i> Supprimer ce profil</button>
       </div>
       <div class="modal-actions">
-        <button class="btn" onclick="closeModal('modalProfileTools')">Fermer</button>
+        <button class="btn" data-close="modalProfileTools">Fermer</button>
       </div>
     </div>
   </div>
@@ -540,8 +558,8 @@
         <textarea id="importJson"></textarea>
       </div>
       <div class="modal-actions">
-        <button class="btn" onclick="closeModal('modalImportProfile')">Annuler</button>
-        <button class="btn primary" onclick="importProfile()"><i class="fa-solid fa-file-import"></i> Importer</button>
+        <button class="btn" data-close="modalImportProfile">Annuler</button>
+        <button class="btn primary" id="btn-do-import"><i class="fa-solid fa-file-import"></i> Importer</button>
       </div>
     </div>
   </div>
@@ -558,7 +576,7 @@
         </p>
       </div>
       <div class="modal-actions">
-        <button class="btn primary" onclick="closeModal('modalHelp')">OK</button>
+        <button class="btn primary" data-close="modalHelp">OK</button>
       </div>
     </div>
   </div>
@@ -573,10 +591,27 @@
     const PIN_SEYA  = "11111110";
 
     /***********************
+     * Global error catcher (shows banner)
+     ***********************/
+    (function(){
+      function showFatal(msg){
+        const el = document.getElementById("fatal-error");
+        if(!el) return;
+        el.style.display = "block";
+        el.textContent =
+          "ERREUR JS — quelque chose a cassé l'app.\n\n" +
+          "Copie-colle ce message ici:\n" +
+          msg;
+      }
+      window.addEventListener("error", (e)=> showFatal((e?.message||"error") + (e?.filename ? ("\n" + e.filename + ":" + e.lineno + ":" + e.colno) : "")));
+      window.addEventListener("unhandledrejection", (e)=> showFatal("UnhandledPromiseRejection\n" + (e?.reason?.message || String(e?.reason))));
+    })();
+
+    /***********************
      * Storage
      ***********************/
-    const STORAGE_NS = "carpentierOS:v5";
-    const EDIT_SESSION_NS = "carpentierOS:v5:editSession"; // per browser tab/session
+    const STORAGE_NS = "carpentierOS:v501";
+    const EDIT_SESSION_NS = "carpentierOS:v501:editSession"; // per browser session
 
     const isStructuredCloneSupported = typeof structuredClone === "function";
     const clone = (obj) => isStructuredCloneSupported ? structuredClone(obj) : JSON.parse(JSON.stringify(obj));
@@ -594,8 +629,8 @@
         key:"harry",
         public:true,
         displayName:"HARRY",
-        meta:{ sidebar:"HARRY O.S", refId:"HC-151204", psyRef:"SYNDROME CHIHUAHUA", loreRef:"L'EST PARISIEN", img:"photo harry.png" }, // <- IMAGE ICI
-        pinHash:"", // not used (fixed PIN)
+        meta:{ sidebar:"HARRY O.S", refId:"HC-151204", psyRef:"SYNDROME CHIHUAHUA", loreRef:"L'EST PARISIEN", img:"photo harry.png" }, // IMAGE_HARRY
+        pinHash:"",
         identity:{
           fullName:"CARPENTIER Harry",
           age:"21 ans (15/12/2004)",
@@ -631,7 +666,7 @@
         key:"seya",
         public:true,
         displayName:"SEYA",
-        meta:{ sidebar:"SEYA O.S", refId:"SC-19", psyRef:"L'ÉPINE ATTACHANTE", loreRef:"L'EST PARISIEN", img:"photo seya.png" }, // <- IMAGE ICI
+        meta:{ sidebar:"SEYA O.S", refId:"SC-19", psyRef:"L'ÉPINE ATTACHANTE", loreRef:"L'EST PARISIEN", img:"photo seya.png" }, // IMAGE_SEYA
         pinHash:"",
         identity:{
           fullName:"CARPENTIER Seya",
@@ -665,16 +700,11 @@
       }
     };
 
-    const defaultState = {
-      version:5,
-      profiles: defaultProfiles
-    };
+    const defaultState = { version:501, profiles: defaultProfiles };
 
     let state = loadState();
     let activeKey = null;
     let editUnlocked = false;
-
-    // save debounce
     let saveT = null;
 
     /***********************
@@ -682,20 +712,29 @@
      ***********************/
     function notify(msg){
       const t = document.getElementById("toast");
+      if(!t) return;
       t.innerText = msg;
       t.classList.add("show");
       setTimeout(()=>t.classList.remove("show"), 1600);
     }
-    function openModal(id){ document.getElementById(id).classList.add("active"); }
-    function closeModal(id){ document.getElementById(id).classList.remove("active"); }
+    function openModal(id){
+      const el = document.getElementById(id);
+      if(el) el.classList.add("active");
+    }
+    function closeModal(id){
+      const el = document.getElementById(id);
+      if(el) el.classList.remove("active");
+    }
 
     function setSaveChip(mode="ok"){
       const chip = document.getElementById("ui-save-chip");
+      if(!chip) return;
       if(mode==="busy"){ chip.className="chip"; chip.innerHTML='<i class="fa-solid fa-arrows-rotate"></i> SAVE'; }
       else { chip.className="chip ok"; chip.innerHTML='<i class="fa-solid fa-cloud"></i> OK'; }
     }
     function setModeChip(){
       const chip = document.getElementById("ui-mode-chip");
+      if(!chip) return;
       if(editUnlocked){
         chip.className="chip edit";
         chip.innerHTML='<i class="fa-solid fa-pen"></i> ÉDITION';
@@ -705,11 +744,9 @@
         chip.innerHTML='<i class="fa-solid fa-eye"></i> LECTURE';
         document.body.classList.remove("edit-unlocked");
       }
-      // enable/disable contenteditable
       document.querySelectorAll(".field").forEach(el=>{
         el.setAttribute("contenteditable", editUnlocked ? "true" : "false");
       });
-      // journal readonly
       const journal = document.getElementById("journal-input");
       if(journal) journal.readOnly = !editUnlocked;
     }
@@ -730,7 +767,6 @@
           ...parsed,
           profiles: { ...clone(defaultState.profiles), ...(parsed.profiles||{}) }
         };
-        // ensure required base profiles exist
         if(!merged.profiles.harry) merged.profiles.harry = clone(defaultProfiles.harry);
         if(!merged.profiles.seya) merged.profiles.seya = clone(defaultProfiles.seya);
         return merged;
@@ -740,9 +776,7 @@
       }
     }
 
-    function saveState(){
-      localStorage.setItem(STORAGE_NS, JSON.stringify(state));
-    }
+    function saveState(){ localStorage.setItem(STORAGE_NS, JSON.stringify(state)); }
 
     function scheduleSave(){
       setSaveChip("busy");
@@ -754,7 +788,7 @@
     }
 
     /***********************
-     * Edit session (per profile)
+     * Edit session per profile
      ***********************/
     function loadEditSession(){
       try{
@@ -762,15 +796,13 @@
         return raw ? JSON.parse(raw) : {};
       }catch{ return {}; }
     }
-    function saveEditSession(obj){
-      sessionStorage.setItem(EDIT_SESSION_NS, JSON.stringify(obj));
-    }
+    function saveEditSession(obj){ sessionStorage.setItem(EDIT_SESSION_NS, JSON.stringify(obj)); }
     function isProfileUnlocked(key){
       const s = loadEditSession();
       const exp = s?.[key]?.exp || 0;
       return Date.now() < exp;
     }
-    function setProfileUnlocked(key, minutes=30){
+    function setProfileUnlocked(key, minutes=45){
       const s = loadEditSession();
       s[key] = { exp: Date.now() + minutes*60*1000 };
       saveEditSession(s);
@@ -782,17 +814,49 @@
     }
 
     /***********************
-     * Login render
+     * Helpers
      ***********************/
     function storageInfo(){
       const bytes = new Blob([JSON.stringify(state)]).size;
       return (bytes/1024).toFixed(1) + " KB local";
     }
+    function slugify(s){
+      return (s||"")
+        .toLowerCase()
+        .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+        .replace(/[^a-z0-9]+/g,"-")
+        .replace(/(^-|-$)/g,"")
+        .slice(0, 24) || ("user-"+Math.floor(Math.random()*9999));
+    }
+    function simpleHash(pin){
+      let h = 5381;
+      for(let i=0;i<pin.length;i++) h = ((h<<5)+h) + pin.charCodeAt(i);
+      return "h" + (h >>> 0).toString(16);
+    }
+    function getPath(obj, path){ return path.split(".").reduce((a,k)=>a?.[k], obj); }
+    function setPath(obj, path, val){
+      const parts = path.split(".");
+      let cur = obj;
+      for(let i=0;i<parts.length-1;i++){
+        const k = parts[i];
+        if(typeof cur[k] !== "object" || cur[k]===null) cur[k] = {};
+        cur = cur[k];
+      }
+      cur[parts[parts.length-1]] = val;
+    }
 
+    function profile(){ return state.profiles[activeKey]; }
+
+    /***********************
+     * Render login
+     ***********************/
     function renderLogin(){
-      document.getElementById("login-storage").innerText = storageInfo();
+      const st = document.getElementById("login-storage");
+      if(st) st.innerText = storageInfo();
 
-      const q = (document.getElementById("login-search").value || "").trim().toLowerCase();
+      const qEl = document.getElementById("login-search");
+      const q = (qEl?.value || "").trim().toLowerCase();
+
       const profiles = Object.values(state.profiles)
         .sort((a,b)=> (b.public===true)-(a.public===true) || (a.displayName||a.key).localeCompare(b.displayName||b.key));
 
@@ -801,13 +865,19 @@
         return hay.includes(q);
       });
 
-      const html = filtered.map(p=>{
+      const container = document.getElementById("profiles");
+      if(!container) return;
+
+      container.innerHTML = filtered.map(p=>{
         const badge = p.public ? `<span class="badge public">PUBLIC</span>` : `<span class="badge local">VISITEUR</span>`;
         const locked = (p.key==="harry" || p.key==="seya" || !!p.pinHash) ? `<span class="badge locked" style="right:92px">PIN</span>` : "";
         const img = p.meta?.img || "";
         const role = p.identity?.role || "";
+
+        const canDelete = (!p.public && p.key!=="harry" && p.key!=="seya");
+
         return `
-          <div class="profile-card" tabindex="0" role="button" aria-label="Ouvrir ${escapeAttr(p.displayName||p.key)}" onclick="login('${escapeAttr(p.key)}')">
+          <div class="profile-card" tabindex="0" role="button" data-open-profile="${escapeAttr(p.key)}">
             ${badge}${locked}
             <div class="profile-top">
               <div class="profile-pic">
@@ -819,19 +889,47 @@
               </div>
             </div>
 
-            <div class="card-actions" onclick="event.stopPropagation()">
-              <button class="btn small" onclick="openDuplicateModal('${escapeAttr(p.key)}')"><i class="fa-solid fa-clone"></i> Dupliquer</button>
-              ${(!p.public && p.key!=="harry" && p.key!=="seya") ? `<button class="btn small danger" onclick="deleteProfile('${escapeAttr(p.key)}')"><i class="fa-solid fa-trash"></i> Suppr</button>` : ``}
+            <div class="card-actions">
+              <button class="btn small" data-dup="${escapeAttr(p.key)}"><i class="fa-solid fa-clone"></i> Dupliquer</button>
+              ${canDelete ? `<button class="btn small danger" data-del="${escapeAttr(p.key)}"><i class="fa-solid fa-trash"></i> Suppr</button>` : ``}
             </div>
           </div>
         `;
-      }).join("");
+      }).join("") || `<div style="color:#777">Aucun profil.</div>`;
 
-      document.getElementById("profiles").innerHTML = html || `<div style="color:#777">Aucun profil.</div>`;
+      // Wire profile card clicks safely
+      container.querySelectorAll("[data-open-profile]").forEach(card=>{
+        card.addEventListener("click", (e)=>{
+          const target = e.target;
+          // avoid card open when clicking action buttons
+          if(target.closest("button")) return;
+          login(card.getAttribute("data-open-profile"));
+        });
+        card.addEventListener("keydown", (e)=>{
+          if(e.key==="Enter") login(card.getAttribute("data-open-profile"));
+        });
+      });
 
-      // populate duplicate select
+      container.querySelectorAll("[data-dup]").forEach(btn=>{
+        btn.addEventListener("click", (e)=>{
+          e.stopPropagation();
+          openDuplicateModal(btn.getAttribute("data-dup"));
+        });
+      });
+      container.querySelectorAll("[data-del]").forEach(btn=>{
+        btn.addEventListener("click", (e)=>{
+          e.stopPropagation();
+          deleteProfile(btn.getAttribute("data-del"));
+        });
+      });
+
+      // Populate duplicate select (SAFE)
       const sel = document.getElementById("newDuplicateFrom");
-      sel.innerHTML = profiles.map(p=>`<option value="${escapeAttr(p.key)}">${escapeHtml(p.displayName||p.key)} (${p.key})</option>`).join("");
+      if(sel){
+        sel.innerHTML = profiles
+          .map(p=>`<option value="${escapeAttr(p.key)}">${escapeHtml(p.displayName||p.key)} (${p.key})</option>`)
+          .join("");
+      }
     }
 
     /***********************
@@ -839,52 +937,78 @@
      ***********************/
     function login(key){
       activeKey = key;
-      editUnlocked = isProfileUnlocked(activeKey); // restore session unlock if any
+      editUnlocked = isProfileUnlocked(activeKey);
 
-      // transition
       const loginScreen = document.getElementById("login-screen");
-      loginScreen.style.opacity = "0";
-      setTimeout(()=>{
-        loginScreen.style.display = "none";
-        document.getElementById("main-app").style.display = "flex";
-        showTab("profil", document.querySelector(".nav-btn"));
-        hydrateUI();
-      }, 450);
+      if(loginScreen){
+        loginScreen.style.opacity = "0";
+        setTimeout(()=>{
+          loginScreen.style.display = "none";
+          const app = document.getElementById("main-app");
+          if(app) app.style.display = "flex";
+          // default tab
+          selectTab("profil");
+          hydrateUI();
+        }, 350);
+      }
     }
 
     function logout(){
       activeKey = null;
       editUnlocked = false;
-      document.getElementById("main-app").style.display="none";
+      const app = document.getElementById("main-app");
+      if(app) app.style.display="none";
       const ls = document.getElementById("login-screen");
-      ls.style.display="flex";
-      setTimeout(()=>ls.style.opacity="1", 30);
+      if(ls){
+        ls.style.display="flex";
+        setTimeout(()=>ls.style.opacity="1", 20);
+      }
       renderLogin();
     }
 
-    function showTab(id, btn){
+    function selectTab(id){
       document.querySelectorAll(".tab-section").forEach(s=>s.classList.remove("active"));
-      document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("active"));
-      document.getElementById(id).classList.add("active");
-      btn.classList.add("active");
+      document.querySelectorAll(".nav-btn[data-tab]").forEach(b=>b.classList.remove("active"));
+      const sec = document.getElementById(id);
+      if(sec) sec.classList.add("active");
+      const btn = document.querySelector(`.nav-btn[data-tab="${CSS.escape(id)}"]`);
+      if(btn) btn.classList.add("active");
     }
 
     /***********************
-     * Active profile helpers
+     * Hydrate UI
      ***********************/
-    function profile(){ return state.profiles[activeKey]; }
+    function setField(elId, path, allowHtml=false){
+      const el = document.getElementById(elId);
+      if(!el) return;
+      const v = getPath(profile(), path) ?? "";
+      el.innerHTML = allowHtml ? String(v) : escapeHtml(String(v));
+    }
 
     function hydrateUI(){
-      // header
-      document.getElementById("ui-sidebar-name").innerText = profile().meta?.sidebar || "DOSSIER";
-      document.getElementById("ui-active-profile").innerText = profile().displayName || profile().key;
-      document.getElementById("ui-ref-id").innerText = profile().meta?.refId || "-";
-      document.getElementById("ui-subref").innerText = profile().meta?.refId || "";
-      document.getElementById("ui-psy-ref").innerText = profile().meta?.psyRef || "";
-      document.getElementById("ui-lore-ref").innerText = profile().meta?.loreRef || "";
+      if(!profile()) return;
 
-      // identity
-      document.getElementById("ui-photo").src = profile().meta?.img || "";
+      // header
+      const sb = document.getElementById("ui-sidebar-name");
+      if(sb) sb.innerText = profile().meta?.sidebar || "DOSSIER";
+      const ap = document.getElementById("ui-active-profile");
+      if(ap) ap.innerText = profile().displayName || profile().key;
+
+      const ref = document.getElementById("ui-ref-id");
+      if(ref) ref.innerText = profile().meta?.refId || "-";
+      const sub = document.getElementById("ui-subref");
+      if(sub) sub.innerText = profile().meta?.refId || "";
+
+      const pr = document.getElementById("ui-psy-ref");
+      if(pr) pr.innerText = profile().meta?.psyRef || "";
+      const lr = document.getElementById("ui-lore-ref");
+      if(lr) lr.innerText = profile().meta?.loreRef || "";
+
+      // image
+      const img = document.getElementById("ui-photo");
+      if(img) img.src = profile().meta?.img || "";
+
+      // identity fields
       setField("ui-full-name", "identity.fullName");
       setField("ui-age", "identity.age");
       setField("ui-birthplace", "identity.birthplace");
@@ -899,8 +1023,9 @@
       setField("ui-psy2", "psy.psy2", true);
 
       // stats
-      document.getElementById("ui-stats-container").innerHTML =
-        (profile().stats||[]).map(s=>{
+      const stats = document.getElementById("ui-stats-container");
+      if(stats){
+        stats.innerHTML = (profile().stats||[]).map(s=>{
           return `<div style="margin-bottom:10px">
             <div style="display:flex;justify-content:space-between;color:#9a9a9a;font-size:12px;margin-bottom:6px">
               <span>${escapeHtml(s.label)}</span><span>${s.val}%</span>
@@ -909,75 +1034,55 @@
               <div style="height:100%;width:${s.val}%;background:var(--gold)"></div>
             </div>
           </div>`;
-        }).join("");
+        }).join("") || `<div style="color:#777">Aucune stat.</div>`;
+      }
 
       // lore
-      document.getElementById("lore-container").innerHTML =
-        (profile().lore?.sections||[]).map(sec=>`
+      const lore = document.getElementById("lore-container");
+      if(lore){
+        lore.innerHTML = (profile().lore?.sections||[]).map(sec=>`
           <div style="margin-bottom:18px">
             <div class="card-title" style="margin-bottom:8px">${escapeHtml(sec.title)}</div>
             <div style="color:#bbb;line-height:1.8">${escapeHtml(sec.text)}</div>
           </div>
         `).join("") || `<div style="color:#777">Aucune section.</div>`;
+      }
 
       // goals
       renderGoals();
 
       // journal
       const journal = document.getElementById("journal-input");
-      journal.value = profile().journal || "";
-      journal.oninput = ()=>{
-        if(!editUnlocked) return;
-        profile().journal = journal.value;
-        scheduleSave();
-      };
+      if(journal){
+        journal.value = profile().journal || "";
+        journal.oninput = ()=>{
+          if(!editUnlocked) return;
+          profile().journal = journal.value;
+          scheduleSave();
+        };
+      }
 
-      // preload meta modal
+      // meta modal preload
       preloadMetaModal();
 
-      // wire fields (inline edit)
+      // wire inline fields
       wireInlineFields();
 
-      // edit mode
+      // apply edit mode
       setModeChip();
-
       notify(editUnlocked ? "ÉDITION DÉVERROUILLÉE" : "LECTURE SEULE");
     }
 
-    function getPath(obj, path){
-      return path.split(".").reduce((a,k)=>a?.[k], obj);
-    }
-    function setPath(obj, path, val){
-      const parts = path.split(".");
-      let cur = obj;
-      for(let i=0;i<parts.length-1;i++){
-        const k = parts[i];
-        if(typeof cur[k] !== "object" || cur[k]===null) cur[k] = {};
-        cur = cur[k];
-      }
-      cur[parts[parts.length-1]] = val;
-    }
-    function setField(elId, path, allowHtml=false){
-      const el = document.getElementById(elId);
-      const v = getPath(profile(), path) ?? "";
-      el.innerHTML = allowHtml ? String(v) : escapeHtml(String(v));
-    }
-
     function wireInlineFields(){
-      document.querySelectorAll(".field").forEach(el=>{
+      document.querySelectorAll(".field[data-path]").forEach(el=>{
         el.onblur = ()=>{
           if(!editUnlocked) return;
           const path = el.dataset.path;
           if(!path) return;
-          // we keep HTML (so strong/br allowed)
           const html = el.innerHTML.trim();
           setPath(profile(), path, html);
           scheduleSave();
           notify("SAUVEGARDÉ");
-          // update header if needed
-          if(path.startsWith("identity.") || path==="meta.refId") {
-            document.getElementById("ui-active-profile").innerText = profile().displayName || profile().key;
-          }
         };
         el.onkeydown = (e)=>{
           if(!editUnlocked) return;
@@ -990,16 +1095,18 @@
     }
 
     /***********************
-     * Unlock / lock editing
+     * Unlock / lock
      ***********************/
     function openUnlock(){
-      document.getElementById("unlockPin").value="";
+      const pin = document.getElementById("unlockPin");
+      if(pin) pin.value="";
       openModal("modalUnlock");
-      setTimeout(()=>document.getElementById("unlockPin").focus(), 50);
+      setTimeout(()=>pin?.focus(), 50);
     }
 
     function unlockEditing(){
-      const pin = (document.getElementById("unlockPin").value || "").trim();
+      if(!profile()) return;
+      const pin = (document.getElementById("unlockPin")?.value || "").trim();
       const k = profile().key;
 
       if(k==="harry"){
@@ -1007,22 +1114,20 @@
       } else if(k==="seya"){
         if(pin !== PIN_SEYA) return notify("PIN incorrect");
       } else {
-        // visitor profile: if no pin set, allow unlock with empty OR let them set one later
         const expected = profile().pinHash || "";
         if(expected){
           if(simpleHash(pin) !== expected) return notify("PIN incorrect");
         } else {
-          // if profile has no pin, accept any pin (or empty) and set it if provided
           if(pin){
             profile().pinHash = simpleHash(pin);
             scheduleSave();
-            notify("PIN enregistré pour ce profil");
+            notify("PIN enregistré");
           }
         }
       }
 
       editUnlocked = true;
-      setProfileUnlocked(activeKey, 45); // 45 minutes session
+      setProfileUnlocked(activeKey, 45);
       closeModal("modalUnlock");
       setModeChip();
       notify("ÉDITION ACTIVÉE");
@@ -1030,38 +1135,33 @@
 
     function lockEditing(){
       editUnlocked = false;
-      clearProfileUnlocked(activeKey);
+      if(activeKey) clearProfileUnlocked(activeKey);
       setModeChip();
       notify("ÉDITION VERROUILLÉE");
-    }
-
-    // simple hash (not secure, just to avoid storing raw pin)
-    function simpleHash(pin){
-      // DJB2
-      let h = 5381;
-      for(let i=0;i<pin.length;i++) h = ((h<<5)+h) + pin.charCodeAt(i);
-      return "h" + (h >>> 0).toString(16);
     }
 
     /***********************
      * Meta modal
      ***********************/
     function preloadMetaModal(){
-      document.getElementById("editSidebar").value = profile().meta?.sidebar || "";
-      document.getElementById("editRef").value = profile().meta?.refId || "";
-      document.getElementById("editPsyRef").value = profile().meta?.psyRef || "";
-      document.getElementById("editLoreRef").value = profile().meta?.loreRef || "";
-      document.getElementById("editImg").value = profile().meta?.img || "";
+      if(!profile()) return;
+      const s = document.getElementById("editSidebar"); if(s) s.value = profile().meta?.sidebar || "";
+      const r = document.getElementById("editRef"); if(r) r.value = profile().meta?.refId || "";
+      const p = document.getElementById("editPsyRef"); if(p) p.value = profile().meta?.psyRef || "";
+      const l = document.getElementById("editLoreRef"); if(l) l.value = profile().meta?.loreRef || "";
+      const i = document.getElementById("editImg"); if(i) i.value = profile().meta?.img || "";
     }
 
     function saveMeta(){
       if(!editUnlocked) return notify("Déverrouille pour modifier");
+      if(!profile()) return;
+
       profile().meta = profile().meta || {};
-      profile().meta.sidebar = document.getElementById("editSidebar").value.trim();
-      profile().meta.refId = document.getElementById("editRef").value.trim();
-      profile().meta.psyRef = document.getElementById("editPsyRef").value.trim();
-      profile().meta.loreRef = document.getElementById("editLoreRef").value.trim();
-      profile().meta.img = document.getElementById("editImg").value.trim();
+      profile().meta.sidebar = (document.getElementById("editSidebar")?.value || "").trim();
+      profile().meta.refId = (document.getElementById("editRef")?.value || "").trim();
+      profile().meta.psyRef = (document.getElementById("editPsyRef")?.value || "").trim();
+      profile().meta.loreRef = (document.getElementById("editLoreRef")?.value || "").trim();
+      profile().meta.img = (document.getElementById("editImg")?.value || "").trim();
 
       scheduleSave();
       closeModal("modalEditMeta");
@@ -1070,10 +1170,12 @@
     }
 
     /***********************
-     * Goals (simple)
+     * Goals
      ***********************/
     function renderGoals(){
       const container = document.getElementById("goal-container");
+      if(!container || !profile()) return;
+
       const goals = profile().goals || [];
       let htmlCourt = `<div class="card"><div class="card-title">Court terme</div>`;
       let htmlLong  = `<div class="card"><div class="card-title">Long terme</div>`;
@@ -1081,11 +1183,11 @@
       goals.forEach(g=>{
         const item = `
           <div style="display:flex; gap:10px; align-items:center; padding:10px; border:1px solid #1a1a20; background:#0a0a0d; border-radius:12px; margin-bottom:10px; opacity:${g.done?0.6:1}">
-            <button class="btn small" onclick="toggleGoal('${g.id}')" ${editUnlocked?"":"disabled"} style="opacity:${editUnlocked?1:0.5}">
+            <button class="btn small" data-goal-toggle="${escapeAttr(g.id)}" ${editUnlocked?"":"disabled"}>
               <i class="fa-solid ${g.done?'fa-square-check':'fa-square'}"></i>
             </button>
             <div style="flex:1; color:#bbb; ${g.done?'text-decoration:line-through':''}">${escapeHtml(g.text)}</div>
-            <button class="btn small danger" onclick="deleteGoal('${g.id}')" ${editUnlocked?"":"disabled"} style="opacity:${editUnlocked?1:0.5}">
+            <button class="btn small danger" data-goal-del="${escapeAttr(g.id)}" ${editUnlocked?"":"disabled"}>
               <i class="fa-solid fa-trash"></i>
             </button>
           </div>`;
@@ -1093,18 +1195,25 @@
       });
 
       container.innerHTML = htmlCourt + `</div>` + htmlLong + `</div>`;
+
+      container.querySelectorAll("[data-goal-toggle]").forEach(btn=>{
+        btn.addEventListener("click", ()=>toggleGoal(btn.getAttribute("data-goal-toggle")));
+      });
+      container.querySelectorAll("[data-goal-del]").forEach(btn=>{
+        btn.addEventListener("click", ()=>deleteGoal(btn.getAttribute("data-goal-del")));
+      });
     }
 
     function addGoal(){
       if(!editUnlocked) return notify("Déverrouille pour modifier");
-      const text = document.getElementById("goalInput").value.trim();
+      const text = (document.getElementById("goalInput")?.value || "").trim();
       if(!text) return;
-      const type = document.getElementById("goalType").value;
+      const type = (document.getElementById("goalType")?.value || "court");
 
       profile().goals = profile().goals || [];
       profile().goals.push({ id: uid(), text, type, done:false });
 
-      document.getElementById("goalInput").value="";
+      const gi = document.getElementById("goalInput"); if(gi) gi.value="";
       scheduleSave();
       closeModal("modalGoal");
       renderGoals();
@@ -1125,36 +1234,34 @@
     }
 
     /***********************
-     * Profile create / duplicate / delete
+     * Profile create/duplicate/delete
      ***********************/
-    function slugify(s){
-      return (s||"")
-        .toLowerCase()
-        .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
-        .replace(/[^a-z0-9]+/g,"-")
-        .replace(/(^-|-$)/g,"")
-        .slice(0, 24) || ("user-"+Math.floor(Math.random()*9999));
-    }
-
     function openDuplicateModal(fromKey){
       openModal("modalCreateProfile");
       const base = state.profiles[fromKey];
-      document.getElementById("newDisplayName").value = (base?.displayName ? base.displayName + " Copy" : "Nouveau profil");
-      document.getElementById("newKey").value = slugify((base?.displayName || base?.key || "profil") + "-copy");
-      document.getElementById("newAvatar").value = base?.meta?.img || "";
-      document.getElementById("newPin").value = "";
-      document.getElementById("newDuplicateFrom").value = fromKey;
+
+      const dn = document.getElementById("newDisplayName");
+      const nk = document.getElementById("newKey");
+      const na = document.getElementById("newAvatar");
+      const np = document.getElementById("newPin");
+      const sel = document.getElementById("newDuplicateFrom");
+
+      if(dn) dn.value = (base?.displayName ? base.displayName + " Copy" : "Nouveau profil");
+      if(nk) nk.value = slugify((base?.displayName || base?.key || "profil") + "-copy");
+      if(na) na.value = base?.meta?.img || "";
+      if(np) np.value = "";
+      if(sel) sel.value = fromKey;
     }
 
     function createProfile(){
-      const displayName = document.getElementById("newDisplayName").value.trim() || "Visiteur";
-      const keyRaw = document.getElementById("newKey").value.trim();
+      const displayName = (document.getElementById("newDisplayName")?.value || "").trim() || "Visiteur";
+      const keyRaw = (document.getElementById("newKey")?.value || "").trim();
       const key = slugify(keyRaw || displayName);
-      const avatar = document.getElementById("newAvatar").value.trim();
-      const pin = (document.getElementById("newPin").value || "").trim();
-      const from = document.getElementById("newDuplicateFrom").value;
+      const avatar = (document.getElementById("newAvatar")?.value || "").trim();
+      const pin = (document.getElementById("newPin")?.value || "").trim();
+      const from = (document.getElementById("newDuplicateFrom")?.value || "harry");
 
-      if(state.profiles[key]) return notify("Clé déjà utilisée (slug). Change le champ Clé.");
+      if(state.profiles[key]) return notify("Clé déjà utilisée. Change la clé.");
 
       const base = state.profiles[from] ? clone(state.profiles[from]) : null;
       const p = base ? base : {
@@ -1168,7 +1275,6 @@
         journal:""
       };
 
-      // enforce visitor profile settings
       p.key = key;
       p.public = false;
       p.displayName = displayName;
@@ -1176,7 +1282,6 @@
       p.meta.img = avatar || p.meta.img || "";
       p.pinHash = pin ? simpleHash(pin) : (p.pinHash || "");
 
-      // avoid importing fixed profiles' keys etc
       state.profiles[key] = p;
       scheduleSave();
       closeModal("modalCreateProfile");
@@ -1194,9 +1299,9 @@
     }
 
     function deleteActiveProfile(){
+      if(!activeKey) return;
+      if(profile()?.public) return notify("Impossible (profil public)");
       const k = activeKey;
-      if(!k) return;
-      if(profile().public) return notify("Impossible (profil public)");
       closeModal("modalProfileTools");
       logout();
       deleteProfile(k);
@@ -1206,10 +1311,10 @@
      * Export / import
      ***********************/
     function exportProfile(){
+      if(!profile()) return;
       const p = profile();
       const json = JSON.stringify(p, null, 2);
 
-      // download
       const blob = new Blob([json], {type:"application/json"});
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
@@ -1222,11 +1327,9 @@
 
     function importProfile(){
       try{
-        const raw = document.getElementById("importJson").value.trim();
+        const raw = (document.getElementById("importJson")?.value || "").trim();
         const obj = JSON.parse(raw);
         if(!obj.key) throw new Error("JSON doit contenir .key");
-
-        // Protect: don't allow overwriting harry/seya unless user unlocks and uses correct pin afterwards
         state.profiles[obj.key] = obj;
         scheduleSave();
         closeModal("modalImportProfile");
@@ -1238,21 +1341,71 @@
     }
 
     /***********************
-     * Keyboard / init
+     * Wire UI events (no inline onclick)
      ***********************/
-    document.getElementById("login-search").addEventListener("input", renderLogin);
-    document.addEventListener("keydown", (e)=>{
-      if(e.key==="/" && document.activeElement?.tagName!=="INPUT" && document.activeElement?.tagName!=="TEXTAREA"){
-        e.preventDefault();
-        document.getElementById("login-search").focus();
-      }
-      if(e.key==="Escape"){
-        document.querySelectorAll(".modal.active").forEach(m=>m.classList.remove("active"));
-      }
-    });
+    function wire(){
+      // modals open
+      document.getElementById("btn-open-create")?.addEventListener("click", ()=>openModal("modalCreateProfile"));
+      document.getElementById("btn-open-import")?.addEventListener("click", ()=>openModal("modalImportProfile"));
+      document.getElementById("btn-open-import-2")?.addEventListener("click", ()=>openModal("modalImportProfile"));
+      document.getElementById("btn-open-help")?.addEventListener("click", ()=>openModal("modalHelp"));
 
-    // initial
+      document.getElementById("btn-logout")?.addEventListener("click", logout);
+
+      // tabs
+      document.querySelectorAll(".nav-btn[data-tab]").forEach(btn=>{
+        btn.addEventListener("click", ()=>selectTab(btn.getAttribute("data-tab")));
+      });
+
+      // top actions
+      document.getElementById("btn-unlock")?.addEventListener("click", openUnlock);
+      document.getElementById("btn-do-unlock")?.addEventListener("click", unlockEditing);
+      document.getElementById("btn-lock")?.addEventListener("click", lockEditing);
+
+      document.getElementById("btn-tools")?.addEventListener("click", ()=>openModal("modalProfileTools"));
+
+      // meta
+      document.getElementById("btn-edit-meta")?.addEventListener("click", ()=>openModal("modalEditMeta"));
+      document.getElementById("btn-save-meta")?.addEventListener("click", saveMeta);
+
+      // goals
+      document.getElementById("btn-open-goal")?.addEventListener("click", ()=>openModal("modalGoal"));
+      document.getElementById("btn-add-goal")?.addEventListener("click", addGoal);
+
+      // create profile
+      document.getElementById("btn-do-create")?.addEventListener("click", createProfile);
+
+      // tools export/import/delete
+      document.getElementById("btn-export")?.addEventListener("click", exportProfile);
+      document.getElementById("btn-do-import")?.addEventListener("click", importProfile);
+      document.getElementById("btn-delete-active")?.addEventListener("click", deleteActiveProfile);
+
+      // close modals
+      document.querySelectorAll("[data-close]").forEach(btn=>{
+        btn.addEventListener("click", ()=>closeModal(btn.getAttribute("data-close")));
+      });
+
+      // search
+      document.getElementById("login-search")?.addEventListener("input", renderLogin);
+
+      // keyboard shortcuts
+      document.addEventListener("keydown", (e)=>{
+        if(e.key==="/" && document.activeElement?.tagName!=="INPUT" && document.activeElement?.tagName!=="TEXTAREA"){
+          e.preventDefault();
+          document.getElementById("login-search")?.focus();
+        }
+        if(e.key==="Escape"){
+          document.querySelectorAll(".modal.active").forEach(m=>m.classList.remove("active"));
+        }
+      });
+    }
+
+    /***********************
+     * Init
+     ***********************/
+    wire();
     renderLogin();
   </script>
 </body>
 </html>
+```
