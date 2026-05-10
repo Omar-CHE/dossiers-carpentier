@@ -4,8 +4,6 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
   <title>PARIS RP — DOSSIERS</title>
-  
-  <link rel="icon" type="image/png" href="logo.png">
 
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@600&family=Montserrat:wght@300;400;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -21,30 +19,88 @@
       --shadow: 0 40px 120px rgba(0,0,0,1);
     }
 
-    *{ box-sizing:border-box; margin:0; padding:0; }
+    *{
+        box-sizing:border-box;
+        margin:0;
+        padding:0;
+    }
     
     body{
-      height:100vh; overflow:hidden; font-family:Montserrat,system-ui; color:var(--text);
-      background: linear-gradient(to bottom, rgba(4, 4, 6, 0.85), rgba(4, 4, 6, 0.98)), url('fond.png') center/cover fixed;
+      height:100vh; 
+      overflow:hidden;
+      font-family:Montserrat,system-ui;
+      color:var(--text);
+      background:
+        linear-gradient(to bottom, rgba(4, 4, 6, 0.85), rgba(4, 4, 6, 0.98)),
+        url('fond.jpg') center/cover fixed;
     }
     
-    button, input, textarea, select{ font-family:inherit; }
-    :focus-visible{ outline:none; box-shadow:var(--focus); border-radius:12px; }
-    a { color:var(--gold); text-decoration: none; }
-    a:hover { text-decoration: underline; }
-
-    .logo-main { height: 90px; width: auto; max-width: 300px; object-fit: contain; display: block; filter: drop-shadow(0 0 10px rgba(212,175,55, 0.5)); }
-    .logo-sidebar { height: 80px; width: auto; max-width: 200px; object-fit: contain; display: block; margin: 0 auto 15px auto; filter: drop-shadow(0 0 5px rgba(212,175,55, 0.5)); }
-
-    .avatar-sidebar {
-      height: 100px; width: 100px; border-radius: 50%; object-fit: cover; object-position: center;
-      display: block; margin: 0 auto 15px auto; border: 2px solid var(--goldDim); box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    button, input, textarea, select{
+        font-family:inherit;
     }
 
+    :focus-visible{
+        outline:none;
+        box-shadow:var(--focus);
+        border-radius:12px;
+    }
+
+    a {
+        color:var(--gold); 
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: underline;
+    }
+
+    .logo-main {
+      height: 90px; 
+      width: auto;
+      max-width: 300px;
+      object-fit: contain; 
+      display: block;
+      filter: drop-shadow(0 0 10px rgba(212,175,55, 0.5));
+    }
+
+    .logo-sidebar {
+      height: 80px; 
+      width: auto;
+      max-width: 200px;
+      object-fit: contain; 
+      display: block;
+      margin: 0 auto 15px auto;
+      filter: drop-shadow(0 0 5px rgba(212,175,55, 0.5));
+    }
+
+    /* === STYLE DE L'AVATAR DANS LA SIDEBAR === */
+    .avatar-sidebar {
+      height: 100px;
+      width: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+      margin: 0 auto 15px auto;
+      border: 2px solid var(--goldDim);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    }
+    /* ========================================= */
+
     .btn{
-      display:inline-flex; align-items:center; gap:10px; border-radius:14px; border:1px solid #2a2a33;
-      background:#0a0a0d; color:#ddd; padding:10px 14px; cursor:pointer; font-weight:900; font-size:12px;
-      letter-spacing:1px; text-transform:uppercase; transition:.18s; user-select:none;
+      display:inline-flex; align-items:center; gap:10px;
+      border-radius:14px;
+      border:1px solid #2a2a33;
+      background:#0a0a0d;
+      color:#ddd;
+      padding:10px 14px;
+      cursor:pointer;
+      font-weight:900;
+      font-size:12px;
+      letter-spacing:1px;
+      text-transform:uppercase;
+      transition:.18s;
+      user-select:none;
     }
     .btn:hover{border-color:#4a4a55;color:#fff}
     .btn.primary{border-color:rgba(212,175,55,.9);background:var(--goldDim);color:var(--gold)}
@@ -54,23 +110,67 @@
     .btn.twitch:hover{background:rgba(145,70,255,0.3); color:#fff;}
     .hrp-pseudo{font-size:10px; color:#b380ff; margin-top:3px; font-weight:700; text-transform:uppercase; letter-spacing:1px;}
     .btn.small{padding:8px 10px;font-size:11px;border-radius:12px}
-    .btn:disabled{opacity:.45;cursor:not-allowed; filter: grayscale(100%);}
+    .btn:disabled{opacity:.45;cursor:not-allowed}
 
     .credit-landing {
-      position: fixed; bottom: 20px; right: 30px; font-family: "Share Tech Mono"; font-size: 13px;
-      color: var(--muted); letter-spacing: 1px; z-index: 10; display:flex; align-items:center; gap:8px;
+      position: fixed;
+      bottom: 20px;
+      right: 30px;
+      font-family: "Share Tech Mono";
+      font-size: 13px;
+      color: var(--muted);
+      letter-spacing: 1px;
+      z-index: 10;
     }
-    .credit-landing a { color: var(--gold); font-weight: bold; text-decoration: none; }
+    .credit-landing a {
+      color: var(--gold);
+      font-weight: bold;
+      text-decoration: none;
+    }
     .credit-landing a:hover { text-decoration: underline; }
-    .admin-icon { cursor: pointer; transition: 0.2s; padding:5px; }
-    .admin-icon:hover { color: var(--gold); transform: scale(1.1); }
 
-    .dev-credit-sidebar { font-family: "Share Tech Mono", monospace; font-size: 10px; color: #444; text-align: center; margin-top: 15px; padding-top: 10px; border-top: 1px solid #1f1f26; }
-    .dev-credit-sidebar a { color: #666; text-decoration: none; transition: 0.2s; }
-    .dev-credit-sidebar a:hover { color: var(--gold); }
+    /* === CREDIT DISCRET SIDEBAR === */
+    .dev-credit-sidebar {
+      font-family: "Share Tech Mono", monospace;
+      font-size: 10px;
+      color: #444;
+      text-align: center;
+      margin-top: 15px;
+      padding-top: 10px;
+      border-top: 1px solid #1f1f26;
+    }
+    .dev-credit-sidebar a {
+      color: #666;
+      text-decoration: none;
+      transition: 0.2s;
+    }
+    .dev-credit-sidebar a:hover {
+      color: var(--gold);
+    }
+    /* ============================== */
 
-    .input{ width:100%; background:#07070a; border:1px solid #222; color:#fff; padding:12px 14px; border-radius:14px; font-family:"Share Tech Mono"; font-size:12px; }
-    .chip{ display:inline-flex; align-items:center; gap:10px; font-family:"Share Tech Mono"; font-size:11px; padding:6px 10px; border-radius:999px; background:#0a0a0d; border:1px solid #1a1a20; color:#bbb; user-select:none; white-space: nowrap; }
+    .input{
+      width:100%;
+      background:#07070a;
+      border:1px solid #222;
+      color:#fff;
+      padding:12px 14px;
+      border-radius:14px;
+      font-family:"Share Tech Mono";
+      font-size:12px;
+    }
+    .chip{
+      display:inline-flex; align-items:center; gap:10px;
+      font-family:"Share Tech Mono";
+      font-size:11px;
+      padding:6px 10px;
+      border-radius:999px;
+      background:#0a0a0d;
+      border:1px solid #1a1a20;
+      color:#bbb;
+      user-select:none;
+      white-space: nowrap;
+    }
     .chip.ro{border-color:rgba(52,152,219,.25); color:#b7e2ff}
     .chip.edit{border-color:rgba(212,175,55,.28); color:#ffe7a1}
     .chip.ok{border-color:rgba(46,204,113,.22); color:#c7f6d7}
@@ -78,35 +178,89 @@
     .kbd{font-family:"Share Tech Mono";font-size:11px;color:#999;border:1px solid #2a2a33;border-bottom-width:3px;border-radius:8px;padding:2px 8px;background:#0a0a0d}
     .muted{color:var(--muted)}
 
-    #landing{ position:fixed; inset:0; display:flex; align-items:center; justify-content:center; padding:22px; overflow:auto; }
-    .landingWrap{ width:min(1280px, 98vw); position: relative; }
+    #landing{
+      position:fixed; inset:0;
+      display:flex; align-items:center; justify-content:center;
+      padding:22px;
+      overflow:auto;
+    }
+    .landingWrap{
+        width:min(1280px, 98vw); 
+        position: relative;
+    }
     .hero{
       border:1px solid #1f1f26;
-      background: radial-gradient(circle at 50% 0%, rgba(212,175,55,.09), transparent 55%), linear-gradient(180deg, rgba(20,20,26,.95), rgba(12,12,16,.92));
-      border-radius:22px; padding:22px; box-shadow:var(--shadow); overflow:hidden; position:relative;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(212,175,55,.09), transparent 55%),
+        linear-gradient(180deg, rgba(20,20,26,.95), rgba(12,12,16,.92));
+      border-radius:22px;
+      padding:22px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      position:relative;
     }
     .hero::before{
-      content:""; position:absolute; inset:-2px;
-      background: radial-gradient(circle at 10% 10%, rgba(52,152,219,.10), transparent 40%), radial-gradient(circle at 90% 20%, rgba(46,204,113,.08), transparent 45%), radial-gradient(circle at 50% 90%, rgba(212,175,55,.12), transparent 45%);
-      pointer-events:none; filter: blur(10px); opacity:.9;
+      content:"";
+      position:absolute; inset:-2px;
+      background:
+        radial-gradient(circle at 10% 10%, rgba(52,152,219,.10), transparent 40%),
+        radial-gradient(circle at 90% 20%, rgba(46,204,113,.08), transparent 45%),
+        radial-gradient(circle at 50% 90%, rgba(212,175,55,.12), transparent 45%);
+      pointer-events:none;
+      filter: blur(10px);
+      opacity:.9;
     }
     .heroInner{position:relative}
-    .heroTop{ display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; align-items:flex-start; margin-bottom:18px; }
-    .brand{ display:flex; flex-direction:column; gap:8px; }
-    .brandTitle{ font-family:"Bebas Neue", sans-serif; color:var(--gold); letter-spacing:4px; font-size:54px; text-shadow:0 10px 50px rgba(0,0,0,.8); }
-    .brandSub{ font-family:"Share Tech Mono"; color:#a1a1a1; letter-spacing:2px; font-size:12px; line-height:1.6; }
+    .heroTop{
+      display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; align-items:flex-start;
+      margin-bottom:18px;
+    }
+    .brand{
+      display:flex; flex-direction:column; gap:8px;
+    }
+    .brandTitle{
+      font-family:"Bebas Neue", sans-serif;
+      color:var(--gold);
+      letter-spacing:4px;
+      font-size:54px;
+      text-shadow:0 10px 50px rgba(0,0,0,.8);
+    }
+    .brandSub{
+      font-family:"Share Tech Mono";
+      color:#a1a1a1;
+      letter-spacing:2px;
+      font-size:12px;
+      line-height:1.6;
+    }
 
     .heroActions{display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:flex-end}
     .statusRow{display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:flex-end}
 
-    .toolbar{ display:flex; gap:10px; flex-wrap:wrap; justify-content:space-between; align-items:center; margin:16px 0 12px; }
-    .search{ flex:1; display:flex; align-items:center; gap:10px; border:1px solid #1a1a20; background:#0a0a0d; padding:10px 14px;border-radius:999px; min-width:min(560px, 95vw); }
+    .toolbar{
+      display:flex; gap:10px; flex-wrap:wrap; justify-content:space-between; align-items:center;
+      margin:16px 0 12px;
+    }
+    .search{
+      flex:1;
+      display:flex; align-items:center; gap:10px;
+      border:1px solid #1a1a20; background:#0a0a0d;
+      padding:10px 14px;border-radius:999px;
+      min-width:min(560px, 95vw);
+    }
     .search input{border:none;background:transparent;color:#ddd;flex:1;font-family:"Share Tech Mono";font-size:12px}
-    .grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:16px; }
-    
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));
+      gap:16px;
+    }
     .card{
-      border:1px solid #1f1f26; background:linear-gradient(180deg, rgba(20,20,26,.95), rgba(12,12,16,.9));
-      border-radius:18px; padding:16px; transition:.18s; position:relative; overflow:hidden;
+      border:1px solid #1f1f26;
+      background:linear-gradient(180deg, rgba(20,20,26,.95), rgba(12,12,16,.9));
+      border-radius:18px;
+      padding:16px;
+      transition:.18s;
+      position:relative;
+      overflow:hidden;
     }
     .card:hover{border-color:rgba(212,175,55,.65); transform:translateY(-3px); box-shadow:0 18px 40px rgba(0,0,0,.6)}
     .row{display:flex; gap:12px; align-items:center}
@@ -115,7 +269,16 @@
     .name{font-weight:900;color:#fff;font-size:16px;letter-spacing:.8px}
     .role{color:var(--muted);font-size:12px;line-height:1.4;margin-top:4px}
     .badges{display:flex; gap:8px; margin-top:10px; flex-wrap:wrap}
-    .badge{ font-family:"Share Tech Mono"; font-size:11px; padding:6px 10px; border-radius:999px; background:#0a0a0d; border:1px solid #25252f; color:#bbb; user-select:none; }
+    .badge{
+      font-family:"Share Tech Mono";
+      font-size:11px;
+      padding:6px 10px;
+      border-radius:999px;
+      background:#0a0a0d;
+      border:1px solid #25252f;
+      color:#bbb;
+      user-select:none;
+    }
     .badge.public{border-color:rgba(52,152,219,.28); color:#b7e2ff}
     .badge.local{border-color:rgba(46,204,113,.22); color:#c7f6d7}
     .badge.pin{border-color:rgba(231,76,60,.22); color:#ffd0cb}
@@ -123,22 +286,74 @@
     .actions{display:flex; gap:10px; margin-top:12px; flex-wrap:wrap}
 
     #app{display:none}
-    .appShell{ position:fixed; inset:0; display:flex; padding:18px; }
-    .app{ width:100%; border:1px solid #1f1f26; background:rgba(12,12,16,.92); border-radius:18px; overflow:hidden; display:flex; box-shadow:var(--shadow); position: relative; }
+    .appShell{
+      position:fixed; inset:0;
+      display:flex;
+      padding:18px;
+    }
+    .app{
+      width:100%;
+      border:1px solid #1f1f26;
+      background:rgba(12,12,16,.92);
+      border-radius:18px;
+      overflow:hidden;
+      display:flex;
+      box-shadow:var(--shadow);
+      position: relative;
+    }
     
-    .sidebar{ width:320px; background:#07070a; border-right:1px solid #1f1f26; display:flex; flex-direction:column; transition: left 0.3s ease; z-index: 1000; }
-    .sbHead{ padding:22px 16px; text-align:center; border-bottom:1px solid #1f1f26; }
-    .sbHead h2{ font-family:"Bebas Neue", sans-serif; color:var(--gold); letter-spacing:2px; font-size:30px; margin-bottom:8px; }
-    .sbHead p{ font-family:"Share Tech Mono"; color:var(--muted); letter-spacing:3px; font-size:9px; }
-    .sbMeta{ display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:12px; }
+    .sidebar{
+      width:320px;
+      background:#07070a;
+      border-right:1px solid #1f1f26;
+      display:flex; flex-direction:column;
+      transition: left 0.3s ease;
+      z-index: 1000;
+    }
+    .sbHead{
+      padding:22px 16px;
+      text-align:center;
+      border-bottom:1px solid #1f1f26;
+    }
+    .sbHead h2{
+      font-family:"Bebas Neue", sans-serif;
+      color:var(--gold);
+      letter-spacing:2px;
+      font-size:30px;
+      margin-bottom:8px;
+    }
+    .sbHead p{
+      font-family:"Share Tech Mono";
+      color:var(--muted);
+      letter-spacing:3px;
+      font-size:9px;
+    }
+    .sbMeta{
+      display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:12px;
+    }
     
-    #tabsNav { flex: 1; overflow-y: auto; overflow-x: hidden; }
+    #tabsNav {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
     #tabsNav::-webkit-scrollbar { width: 5px; }
     #tabsNav::-webkit-scrollbar-thumb { background: #1f1f26; border-radius: 10px; }
 
     .sbBtn{
-      border:none; background:transparent; color:var(--muted); padding:14px 16px; text-align:left; cursor:pointer; font-weight:900;
-      text-transform:uppercase; letter-spacing:1.4px; font-size:12px; display:flex; align-items:center; gap:12px; border-left:3px solid transparent; width: 100%;
+      border:none;
+      background:transparent;
+      color:var(--muted);
+      padding:14px 16px;
+      text-align:left;
+      cursor:pointer;
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:1.4px;
+      font-size:12px;
+      display:flex; align-items:center; gap:12px;
+      border-left:3px solid transparent;
+      width: 100%;
     }
     .sbBtn:hover{background:rgba(255,255,255,.03); color:var(--text)}
     .sbBtn.active{background:linear-gradient(90deg,var(--goldDim),transparent); color:var(--gold); border-left:3px solid var(--gold)}
@@ -146,16 +361,33 @@
     .sbBtn.logout{color:#ffbdb7}
     .sbBtn.logout:hover{background:rgba(231,76,60,.10); color:#ffe1de}
 
-    .main{ flex:1; overflow-y:auto; overflow-x:hidden; padding:22px 34px; }
+    .main{
+      flex:1;
+      overflow-y:auto;
+      overflow-x:hidden;
+      padding:22px 34px;
+    }
     .topbar{
-      position:sticky; top:0; z-index:10; margin:-22px -34px 18px; padding:12px 34px; border-bottom:1px solid #1f1f26;
-      background:linear-gradient(180deg, rgba(12,12,16,.97), rgba(12,12,16,.70)); backdrop-filter: blur(10px); display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;
+      position:sticky; top:0; z-index:10;
+      margin:-22px -34px 18px;
+      padding:12px 34px;
+      border-bottom:1px solid #1f1f26;
+      background:linear-gradient(180deg, rgba(12,12,16,.97), rgba(12,12,16,.70));
+      backdrop-filter: blur(10px);
+      display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;
     }
     
     #mobileMenuBtn { display: none; }
     .sidebar-overlay { display: none; }
 
-    .sectionTitle{ font-family:"Playfair Display",serif; font-size:40px; border-bottom:1px solid #1a1a20; padding-bottom:12px; margin-bottom:18px; display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+    .sectionTitle{
+      font-family:"Playfair Display",serif;
+      font-size:40px;
+      border-bottom:1px solid #1a1a20;
+      padding-bottom:12px;
+      margin-bottom:18px;
+      display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;
+    }
     .ref{font-family:"Share Tech Mono"; font-size:13px; color:rgba(212,175,55,.8); opacity:.8}
     .panel{border:1px solid #1f1f26; background:rgba(20,20,26,.92); border-radius:18px; padding:18px; margin-bottom:14px}
     .grid2{display:grid; grid-template-columns:1fr 1fr; gap:14px}
@@ -171,9 +403,22 @@
     @media (max-width: 768px) {
       .appShell { padding: 0; }
       .app { border-radius: 0; border: none; flex-direction: column; }
-      .sidebar { position: fixed; top: 0; left: -320px; height: 100%; width: 280px; box-shadow: var(--shadow); }
+      .sidebar { 
+        position: fixed; 
+        top: 0; 
+        left: -320px;
+        height: 100%; 
+        width: 280px; 
+        box-shadow: var(--shadow);
+      }
       .sidebar.open { left: 0; }
-      .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 999; backdrop-filter: blur(3px); }
+      .sidebar-overlay {
+        display: none; 
+        position: fixed; inset: 0; 
+        background: rgba(0,0,0,0.6); 
+        z-index: 999; 
+        backdrop-filter: blur(3px);
+      }
       .sidebar-overlay.open { display: block; }
       #mobileMenuBtn { display: inline-flex !important; }
       .topbar { margin: 0; padding: 12px 18px; border-radius: 0 0 18px 18px; }
@@ -188,17 +433,55 @@
     }
 
     .fieldLabel{color:#9a9a9a; font-size:12px; margin-bottom:8px}
-    .editable{ padding:10px 12px; border-radius:16px; border:1px dashed transparent; min-height: 44px; line-height:1.7; color:#ddd; background:rgba(10,10,13,.35); }
+    .editable{
+      padding:10px 12px;
+      border-radius:16px;
+      border:1px dashed transparent;
+      min-height: 44px;
+      line-height:1.7;
+      color:#ddd;
+      background:rgba(10,10,13,.35);
+    }
     body.edit .editable{border-color:#2a2a33; cursor:text}
     body.edit .editable:focus{background:#0a0a0d; border-color:rgba(212,175,55,.7); outline:none}
 
     .toggleRow{display:flex;align-items:center;justify-content:space-between;gap:12px}
-    .switch{ display:inline-flex; align-items:center; gap:10px; cursor:pointer; user-select: none; }
+    .switch{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      cursor:pointer;
+      user-select: none;
+    }
     .switch input{ display:none; }
-    .slider { width: 42px; height: 22px; background-color: #1a1a20; border-radius: 20px; position: relative; transition: .3s; border: 1px solid #333; }
-    .slider::before { content: ""; position: absolute; width: 14px; height: 14px; border-radius: 50%; background-color: #777; top: 3px; left: 4px; transition: .3s; }
-    .switch input:checked + .slider { background-color: var(--goldDim); border-color: var(--gold); }
-    .switch input:checked + .slider::before { transform: translateX(18px); background-color: var(--gold); }
+    .slider {
+      width: 42px;
+      height: 22px;
+      background-color: #1a1a20;
+      border-radius: 20px;
+      position: relative;
+      transition: .3s;
+      border: 1px solid #333;
+    }
+    .slider::before {
+      content: "";
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background-color: #777;
+      top: 3px;
+      left: 4px;
+      transition: .3s;
+    }
+    .switch input:checked + .slider {
+      background-color: var(--goldDim);
+      border-color: var(--gold);
+    }
+    .switch input:checked + .slider::before {
+      transform: translateX(18px);
+      background-color: var(--gold);
+    }
 
     .stat{margin-bottom:12px}
     .statTop{display:flex;justify-content:space-between;gap:10px;color:#a6a6a6;font-size:12px;margin-bottom:6px}
@@ -210,7 +493,18 @@
     .tagRow{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
     .tag{font-family:"Share Tech Mono";font-size:11px;padding:4px 10px;border-radius:999px;border:1px solid #2a2a33;background:#07070a;color:#bbb}
 
-    .result{ font-family:"Share Tech Mono"; background:#000; border:1px solid #222; border-radius:18px; padding:18px; min-height:90px; display:flex;align-items:center;justify-content:center; color:var(--gold); font-size:22px; text-transform:uppercase; text-align:center;}
+    .result{
+      font-family:"Share Tech Mono";
+      background:#000;
+      border:1px solid #222;
+      border-radius:18px;
+      padding:18px;
+      min-height:90px;
+      display:flex;align-items:center;justify-content:center;
+      color:var(--gold);
+      font-size:22px;
+      text-transform:uppercase;
+    }
     .spin{animation:glitch .08s infinite}
     @keyframes glitch{from{transform:translate(2px,0)}to{transform:translate(-2px,0)}}
 
@@ -219,17 +513,41 @@
 
     .modal{display:none; position:fixed; inset:0; background:rgba(0,0,0,.88); backdrop-filter: blur(8px); z-index:50; padding:18px; align-items:center; justify-content:center}
     .modal.show{display:flex}
-    .modalBox{ width:min(860px, 98vw); border:1px solid rgba(212,175,55,.65); background:rgba(20,20,26,.97); border-radius:18px; padding:18px; }
+    .modalBox{
+      width:min(860px, 98vw);
+      border:1px solid rgba(212,175,55,.65);
+      background:rgba(20,20,26,.97);
+      border-radius:18px;
+      padding:18px;
+    }
     .modalBox h3{font-family:"Playfair Display",serif; color:var(--gold); font-size:24px; margin-bottom:10px}
     .formGrid{display:grid; grid-template-columns:1fr 1fr; gap:12px}
     .formGroup label{display:block; color:#888; font-size:11px; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px}
     .formGroup textarea{min-height:120px; resize:vertical}
     .modalActions{display:flex; justify-content:flex-end; gap:10px; margin-top:12px; flex-wrap:wrap}
 
-    #toast{ position:fixed; bottom:30px; left:50%; transform:translateX(-50%) translateY(100px); opacity:0; background:var(--gold); color:#000; padding:12px 18px; border-radius:999px; font-weight:900; font-size:13px; transition:.35s; z-index:100; pointer-events: none;}
+    #toast{
+      position:fixed; bottom:30px; left:50%;
+      transform:translateX(-50%) translateY(100px);
+      opacity:0;
+      background:var(--gold); color:#000;
+      padding:12px 18px; border-radius:999px;
+      font-weight:900; font-size:13px;
+      transition:.35s;
+      z-index:100;
+    }
     #toast.show{transform:translateX(-50%) translateY(0); opacity:1}
 
-    #cloud{ position:fixed; top:14px; right:14px; z-index:999; font-family:"Share Tech Mono"; font-size:11px; padding:8px 10px; border-radius:999px; background:#0a0a0d; border:1px solid #2a2a33; color:#bbb; }
+    #cloud{
+      position:fixed; top:14px; right:14px; z-index:999;
+      font-family:"Share Tech Mono";
+      font-size:11px;
+      padding:8px 10px;
+      border-radius:999px;
+      background:#0a0a0d;
+      border:1px solid #2a2a33;
+      color:#bbb;
+    }
   </style>
 </head>
 
@@ -242,7 +560,6 @@
       
       <div class="credit-landing">
         Développé par <a href="https://www.twitch.tv/ruubix" target="_blank">Ruubix</a>
-        <i class="fa-solid fa-shield-halved admin-icon" id="btnOpenAdminAuth" title="Accès Admin"></i>
       </div>
       
       <div class="hero">
@@ -297,6 +614,7 @@
       <aside class="sidebar">
         <div class="sbHead">
           <img id="sbProfileImage" src="logo.png" alt="Avatar" class="logo-sidebar" style="display:none;">
+          
           <h2 id="sbName">DOSSIER</h2>
           <p>v7.0 // GRANDLINE FILESYSTEM</p>
           <div class="sbMeta">
@@ -334,47 +652,13 @@
     </div>
   </section>
 
-  <div class="modal" id="mAdminAuth">
-    <div class="modalBox" style="width:min(400px, 95vw);">
-      <h3 style="color:var(--danger);"><i class="fa-solid fa-shield-halved"></i> Accès Administrateur</h3>
-      <p class="muted" style="margin-bottom:15px; font-size:13px;">Entrez le mot de passe maître pour gérer le serveur.</p>
-      <div class="formGroup">
-        <input id="adminPwd" type="password" class="input" placeholder="Mot de passe...">
-      </div>
-      <div class="modalActions" style="margin-top:15px;">
-        <button class="btn" id="btnCloseAdminAuth">Annuler</button>
-        <button class="btn danger" id="btnAdminLogin">Connexion</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal" id="mAdminPanel">
-    <div class="modalBox" style="width:min(500px, 95vw);">
-      <h3 style="color:var(--danger);"><i class="fa-solid fa-server"></i> Panel Administration</h3>
-      <div class="panel" style="margin-top:20px; border-color: rgba(231, 76, 60, 0.3);">
-        <div class="toggleRow">
-          <div>
-            <div style="font-weight:900;">Douanes (Création de persos)</div>
-            <div class="muted" style="font-size:12px;line-height:1.6;">Permet aux visiteurs de créer un nouveau dossier.</div>
-          </div>
-          <label class="switch">
-            <input type="checkbox" id="adminToggleCreation">
-            <div class="slider" style="background-color:#333;"></div>
-          </label>
-        </div>
-      </div>
-      <div class="modalActions">
-        <button class="btn primary" id="btnCloseAdminPanel">Fermer le panel</button>
-      </div>
-    </div>
-  </div>
-
   <div class="modal" id="mCreate">
     <div class="modalBox">
       <h3>Créer un dossier personnage</h3>
       <p class="muted" style="line-height:1.6;margin-bottom:12px">
         Ce perso sera synchronisé dans le cloud (Firebase). Tu définis un PIN pour l’édition.
       </p>
+
       <div class="formGrid">
         <div class="formGroup">
           <label>Nom affiché</label>
@@ -397,6 +681,7 @@
           <select id="cFrom" class="input"></select>
         </div>
       </div>
+
       <div class="modalActions">
         <button class="btn" id="cCancel">Annuler</button>
         <button class="btn primary" id="cOk"><i class="fa-solid fa-user-plus"></i> Créer</button>
@@ -426,6 +711,7 @@
   <div class="modal" id="mTools">
     <div class="modalBox">
       <h3>Outils Systèmes</h3>
+
       <div class="panel">
         <div class="toggleRow">
           <div>
@@ -438,6 +724,7 @@
           </div>
         </div>
       </div>
+
       <div class="panel">
         <div class="toggleRow">
           <div>
@@ -447,6 +734,7 @@
           <button class="btn primary" id="print"><i class="fa-solid fa-print"></i> Imprimer</button>
         </div>
       </div>
+
       <div class="panel" style="border-color: rgba(231, 76, 60, 0.4);">
         <div class="toggleRow">
           <div>
@@ -456,6 +744,7 @@
           <button class="btn danger" id="deleteProfileBtn"><i class="fa-solid fa-trash"></i> Supprimer ce dossier</button>
         </div>
       </div>
+
       <div class="modalActions">
         <button class="btn primary" id="tClose">Fermer</button>
       </div>
@@ -511,73 +800,11 @@
   </div>
 
   <script type="module">
-    // =========================================================================
-    // 1. ATTACHEMENT SÉCURISÉ DES ÉVÉNEMENTS (Garantit que l'UI marche)
-    // =========================================================================
-    const $ = (id)=>document.getElementById(id);
-    
-    function modal(el, show){ 
-        if(el) el.classList.toggle("show", !!show); 
-    }
-    
-    function toast(msg){
-      const t = $("toast"); 
-      if(t) {
-          t.textContent = msg; t.classList.add("show");
-          setTimeout(()=>t.classList.remove("show"), 1600);
-      }
-    }
-    
-    if($("mobileMenuBtn")) $("mobileMenuBtn").addEventListener("click", () => { document.querySelector(".sidebar").classList.add("open"); $("sidebarOverlay").classList.add("open"); });
-    if($("sidebarOverlay")) $("sidebarOverlay").addEventListener("click", () => { document.querySelector(".sidebar").classList.remove("open"); $("sidebarOverlay").classList.remove("open"); });
-    if($("back")) $("back").addEventListener("click", backToLanding);
-    if($("q")) $("q").addEventListener("input", renderLanding);
-    
-    if($("btnOpenAdminAuth")) $("btnOpenAdminAuth").addEventListener("click", () => { modal($("mAdminAuth"), true); });
-    if($("btnCloseAdminAuth")) $("btnCloseAdminAuth").addEventListener("click", () => { modal($("mAdminAuth"), false); });
-    if($("btnCloseAdminPanel")) $("btnCloseAdminPanel").addEventListener("click", () => { modal($("mAdminPanel"), false); });
-    if($("btnAdminLogin")) $("btnAdminLogin").addEventListener("click", () => {
-        if($("adminPwd").value === ADMIN_PASSWORD) {
-            toast("Accès autorisé"); modal($("mAdminAuth"), false); $("adminPwd").value = ""; modal($("mAdminPanel"), true);
-        } else { toast("Mot de passe incorrect"); }
-    });
-
-    if($("btnCreate")) $("btnCreate").addEventListener("click", openCreateModal);
-    if($("cOk")) $("cOk").addEventListener("click", createProfile);
-    if($("cCancel")) $("cCancel").addEventListener("click", ()=>modal($("mCreate"), false));
-
-    if($("unlock")) $("unlock").addEventListener("click", openUnlockModal);
-    if($("lock")) $("lock").addEventListener("click", lock);
-    if($("uOk")) $("uOk").addEventListener("click", unlock);
-    if($("uCancel")) $("uCancel").addEventListener("click", ()=>modal($("mUnlock"), false));
-
-    if($("tools")) $("tools").addEventListener("click", ()=>modal($("mTools"), true));
-    if($("tClose")) $("tClose").addEventListener("click", ()=>modal($("mTools"), false));
-    if($("export")) $("export").addEventListener("click", exportActive);
-    if($("importOpen")) $("importOpen").addEventListener("click", ()=>modal($("mImport"), true));
-    if($("iCancel")) $("iCancel").addEventListener("click", ()=>modal($("mImport"), false));
-    if($("iOk")) $("iOk").addEventListener("click", importActive);
-    if($("print")) $("print").addEventListener("click", printProfile);
-    if($("btnHelp")) $("btnHelp").addEventListener("click", ()=>modal($("mHelp"), true));
-    if($("hOk")) $("hOk").addEventListener("click", ()=>modal($("mHelp"), false));
-
-    document.addEventListener("keydown", (e)=>{
-      if(e.key==="/" && document.activeElement?.tagName!=="INPUT" && document.activeElement?.tagName!=="TEXTAREA"){
-        e.preventDefault(); if($("q")) $("q").focus();
-      }
-      if(e.key==="Escape"){
-        ["mCreate","mUnlock","mTools","mImport","mHelp","mAdminAuth","mAdminPanel","modalGallery"].forEach(id=>{
-            const m = $(id);
-            if(m) m.classList.remove("show");
-        });
-      }
-    });
-
-    // =========================================================================
-    // 2. IMPORTS ET VARIABLES GLOBALES
-    // =========================================================================
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
-    import { getFirestore, doc, setDoc, getDoc, onSnapshot, collection, query, orderBy, limit, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+    import {
+      getFirestore, doc, setDoc, getDoc, onSnapshot, collection,
+      query, orderBy, limit, getDocs, deleteDoc
+    } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
     import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
 
     const firebaseConfig = {
@@ -590,44 +817,74 @@
       measurementId: "G-2SD0NEHV3Q"
     };
 
-    let currentRouletteResult = "EN ATTENTE…"; 
-    const ADMIN_PASSWORD = "ruubix_master"; 
-    let isGlobalCreationAllowed = true; 
-    let sysConfigRef = null;
-    let profilesCache = new Map(); 
-    let activeKey = null; 
-    let activeProfile = null; 
-    let unlocked = false; 
-    let unsubscribeActive = null;
-    let saveTimer = null;
-    let currentTabId = "identite";
-    let db = null;
-    let auth = null;
-    let profilesCol = null;
+    const $ = (id)=>document.getElementById(id);
 
-    // =========================================================================
-    // 3. FONCTIONS UTILITAIRES
-    // =========================================================================
-    function uid(){ const r = (crypto?.getRandomValues) ? crypto.getRandomValues(new Uint32Array(2)) : [Date.now(), Math.random()*1e9]; return "id_" + r[0].toString(16) + r[1].toString(16); }
-    function hashPin(pin){ let h = 5381; for(let i=0;i<pin.length;i++) h = ((h<<5)+h) + pin.charCodeAt(i); return "h" + (h>>>0).toString(16); }
-    function slugify(s){ return (s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/(^-|-$)/g,"").slice(0, 32) || ("user-"+Math.floor(Math.random()*9999)); }
-    function deepSet(obj, path, value){ const parts = path.split("."); let cur = obj; for(let i=0;i<parts.length-1;i++){ const k = parts[i]; if(typeof cur[k] !== "object" || cur[k]===null) cur[k] = {}; cur = cur[k]; } cur[parts[parts.length-1]] = value; }
+    let currentRouletteResult = "EN ATTENTE…"; 
+
+    function toast(msg){
+      const t = $("toast");
+      t.textContent = msg;
+      t.classList.add("show");
+      setTimeout(()=>t.classList.remove("show"), 1600);
+    }
+
+    function uid(){
+      const r = (crypto?.getRandomValues) ? crypto.getRandomValues(new Uint32Array(2)) : [Date.now(), Math.random()*1e9];
+      return "id_" + r[0].toString(16) + r[1].toString(16);
+    }
+
+    function hashPin(pin){
+      let h = 5381;
+      for(let i=0;i<pin.length;i++) h = ((h<<5)+h) + pin.charCodeAt(i);
+      return "h" + (h>>>0).toString(16);
+    }
+
+    function slugify(s){
+      return (s||"")
+        .toLowerCase()
+        .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+        .replace(/[^a-z0-9]+/g,"-")
+        .replace(/(^-|-$)/g,"")
+        .slice(0, 32) || ("user-"+Math.floor(Math.random()*9999));
+    }
+
+    function deepSet(obj, path, value){
+      const parts = path.split(".");
+      let cur = obj;
+      for(let i=0;i<parts.length-1;i++){
+        const k = parts[i];
+        if(typeof cur[k] !== "object" || cur[k]===null) cur[k] = {};
+        cur = cur[k];
+      }
+      cur[parts[parts.length-1]] = value;
+    }
 
     window.processImageUpload = function(file, callback) {
       if(!file) return;
       if(file.type.indexOf('image') === -1) return toast("Ce n'est pas une image.");
+      
       toast("Chargement...");
       const reader = new FileReader();
       reader.onload = (e) => {
         const img = new Image();
         img.onload = () => {
           const canvas = document.createElement("canvas");
-          const MAX_SIZE = 600; let width = img.width; let height = img.height;
-          if (width > height) { if (width > MAX_SIZE) { height *= MAX_SIZE / width; width = MAX_SIZE; } } 
-          else { if (height > MAX_SIZE) { width *= MAX_SIZE / height; height = MAX_SIZE; } }
+          const MAX_SIZE = 600;
+          let width = img.width;
+          let height = img.height;
+          if (width > height) { 
+              if (width > MAX_SIZE) { 
+                  height *= MAX_SIZE / width; width = MAX_SIZE; 
+              } 
+          } else { 
+              if (height > MAX_SIZE) { 
+                  width *= MAX_SIZE / height; height = MAX_SIZE; 
+              } 
+          }
           canvas.width = width; canvas.height = height;
           const ctx = canvas.getContext("2d"); ctx.drawImage(img, 0, 0, width, height);
-          callback(canvas.toDataURL("image/jpeg", 0.6));
+          const dataUrl = canvas.toDataURL("image/jpeg", 0.6);
+          callback(dataUrl);
         };
         img.src = e.target.result;
       };
@@ -638,7 +895,9 @@
     const PIN_SEYA  = "11111110";
 
     const defaultProfile = (key, name)=>({
-      key, displayName: name, public: true, meta: { ref: "", img: "", tags: ["GRANDLINE", "PARIS RP"] }, security: { pinHash: "", fixedPin: false },
+      key, displayName: name, public: true,
+      meta: { ref: "", img: "", tags: ["GRANDLINE", "PARIS RP"] },
+      security: { pinHash: "", fixedPin: false },
       tabs: [
         { id:"identite", type:"identite", title:"Identité", icon:"fa-id-card", visiblePublic:true, enabled:true },
         { id:"stats", type:"stats", title:"Stats", icon:"fa-chart-simple", visiblePublic:true, enabled:true },
@@ -712,91 +971,44 @@
       return p;
     };
 
-    // =========================================================================
-    // 4. INITIALISATION DE FIREBASE SÉCURISÉE (TRY/CATCH)
-    // =========================================================================
-    async function bootFirebase() {
-        try {
-            const app = initializeApp(firebaseConfig);
-            db = getFirestore(app);
-            auth = getAuth(app);
-            profilesCol = collection(db, "profiles");
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
 
-            $("cloudState").textContent = "CONNECTING";
-            
-            onAuthStateChanged(auth, (user)=>{
-              if(user){ 
-                  $("viewerChip").innerHTML = `<i class="fa-solid fa-user"></i> uid:${user.uid.slice(0,6)}…`; 
-                  $("cloudState").textContent = "ON"; 
-              }
-            });
+    $("cloudState").textContent = "CONNECTING";
+    let uidAuth = null;
 
-            await signInAnonymously(auth);
-            toast("Cloud connecté");
+    onAuthStateChanged(auth, (user)=>{
+      if(user){ 
+          uidAuth = user.uid; 
+          $("viewerChip").innerHTML = `<i class="fa-solid fa-user"></i> uid:${uidAuth.slice(0,6)}…`; 
+          $("cloudState").textContent = "ON"; 
+      }
+    });
 
-            // Panneau Admin (sans bloquer si refus)
-            sysConfigRef = doc(db, "system", "config");
-            onSnapshot(sysConfigRef, (snap) => {
-                if(snap.exists()) {
-                    isGlobalCreationAllowed = snap.data().allowCreation;
-                } else {
-                    isGlobalCreationAllowed = true;
-                    setDoc(sysConfigRef, { allowCreation: true }).catch(e => console.warn("Admin Config protégée"));
-                }
-                
-                if ($("btnCreate")) {
-                    if(isGlobalCreationAllowed) {
-                        $("btnCreate").disabled = false;
-                        $("btnCreate").innerHTML = '<i class="fa-solid fa-user-plus"></i> Créer mon perso';
-                        $("btnCreate").style.filter = "none";
-                    } else {
-                        $("btnCreate").disabled = true;
-                        $("btnCreate").innerHTML = '<i class="fa-solid fa-lock"></i> Douane fermée';
-                        $("btnCreate").style.filter = "grayscale(100%)";
-                    }
-                }
-                if ($("adminToggleCreation")) {
-                    $("adminToggleCreation").checked = isGlobalCreationAllowed;
-                }
-            }, (error) => {
-                console.warn("Droit lecture config admin manquant:", error.message);
-            });
-            
-            if($("adminToggleCreation")) {
-                $("adminToggleCreation").addEventListener("change", (e) => {
-                    setDoc(sysConfigRef, { allowCreation: e.target.checked }, { merge: true }).catch(err=>console.error(err));
-                    toast(e.target.checked ? "Création activée" : "Création désactivée");
-                });
-            }
+    await signInAnonymously(auth);
+    toast("Cloud connecté");
 
-            // Chargement Data
-            const hRef = doc(db, "profiles", "harry"); const sRef = doc(db, "profiles", "seya");
-            Promise.all([getDoc(hRef), getDoc(sRef)]).then(([hSnap, sSnap]) => {
-                let p = [];
-                if(!hSnap.exists()) p.push(setDoc(hRef, harryProfile())); 
-                if(!sSnap.exists()) p.push(setDoc(sRef, seyaProfile()));
-                if(p.length > 0) {
-                    Promise.all(p).then(() => refreshProfilesList()).catch(e => console.warn(e));
-                }
-            }).catch(e => console.warn("Init base:", e.message));
+    const profilesCol = collection(db, "profiles");
 
-            await refreshProfilesList();
-            
-        } catch (error) {
-            console.error("Firebase a été bloqué :", error);
-            $("cloudState").textContent = "ERREUR";
-            $("cloudState").style.color = "var(--danger)";
-            toast("Connexion refusée (Domaine non autorisé sur Firebase ?)");
-        }
+    async function ensureBaseProfilesExist(){
+      const hRef = doc(db, "profiles", "harry"); const sRef = doc(db, "profiles", "seya");
+      const [hSnap, sSnap] = await Promise.all([getDoc(hRef), getDoc(sRef)]);
+      if(!hSnap.exists()) await setDoc(hRef, harryProfile()); 
+      if(!sSnap.exists()) await setDoc(sRef, seyaProfile());
     }
-    
-    // Lancement de l'app !
-    bootFirebase();
+    await ensureBaseProfilesExist();
 
-    // =========================================================================
-    // 5. LOGIQUE DE L'APPLICATION (Vues et Rendu)
-    // =========================================================================
-    function setSaveState(text){ $("saveChip").innerHTML = `<i class="fa-solid fa-floppy-disk"></i> ${text}`; }
+    let profilesCache = new Map(); 
+    let activeKey = null; 
+    let activeProfile = null; 
+    let unlocked = false; 
+    let unsubscribeActive = null;
+
+    let saveTimer = null;
+    function setSaveState(text){ 
+        $("saveChip").innerHTML = `<i class="fa-solid fa-floppy-disk"></i> ${text}`; 
+    }
 
     function scheduleCloudSave(){
       if(!unlocked) return;
@@ -807,7 +1019,11 @@
           activeProfile.updatedAt = Date.now();
           await setDoc(doc(db, "profiles", activeKey), activeProfile, { merge:true });
           setSaveState("Saved");
-        }catch(e){ console.error(e); setSaveState("Error"); toast("Erreur cloud (console)"); }
+        }catch(e){ 
+            console.error(e); 
+            setSaveState("Error"); 
+            toast("Erreur cloud (console)"); 
+        }
       }, 350);
     }
 
@@ -816,7 +1032,12 @@
       document.body.classList.toggle("edit", unlocked);
       $("modeChip").className = "chip " + (unlocked ? "edit" : "ro");
       $("modeChip").innerHTML = unlocked ? '<i class="fa-solid fa-pen"></i> ÉDITION' : '<i class="fa-solid fa-eye"></i> LECTURE';
-      const imgInput = $("imgUrl"); if(imgInput) imgInput.disabled = !unlocked;
+      const imgInput = $("imgUrl"); 
+      if(imgInput) imgInput.disabled = !unlocked;
+    }
+
+    function modal(el, show){ 
+        el.classList.toggle("show", !!show); 
     }
 
     function storageInfo(){
@@ -826,24 +1047,25 @@
     }
 
     async function refreshProfilesList(){
-      if(!db) return;
-      try {
-          const qy = query(profilesCol, orderBy("updatedAt", "desc"), limit(50));
-          const snap = await getDocs(qy);
-          profilesCache.clear();
-          snap.forEach(d=>{ profilesCache.set(d.id, d.data()); });
-          renderLanding(); storageInfo(); fillDuplicateSelect();
-      } catch (e) {
-          console.error("Erreur de liste", e);
-      }
+      const qy = query(profilesCol, orderBy("updatedAt", "desc"), limit(50));
+      const snap = await getDocs(qy);
+      profilesCache.clear();
+      snap.forEach(d=>{ 
+          profilesCache.set(d.id, d.data()); 
+      });
+      renderLanding(); 
+      storageInfo(); 
+      fillDuplicateSelect();
     }
 
     function fillDuplicateSelect(){
       const sel = $("cFrom"); 
-      if(!sel) return;
       sel.textContent = "";
       Array.from(profilesCache.values()).sort((a,b)=>(a.displayName||a.key).localeCompare(b.displayName||b.key)).forEach(p=>{
-          const opt = document.createElement("option"); opt.value = p.key; opt.textContent = `${p.displayName || p.key} (${p.key})`; sel.appendChild(opt);
+          const opt = document.createElement("option"); 
+          opt.value = p.key; 
+          opt.textContent = `${p.displayName || p.key} (${p.key})`; 
+          sel.appendChild(opt);
         });
       if(sel.options.length) sel.value = "harry";
     }
@@ -857,65 +1079,112 @@
         const hay = `${p.displayName||""} ${p.key||""} ${(p.data?.identite?.role||"")} ${(p.meta?.tags||[]).join(" ")}`.toLowerCase();
         if(q && !hay.includes(q)) continue;
         
-        const card = document.createElement("div"); card.className = "card";
-        const row = document.createElement("div"); row.className = "row";
+        const card = document.createElement("div"); 
+        card.className = "card";
         
-        const av = document.createElement("div"); av.className = "avatar";
+        const row = document.createElement("div"); 
+        row.className = "row";
+        
+        const av = document.createElement("div"); 
+        av.className = "avatar";
         const img = document.createElement("img"); 
-        img.src = p.meta?.img || ""; img.onerror = ()=> img.style.opacity = '0';
+        img.src = p.meta?.img || ""; 
+        img.onerror = ()=> img.style.opacity = '0';
         av.appendChild(img);
         
         const info = document.createElement("div");
-        const name = document.createElement("div"); name.className = "name"; name.textContent = p.displayName || p.key;
+        const name = document.createElement("div"); 
+        name.className = "name"; 
+        name.textContent = p.displayName || p.key;
         info.appendChild(name); 
 
         const hrpData = p.data?.hrp || {};
         if(hrpData.isStreamer && hrpData.pseudo) {
-            const pseudoDiv = document.createElement("div"); pseudoDiv.className = "hrp-pseudo";
-            pseudoDiv.innerHTML = `<i class="fa-solid fa-gamepad"></i> Joué par ${hrpData.pseudo}`; info.appendChild(pseudoDiv);
+            const pseudoDiv = document.createElement("div");
+            pseudoDiv.className = "hrp-pseudo";
+            pseudoDiv.innerHTML = `<i class="fa-solid fa-gamepad"></i> Joué par ${hrpData.pseudo}`;
+            info.appendChild(pseudoDiv);
         }
         
-        const role = document.createElement("div"); role.className = "role"; role.textContent = p.data?.identite?.role || "";
+        const role = document.createElement("div"); 
+        role.className = "role"; 
+        role.textContent = p.data?.identite?.role || "";
         info.appendChild(role);
         
-        row.appendChild(av); row.appendChild(info);
+        row.appendChild(av); 
+        row.appendChild(info);
         
-        const badges = document.createElement("div"); badges.className = "badges";
-        const bPublic = document.createElement("span"); bPublic.className = "badge public"; bPublic.textContent = "PUBLIC (READ)"; badges.appendChild(bPublic);
+        const badges = document.createElement("div"); 
+        badges.className = "badges";
         
-        const actions = document.createElement("div"); actions.className = "actions";
-        const openBtn = document.createElement("button"); openBtn.className = "btn primary"; openBtn.innerHTML = '<i class="fa-solid fa-folder-open"></i> Ouvrir';
+        const bPublic = document.createElement("span"); 
+        bPublic.className = "badge public"; 
+        bPublic.textContent = "PUBLIC (READ)"; 
+        badges.appendChild(bPublic);
+        
+        const actions = document.createElement("div"); 
+        actions.className = "actions";
+        
+        const openBtn = document.createElement("button"); 
+        openBtn.className = "btn primary"; 
+        openBtn.innerHTML = '<i class="fa-solid fa-folder-open"></i> Ouvrir';
         openBtn.addEventListener("click", ()=>openProfile(p.key));
         actions.appendChild(openBtn);
         
         if(hrpData.isStreamer && hrpData.twitch) {
-            const twBtn = document.createElement("a"); twBtn.href = hrpData.twitch; twBtn.target = "_blank"; twBtn.className = "btn twitch";
-            twBtn.innerHTML = '<i class="fa-brands fa-twitch"></i> Twitch'; actions.appendChild(twBtn);
+            const twBtn = document.createElement("a");
+            twBtn.href = hrpData.twitch;
+            twBtn.target = "_blank";
+            twBtn.className = "btn twitch";
+            twBtn.innerHTML = '<i class="fa-brands fa-twitch"></i> Twitch';
+            actions.appendChild(twBtn);
         }
         
-        card.appendChild(row); card.appendChild(badges); card.appendChild(actions); list.appendChild(card);
+        card.appendChild(row); 
+        card.appendChild(badges); 
+        card.appendChild(actions);
+        list.appendChild(card);
       }
     }
 
     function openProfile(key){
-      activeKey = key; unlocked = false; setEditMode(false);
-      $("landing").style.display = "none"; $("app").style.display = "flex";
+      activeKey = key; 
+      unlocked = false; 
+      setEditMode(false);
+      
+      $("landing").style.display = "none"; 
+      $("app").style.display = "flex";
+      
       if(unsubscribeActive) unsubscribeActive();
       
       const ref = doc(db, "profiles", key);
       unsubscribeActive = onSnapshot(ref, (snap)=>{
-        if(!snap.exists()){ toast("Profil introuvable"); return; }
+        if(!snap.exists()){ 
+            toast("Profil introuvable"); 
+            return; 
+        }
         const newData = snap.data();
         if (unlocked && activeProfile && newData.updatedAt <= activeProfile.updatedAt) return;
-        activeProfile = newData; profilesCache.set(key, activeProfile); renderApp();
+        activeProfile = newData; 
+        profilesCache.set(key, activeProfile); 
+        renderApp();
       });
     }
 
     function backToLanding(){
       if(unsubscribeActive) unsubscribeActive(); 
-      unsubscribeActive = null; activeKey = null; activeProfile = null; unlocked = false; setEditMode(false);
-      $("app").style.display = "none"; $("landing").style.display = "flex"; refreshProfilesList();
+      unsubscribeActive = null; 
+      activeKey = null; 
+      activeProfile = null; 
+      unlocked = false; 
+      setEditMode(false);
+      
+      $("app").style.display = "none"; 
+      $("landing").style.display = "flex"; 
+      refreshProfilesList();
     }
+
+    let currentTabId = "identite";
 
     function visibleTabsForViewer(){
       const tabs = activeProfile.tabs || [];
@@ -923,28 +1192,40 @@
     }
 
     function renderTabsNav(){
-      const nav = $("tabsNav"); nav.textContent = "";
+      const nav = $("tabsNav"); 
+      nav.textContent = "";
       const tabs = visibleTabsForViewer();
       
-      if(currentTabId !== "__tabs_settings__" && !tabs.find(t=>t.id===currentTabId) && tabs.length) { currentTabId = tabs[0].id; }
+      if(currentTabId !== "__tabs_settings__" && !tabs.find(t=>t.id===currentTabId) && tabs.length) { 
+          currentTabId = tabs[0].id; 
+      }
       
       for(const t of tabs){
-        const btn = document.createElement("button"); btn.className = "sbBtn" + (t.id===currentTabId ? " active" : "");
+        const btn = document.createElement("button"); 
+        btn.className = "sbBtn" + (t.id===currentTabId ? " active" : "");
         btn.innerHTML = `<i class="fa-solid ${t.icon||"fa-folder"}"></i> ${t.title}`;
         btn.addEventListener("click", ()=>{ 
-            currentTabId = t.id; currentRouletteResult = "EN ATTENTE…"; 
-            document.querySelector(".sidebar").classList.remove("open"); $("sidebarOverlay").classList.remove("open");
+            currentTabId = t.id; 
+            currentRouletteResult = "EN ATTENTE…"; 
+            
+            document.querySelector(".sidebar").classList.remove("open");
+            $("sidebarOverlay").classList.remove("open");
+            
             renderApp(); 
         });
         nav.appendChild(btn);
       }
       
       if(unlocked){
-        const s = document.createElement("button"); s.className = "sbBtn" + (currentTabId === "__tabs_settings__" ? " active" : "");
+        const s = document.createElement("button"); 
+        s.className = "sbBtn" + (currentTabId === "__tabs_settings__" ? " active" : "");
         s.innerHTML = `<i class="fa-solid fa-gear"></i> Onglets (config)`;
         s.addEventListener("click", ()=>{ 
             currentTabId = "__tabs_settings__"; 
-            document.querySelector(".sidebar").classList.remove("open"); $("sidebarOverlay").classList.remove("open");
+            
+            document.querySelector(".sidebar").classList.remove("open");
+            $("sidebarOverlay").classList.remove("open");
+            
             renderApp(); 
         });
         nav.appendChild(s);
@@ -954,53 +1235,106 @@
     function renderAppHeader(){
       const fullName = activeProfile.data?.identite?.fullName || activeProfile.displayName || activeProfile.key;
       $("sbName").textContent = fullName.toUpperCase();
+      
       $("activeName").textContent = (activeProfile.displayName || activeProfile.key);
       $("sbRef").textContent = activeProfile.meta?.ref || "—";
       $("sbPublic").innerHTML = `<i class="fa-solid fa-globe"></i> Public (lecture)`;
 
+      // === REMPLACEMENT DU LOGO PAR L'AVATAR DANS LA SIDEBAR ===
       const sbAvatar = $("sbProfileImage");
       const imgUrl = activeProfile.meta?.img;
-      if (imgUrl) { sbAvatar.src = imgUrl; sbAvatar.className = "avatar-sidebar"; } 
-      else { sbAvatar.src = "logo.png"; sbAvatar.className = "logo-sidebar"; }
+      
+      if (imgUrl) {
+          sbAvatar.src = imgUrl;
+          sbAvatar.className = "avatar-sidebar"; 
+      } else {
+          sbAvatar.src = "logo.png";
+          sbAvatar.className = "logo-sidebar"; 
+      }
+      
       sbAvatar.style.display = "block";
-      sbAvatar.onerror = function() { this.src = "logo.png"; this.className = "logo-sidebar"; };
+      
+      sbAvatar.onerror = function() {
+          this.src = "logo.png";
+          this.className = "logo-sidebar";
+      };
+      // ==========================================================
     }
 
-    function renderApp(){ renderAppHeader(); renderTabsNav(); renderTabContent(); }
+    function renderApp(){ 
+        renderAppHeader(); 
+        renderTabsNav(); 
+        renderTabContent(); 
+    }
 
     function el(tag, attrs={}, children=[]){
       const node = document.createElement(tag);
       for(const [k,v] of Object.entries(attrs)){
-        if(k==="class") node.className = v; else if(k==="html") node.innerHTML = v; else if(k==="checked") node.checked = !!v; else if(k==="value") node.value = v; else if(k==="disabled") node.disabled = !!v;
-        else if(k.startsWith("on") && typeof v==="function") node.addEventListener(k.slice(2).toLowerCase(), v); else node.setAttribute(k, v);
+        if(k==="class") node.className = v;
+        else if(k==="html") node.innerHTML = v;
+        else if(k==="checked") node.checked = !!v; 
+        else if(k==="value") node.value = v; 
+        else if(k==="disabled") node.disabled = !!v;
+        else if(k.startsWith("on") && typeof v==="function") node.addEventListener(k.slice(2).toLowerCase(), v);
+        else node.setAttribute(k, v);
       }
-      for(const c of children){ if(typeof c === "string") node.appendChild(document.createTextNode(c)); else if(c) node.appendChild(c); }
+      for(const c of children){ 
+          if(typeof c === "string") node.appendChild(document.createTextNode(c)); 
+          else if(c) node.appendChild(c); 
+      }
       return node;
     }
 
     function editableDiv(value, onCommit){
       const d = el("div", { class:"editable", tabindex:"0" });
-      d.innerHTML = value || ""; d.contentEditable = unlocked ? "true" : "false";
-      d.addEventListener("input", ()=>{ if(!unlocked) return; onCommit(d.innerHTML); });
+      d.innerHTML = value || "";
+      d.contentEditable = unlocked ? "true" : "false";
+      
+      d.addEventListener("input", ()=>{ 
+          if(!unlocked) return; 
+          onCommit(d.innerHTML); 
+      });
       return d;
     }
     
     function editableDivBlock(html, onCommit){
       const d = el("div",{class:"editable", style:"min-height:240px"});
-      d.innerHTML = html || ""; d.contentEditable = unlocked ? "true" : "false";
-      d.addEventListener("input", ()=>{ if(!unlocked) return; onCommit(d.innerHTML); });
+      d.innerHTML = html || "";
+      d.contentEditable = unlocked ? "true" : "false";
+      d.addEventListener("input", ()=>{
+        if(!unlocked) return;
+        onCommit(d.innerHTML);
+      });
       return d;
     }
 
     function renderTabContent(){
-      const root = $("tabContent"); root.textContent = "";
-      if(currentTabId === "__tabs_settings__"){ root.appendChild(renderTabsSettings()); return; }
+      const root = $("tabContent"); 
+      root.textContent = "";
+      
+      if(currentTabId === "__tabs_settings__"){ 
+          root.appendChild(renderTabsSettings()); 
+          return; 
+      }
       
       const tab = (activeProfile.tabs||[]).find(t=>t.id===currentTabId);
-      if(!tab){ root.appendChild(el("div",{class:"panel"},["Onglet introuvable."])); return; }
-      if(!tab.visiblePublic && !unlocked){ root.appendChild(el("div",{class:"panel"},[ el("div",{style:"font-weight:900;margin-bottom:6px"},["Onglet privé"]), el("div",{class:"muted",style:"line-height:1.7"},["Le propriétaire a masqué cet onglet au public."]) ])); return; }
+      if(!tab){ 
+          root.appendChild(el("div",{class:"panel"},["Onglet introuvable."])); 
+          return; 
+      }
       
-      root.appendChild(el("div",{class:"sectionTitle"},[ el("span",{html:tab.title}), el("span",{class:"ref"},[tab.type.toUpperCase()]) ]));
+      if(!tab.visiblePublic && !unlocked){
+        root.appendChild(el("div",{class:"panel"},[ 
+            el("div",{style:"font-weight:900;margin-bottom:6px"},["Onglet privé"]), 
+            el("div",{class:"muted",style:"line-height:1.7"},["Le propriétaire a masqué cet onglet au public."]) 
+        ])); 
+        return;
+      }
+      
+      root.appendChild(el("div",{class:"sectionTitle"},[ 
+          el("span",{html:tab.title}), 
+          el("span",{class:"ref"},[tab.type.toUpperCase()]) 
+      ]));
       
       const type = tab.type;
       if(type==="identite") root.appendChild(renderIdentite());
@@ -1017,27 +1351,44 @@
     }
 
     function renderIdentite(){
-      const idt = activeProfile.data?.identite || {}; const hrp = activeProfile.data?.hrp || { isStreamer: false, pseudo: "", twitch: "" };
+      const idt = activeProfile.data?.identite || {};
+      const hrp = activeProfile.data?.hrp || { isStreamer: false, pseudo: "", twitch: "" };
       
       const hrpPanel = el("div",{class:"panel", style:"margin-top:20px;"},[
           el("div",{style:"display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #222; padding-bottom:5px; margin-bottom:15px;"},[
             el("div",{class:"fieldLabel", style:"font-weight:900; color:var(--ok); margin:0;"},["SECTION HRP"]),
-            unlocked ? el("label",{class:"switch"},[ el("input",{type:"checkbox", checked:!!hrp.isStreamer, onChange:(e)=>{ deepSet(activeProfile, "data.hrp.isStreamer", e.target.checked); scheduleCloudSave(); renderApp(); }}), el("div",{class:"slider"}), el("span",{style:"font-size:11px; color:#bbb;"},["Streamer"]) ]) : (hrp.isStreamer ? el("span",{class:"chip ok"},["Streamer"]) : el("span",{class:"chip"},["Non-streamer"]))
+            unlocked ? el("label",{class:"switch"},[
+              el("input",{type:"checkbox", checked:!!hrp.isStreamer, onChange:(e)=>{ 
+                  deepSet(activeProfile, "data.hrp.isStreamer", e.target.checked); 
+                  scheduleCloudSave(); 
+                  renderApp(); 
+              }}),
+              el("div",{class:"slider"}),
+              el("span",{style:"font-size:11px; color:#bbb;"},["Streamer"])
+            ]) : (hrp.isStreamer ? el("span",{class:"chip ok"},["Streamer"]) : el("span",{class:"chip"},["Non-streamer"]))
           ])
       ]);
 
       if (hrp.isStreamer) {
           hrpPanel.appendChild(el("div",{class:"fieldLabel"},["Votre pseudo"]));
           hrpPanel.appendChild(editableDiv(hrp.pseudo, (v)=>{ deepSet(activeProfile,"data.hrp.pseudo",v); scheduleCloudSave(); }));
+          
           hrpPanel.appendChild(el("div",{class:"fieldLabel", style:"margin-top:10px;"},["Lien Twitch"]));
-          if (unlocked) { hrpPanel.appendChild(el("input",{class:"input", value: hrp.twitch || "", placeholder:"https://twitch.tv/...", onInput:(e)=>{ deepSet(activeProfile,"data.hrp.twitch", e.target.value); scheduleCloudSave(); }})); } 
-          else {
-            if (hrp.twitch) { hrpPanel.appendChild(el("div",{style:"margin-top:5px;"},[ el("a", {href: hrp.twitch, target:"_blank", class:"btn small twitch"},[el("i",{class:"fa-brands fa-twitch"}), " Twitch"]) ])); } 
-            else { hrpPanel.appendChild(el("div",{class:"muted", style:"font-style:italic; font-size:12px;"},["Aucun Twitch renseigné"])); }
+          if (unlocked) {
+            hrpPanel.appendChild(el("input",{class:"input", value: hrp.twitch || "", placeholder:"https://twitch.tv/...", onInput:(e)=>{ deepSet(activeProfile,"data.hrp.twitch", e.target.value); scheduleCloudSave(); }}));
+          } else {
+            if (hrp.twitch) {
+               hrpPanel.appendChild(el("div",{style:"margin-top:5px;"},[ el("a", {href: hrp.twitch, target:"_blank", class:"btn small twitch"},[el("i",{class:"fa-brands fa-twitch"}), " Twitch"]) ]));
+            } else {
+               hrpPanel.appendChild(el("div",{class:"muted", style:"font-style:italic; font-size:12px;"},["Aucun Twitch renseigné"]));
+            }
           }
       } else {
-          if(!unlocked) hrpPanel.appendChild(el("div",{class:"muted", style:"font-style:italic; font-size:12px;"},["Ce joueur n'est pas un streamer."]));
-          else hrpPanel.appendChild(el("div",{class:"muted", style:"font-style:italic; font-size:12px;"},["Cochez 'Streamer' en haut à droite de cette section pour ajouter votre pseudo et lien Twitch."]));
+          if(!unlocked) {
+              hrpPanel.appendChild(el("div",{class:"muted", style:"font-style:italic; font-size:12px;"},["Ce joueur n'est pas un streamer."]));
+          } else {
+              hrpPanel.appendChild(el("div",{class:"muted", style:"font-style:italic; font-size:12px;"},["Cochez 'Streamer' en haut à droite de cette section pour ajouter votre pseudo et lien Twitch."]));
+          }
       }
 
       const wrap = el("div",{class:"grid2"},[
@@ -1045,40 +1396,76 @@
           el("div",{style:"display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;"},[
             el("div",{class:"fieldLabel", style:"margin:0;"},["Photo du profil"]),
             unlocked ? el("button", {class:"btn small primary", onClick:()=> {
-              const fi = document.createElement('input'); fi.type = 'file'; fi.accept = 'image/*';
+              const fi = document.createElement('input'); 
+              fi.type = 'file'; 
+              fi.accept = 'image/*';
               fi.onchange = (e) => window.processImageUpload(e.target.files[0], (base64) => {
-                $("imgUrl").value = base64; activeProfile.meta.img = base64;
-                if($("imgPreview")) { $("imgPreview").src = base64; $("imgPreview").style.opacity = '1'; }
-                scheduleCloudSave(); toast("Image uploadée !"); renderAppHeader();
-              }); fi.click();
+                const input = $("imgUrl"); 
+                const preview = $("imgPreview");
+                input.value = base64; 
+                activeProfile.meta.img = base64;
+                if(preview) { preview.src = base64; preview.style.opacity = '1'; }
+                scheduleCloudSave(); 
+                toast("Image uploadée !");
+                renderAppHeader(); // Met à jour l'avatar sidebar direct
+              });
+              fi.click();
             }}, [el("i",{class:"fa-solid fa-upload"})," Parcourir"]) : null
           ]),
+          
           el("input",{class:"input", id:"imgUrl", placeholder:"URL ou import PC...", value: activeProfile.meta?.img || ""}),
-          el("div",{class:"muted",style:"margin-top:8px; line-height:1.5; font-size:11px;"},["Comment faire ? Collez ici un lien web direct ou utilisez le bouton 'Parcourir'."]),
-          el("div",{style:"margin-top:12px;display:flex;justify-content:center;align-items:center;flex-wrap:wrap"},[ el("div",{class:"avatar",style:"width:140px;height:140px; border-color:var(--goldDim);"},[ el("img",{id:"imgPreview", src: activeProfile.meta?.img || "", onError: (e) => e.target.style.opacity = '0' }) ]) ])
+          
+          el("div",{class:"muted",style:"margin-top:8px; line-height:1.5; font-size:11px;"},[
+              "Comment faire ? Collez ici un lien web direct ou utilisez le bouton 'Parcourir'."
+          ]),
+          
+          el("div",{style:"margin-top:12px;display:flex;justify-content:center;align-items:center;flex-wrap:wrap"},[
+            el("div",{class:"avatar",style:"width:140px;height:140px; border-color:var(--goldDim);"},[
+              el("img",{id:"imgPreview", src: activeProfile.meta?.img || "", onError: (e) => e.target.style.opacity = '0' })
+            ])
+          ])
         ]),
         
         el("div",{},[
           el("div",{class:"panel"},[
             el("div",{class:"fieldLabel", style:"font-weight:900; color:var(--gold); border-bottom:1px solid #222; padding-bottom:5px; margin-bottom:15px;"},["SECTION RP"]),
-            el("div",{class:"fieldLabel"},["Nom complet"]), editableDiv(idt.fullName, (v)=>{ deepSet(activeProfile,"data.identite.fullName",v); scheduleCloudSave(); }),
-            el("div",{class:"fieldLabel", style:"margin-top:10px;"},["Âge"]), editableDiv(idt.age, (v)=>{ deepSet(activeProfile,"data.identite.age",v); scheduleCloudSave(); }),
-            el("div",{class:"fieldLabel", style:"margin-top:10px;"},["Lieu de naissance"]), editableDiv(idt.birthplace, (v)=>{ deepSet(activeProfile,"data.identite.birthplace",v); scheduleCloudSave(); }),
-            el("div",{class:"fieldLabel", style:"margin-top:10px;"},["Job"]), editableDiv(idt.role, (v)=>{ deepSet(activeProfile,"data.identite.role",v); scheduleCloudSave(); }),
-            el("div",{class:"fieldLabel", style:"margin-top:10px;"},["Physique"]), editableDiv(idt.phys, (v)=>{ deepSet(activeProfile,"data.identite.phys",v); scheduleCloudSave(); }),
-            el("div",{class:"fieldLabel", style:"margin-top:10px;"},["Voix"]), editableDiv(idt.voice, (v)=>{ deepSet(activeProfile,"data.identite.voice",v); scheduleCloudSave(); })
-          ]), hrpPanel
+            el("div",{class:"fieldLabel"},["Nom complet"]), 
+            editableDiv(idt.fullName, (v)=>{ deepSet(activeProfile,"data.identite.fullName",v); scheduleCloudSave(); }),
+            
+            el("div",{class:"fieldLabel", style:"margin-top:10px;"},["Âge"]), 
+            editableDiv(idt.age, (v)=>{ deepSet(activeProfile,"data.identite.age",v); scheduleCloudSave(); }),
+            
+            el("div",{class:"fieldLabel", style:"margin-top:10px;"},["Lieu de naissance"]), 
+            editableDiv(idt.birthplace, (v)=>{ deepSet(activeProfile,"data.identite.birthplace",v); scheduleCloudSave(); }),
+            
+            el("div",{class:"fieldLabel", style:"margin-top:10px;"},["Job"]), 
+            editableDiv(idt.role, (v)=>{ deepSet(activeProfile,"data.identite.role",v); scheduleCloudSave(); }),
+            
+            el("div",{class:"fieldLabel", style:"margin-top:10px;"},["Physique"]), 
+            editableDiv(idt.phys, (v)=>{ deepSet(activeProfile,"data.identite.phys",v); scheduleCloudSave(); }),
+            
+            el("div",{class:"fieldLabel", style:"margin-top:10px;"},["Voix"]), 
+            editableDiv(idt.voice, (v)=>{ deepSet(activeProfile,"data.identite.voice",v); scheduleCloudSave(); })
+          ]),
+          
+          hrpPanel
         ])
       ]);
 
       setTimeout(()=>{
-        const input = $("imgUrl"); const preview = $("imgPreview");
+        const input = $("imgUrl");
+        const preview = $("imgPreview");
         if(!input || !preview) return;
-        preview.onerror = ()=> preview.style.opacity = '0'; input.disabled = !unlocked;
+        preview.onerror = ()=> preview.style.opacity = '0';
+        input.disabled = !unlocked;
         input.addEventListener("input", ()=>{
           if(!unlocked) return;
-          activeProfile.meta.img = input.value.trim(); preview.src = activeProfile.meta.img; preview.style.opacity = '1';
-          scheduleCloudSave(); renderAppHeader();
+          const url = input.value.trim();
+          activeProfile.meta.img = url;
+          preview.src = url;
+          preview.style.opacity = '1';
+          scheduleCloudSave();
+          renderAppHeader(); // Met à jour l'avatar sidebar direct
         });
       },0);
 
@@ -1087,16 +1474,26 @@
 
     function renderStats(){
       const stats = activeProfile.data?.stats || [];
-      return el("div",{class:"panel"},[
+      const box = el("div",{class:"panel"},[
         el("div",{style:"display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px"},[
           el("div",{style:"font-weight:900"},["Stats (0-100)"]),
-          unlocked ? el("button",{class:"btn small primary", onClick:()=>{ stats.push({id:uid(), label:"Nouvelle stat", val:50}); scheduleCloudSave(); renderApp(); }},[el("i",{class:"fa-solid fa-plus"})," Ajouter"]) : el("span",{class:"chip ro"},["Lecture"])
+          unlocked ? el("button",{class:"btn small primary", onClick:()=>{ 
+              stats.push({id:uid(), label:"Nouvelle stat", val:50}); 
+              scheduleCloudSave(); 
+              renderApp(); 
+          }},[el("i",{class:"fa-solid fa-plus"})," Ajouter"]) : el("span",{class:"chip ro"},["Lecture"])
         ]),
         el("div",{}, stats.map(s=>{
           const stat = el("div",{class:"stat"},[ 
-              el("div",{class:"statTop"},[ el("span",{html: s.label}), el("span",{},[String(s.val)+"%"]) ]), 
-              el("div",{class:"bar"},[ el("div",{class:"fill", style:`width:${s.val}%`}) ]) 
+              el("div",{class:"statTop"},[ 
+                  el("span",{html: s.label}), 
+                  el("span",{},[String(s.val)+"%"]) 
+              ]), 
+              el("div",{class:"bar"},[ 
+                  el("div",{class:"fill", style:`width:${s.val}%`}) 
+              ]) 
           ]);
+          
           if(unlocked){
             stat.appendChild(el("div",{style:"display:flex;gap:10px;margin-top:8px;"},[
               el("input",{class:"input", value:s.label, onInput:(e)=>{ s.label=e.target.value; scheduleCloudSave(); }}),
@@ -1107,21 +1504,32 @@
           return stat;
         }))
       ]);
+      return box;
     }
 
     function renderRoulette(){
       const r = activeProfile.data?.roulette || {options:[],history:[]};
+      
       const result = el("div",{class:"result", id:"rr"},[currentRouletteResult]);
       const btnSpin = el("button",{class:"btn primary", onClick:()=>{
         if(!r.options.length) return toast("Aucune option");
-        currentRouletteResult = "EN ATTENTE…"; result.textContent = currentRouletteResult; result.classList.add("spin");
-        let c=0; const it = setInterval(()=>{ 
+        currentRouletteResult = "EN ATTENTE…";
+        result.textContent = currentRouletteResult;
+        result.classList.add("spin");
+        
+        let c=0; 
+        const it = setInterval(()=>{ 
             result.textContent = r.options[Math.floor(Math.random()*r.options.length)].text; 
             if(c++>14){ 
-                clearInterval(it); const chosen = r.options[Math.floor(Math.random()*r.options.length)]; 
-                currentRouletteResult = ">> " + chosen.text + " <<"; result.textContent = currentRouletteResult; result.classList.remove("spin");
-                r.history.unshift({at:Date.now(), text:chosen.text}); r.history = r.history.slice(0,50);
-                scheduleCloudSave(); renderApp(); 
+                clearInterval(it); 
+                const chosen = r.options[Math.floor(Math.random()*r.options.length)]; 
+                currentRouletteResult = ">> " + chosen.text + " <<"; 
+                result.textContent = currentRouletteResult; 
+                result.classList.remove("spin");
+                r.history.unshift({at:Date.now(), text:chosen.text}); 
+                r.history = r.history.slice(0,50);
+                scheduleCloudSave(); 
+                renderApp(); 
             } 
         }, 90);
       }},[el("i",{class:"fa-solid fa-dice"})," Lancer"]);
@@ -1134,19 +1542,18 @@
               el("div",{style:"font-weight:900"},["Options"]), 
               unlocked ? el("button",{class:"btn small primary", onClick:()=>{ 
                   const txt = prompt("Quelle action voulez-vous ajouter ?");
-                  if(!txt) return; r.options.push({id:uid(), text:txt, weight:1}); scheduleCloudSave(); renderApp(); 
+                  if(!txt) return;
+                  r.options.push({id:uid(), text:txt, weight:1}); 
+                  scheduleCloudSave(); 
+                  renderApp(); 
               }},["+ Ajouter"]) : null 
           ]),
           el("div",{style:"display:flex;flex-wrap:wrap;gap:10px"}, r.options.map(o=> 
-              el("div",{class:"tag"},[ o.text, unlocked ? el("i",{class:"fa-solid fa-xmark", style:"margin-left:10px;cursor:pointer;", onClick:()=>{ r.options=r.options.filter(x=>x.id!==o.id); scheduleCloudSave(); renderApp(); }}) : null ])
+              el("div",{class:"tag"},[
+                  o.text, 
+                  unlocked ? el("i",{class:"fa-solid fa-xmark", style:"margin-left:10px;cursor:pointer;", onClick:()=>{ r.options=r.options.filter(x=>x.id!==o.id); scheduleCloudSave(); renderApp(); }}) : null
+              ])
           ))
-        ]),
-        el("div",{class:"panel"},[
-          el("div",{style:"font-weight:900;margin-bottom:10px"},["Historique"]),
-          el("div",{style:"display:flex;flex-direction:column;gap:8px"}, (r.history||[]).slice(0,12).map(h=>{
-            const d = new Date(h.at);
-            return el("div",{style:"display:flex;gap:10px;align-items:center;flex-wrap:wrap"},[ el("span",{class:"chip"},[d.toLocaleString()]), el("span",{style:"color:#bbb"},[h.text]) ]);
-          }))
         ])
       ]);
     }
@@ -1154,12 +1561,20 @@
     function renderTabsSettings(){
       const tabs = activeProfile.tabs || [];
       return el("div",{},[
-        el("div",{class:"sectionTitle"},[ el("span",{},["Onglets — Configuration"]), el("span",{class:"ref"},["customizable"]) ]),
+        el("div",{class:"sectionTitle"},[ 
+            el("span",{},["Onglets — Configuration"]), 
+            el("span",{class:"ref"},["customizable"]) 
+        ]),
         el("div",{class:"panel"},[
-          el("div",{class:"muted",style:"line-height:1.7;margin-bottom:12px"},["Ici tu peux renommer, masquer (enabled), et choisir la visibilité publique de chaque onglet."]),
+          el("div",{class:"muted",style:"line-height:1.7;margin-bottom:12px"},[
+            "Ici tu peux renommer, masquer (enabled), et choisir la visibilité publique de chaque onglet."
+          ]),
           el("div",{style:"display:flex;flex-direction:column;gap:12px"}, tabs.map((t,idx)=>{
             return el("div",{class:"timelineItem"},[
-              el("div",{style:"display:flex;justify-content:space-between;"},[ el("div",{style:"font-weight:900;color:var(--gold)"},[`${idx+1}. ${t.title}`]), el("span",{class:"chip"},[t.type]) ]),
+              el("div",{style:"display:flex;justify-content:space-between;"},[ 
+                  el("div",{style:"font-weight:900;color:var(--gold)"},[`${idx+1}. ${t.title}`]), 
+                  el("span",{class:"chip"},[t.type]) 
+              ]),
               el("div",{style:"display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px"},[
                 el("input",{class:"input", value:t.title, onInput:(e)=>{ t.title=e.target.value; scheduleCloudSave(); renderTabsNav(); }}),
                 el("input",{class:"input", value:t.icon||"", onInput:(e)=>{ t.icon=e.target.value; scheduleCloudSave(); renderTabsNav(); }})
@@ -1169,8 +1584,16 @@
                 el("label",{class:"switch"},[ el("input",{type:"checkbox", checked:!!t.visiblePublic, onChange:(e)=>{ t.visiblePublic=e.target.checked; scheduleCloudSave(); renderTabsNav(); }}), el("div",{class:"slider"}), el("span",{},["Public"]) ])
               ]),
               el("div",{style:"display:flex;justify-content:flex-end;gap:10px;margin-top:12px;flex-wrap:wrap"},[
-                el("button",{class:"btn small", disabled: idx===0, onClick:()=>{ const x = tabs[idx-1]; tabs[idx-1]=tabs[idx]; tabs[idx]=x; deepSet(activeProfile,"tabs",tabs); scheduleCloudSave(); renderApp(); }},[el("i",{class:"fa-solid fa-arrow-up"}),""]),
-                el("button",{class:"btn small", disabled: idx===tabs.length-1, onClick:()=>{ const x = tabs[idx+1]; tabs[idx+1]=tabs[idx]; tabs[idx]=x; deepSet(activeProfile,"tabs",tabs); scheduleCloudSave(); renderApp(); }},[el("i",{class:"fa-solid fa-arrow-down"}),""])
+                el("button",{class:"btn small", disabled: idx===0, onClick:()=>{
+                  const x = tabs[idx-1]; tabs[idx-1]=tabs[idx]; tabs[idx]=x;
+                  deepSet(activeProfile,"tabs",tabs);
+                  scheduleCloudSave(); renderApp();
+                }},[el("i",{class:"fa-solid fa-arrow-up"}),""]),
+                el("button",{class:"btn small", disabled: idx===tabs.length-1, onClick:()=>{
+                  const x = tabs[idx+1]; tabs[idx+1]=tabs[idx]; tabs[idx]=x;
+                  deepSet(activeProfile,"tabs",tabs);
+                  scheduleCloudSave(); renderApp();
+                }},[el("i",{class:"fa-solid fa-arrow-down"}),""])
               ])
             ]);
           }))
@@ -1180,97 +1603,169 @@
 
     function renderLore(){
       const lore = activeProfile.data?.lore?.sections || [];
-      return el("div",{},[
+      const root = el("div",{},[
         el("div",{class:"panel"},[
           el("div",{style:"display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px"},[
             el("div",{style:"font-weight:900"},["Sections d’histoire"]),
-            unlocked ? el("button",{class:"btn small primary", onClick:()=>{ lore.unshift({id:uid(), title:"Nouvelle section", text:"", date:""}); deepSet(activeProfile,"data.lore.sections", lore); scheduleCloudSave(); renderApp(); }},[el("i",{class:"fa-solid fa-plus"})," Ajouter"]) : el("span",{class:"chip ro"},["Lecture"])
+            unlocked ? el("button",{class:"btn small primary", onClick:()=>{
+              lore.unshift({id:uid(), title:"Nouvelle section", text:"", date:""});
+              deepSet(activeProfile,"data.lore.sections", lore);
+              scheduleCloudSave();
+              renderApp();
+            }},[el("i",{class:"fa-solid fa-plus"})," Ajouter"]) : el("span",{class:"chip ro"},["Lecture"])
           ]),
           el("div",{class:"grid3"}, lore.map(sec=>{
             const card = el("div",{class:"panel", style:"margin:0"},[
               el("div",{style:"display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px"},[
                 el("div",{style:"font-weight:900;color:var(--gold)"},[sec.title]),
-                unlocked ? el("button",{class:"btn small danger", onClick:()=>{ deepSet(activeProfile,"data.lore.sections", lore.filter(x=>x.id!==sec.id)); scheduleCloudSave(); renderApp(); }},[el("i",{class:"fa-solid fa-trash"})]) : null
+                unlocked ? el("button",{class:"btn small danger", onClick:()=>{
+                  deepSet(activeProfile,"data.lore.sections", lore.filter(x=>x.id!==sec.id));
+                  scheduleCloudSave();
+                  renderApp();
+                }},[el("i",{class:"fa-solid fa-trash"})]) : null
               ]),
               unlocked ? el("input",{class:"input", value:sec.title, onInput:(e)=>{ sec.title=e.target.value; scheduleCloudSave(); }}) : null,
               unlocked ? el("input",{class:"input", value:sec.date||"", placeholder:"date (optionnel)", style:"margin-top:10px", onInput:(e)=>{ sec.date=e.target.value; scheduleCloudSave(); }}) : null,
               el("div",{class:"muted",style:"font-size:12px;margin:10px 0 8px"},["Texte"]),
-              unlocked ? el("textarea",{class:"input", style:"min-height:160px;font-family:Montserrat;font-size:14px;line-height:1.7", onInput:(e)=>{ sec.text=e.target.value; scheduleCloudSave(); }},[]) : el("div",{style:"color:#bbb;line-height:1.8"},[sec.text||""])
+              unlocked
+                ? el("textarea",{class:"input", style:"min-height:160px;font-family:Montserrat;font-size:14px;line-height:1.7", onInput:(e)=>{ sec.text=e.target.value; scheduleCloudSave(); }},[])
+                : el("div",{style:"color:#bbb;line-height:1.8"},[sec.text||""])
             ]);
-            if(unlocked){ card.querySelector("textarea").value = sec.text || ""; }
+
+            if(unlocked){
+              card.querySelector("textarea").value = sec.text || "";
+            }
             return card;
           }))
         ])
       ]);
+      return root;
     }
 
     function renderGoals(){
       const goals = activeProfile.data?.goals || {court:[], long:[]};
+
       const column = (title, key)=> {
         const list = goals[key] || [];
-        return el("div",{class:"panel"},[
+        const col = el("div",{class:"panel"},[
           el("div",{style:"display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px"},[
             el("div",{style:"font-weight:900;color:var(--gold)"},[title]),
-            unlocked ? el("button",{class:"btn small primary", onClick:()=>{ list.unshift({id:uid(), text:"Nouvel objectif", done:false}); goals[key]=list; deepSet(activeProfile,"data.goals",goals); scheduleCloudSave(); renderApp(); }},[el("i",{class:"fa-solid fa-plus"})," Ajouter"]) : null
+            unlocked ? el("button",{class:"btn small primary", onClick:()=>{
+              list.unshift({id:uid(), text:"Nouvel objectif", done:false});
+              goals[key]=list;
+              deepSet(activeProfile,"data.goals",goals);
+              scheduleCloudSave();
+              renderApp();
+            }},[el("i",{class:"fa-solid fa-plus"})," Ajouter"]) : null
           ]),
           el("div",{}, list.map(g=>{
-            return el("div",{class:"timelineItem"},[
+            const item = el("div",{class:"timelineItem"},[
               el("div",{style:"display:flex;gap:10px;align-items:center;justify-content:space-between"},[
                 el("div",{style:`flex:1;color:#ddd;${g.done?"text-decoration:line-through;opacity:.7":""}`},[g.text]),
                 unlocked ? el("div",{style:"display:flex;gap:8px"},[
-                  el("button",{class:"btn small", onClick:()=>{ g.done=!g.done; scheduleCloudSave(); renderApp(); }},[el("i",{class:"fa-solid fa-square-check"}),""]),
-                  el("button",{class:"btn small danger", onClick:()=>{ goals[key]=list.filter(x=>x.id!==g.id); deepSet(activeProfile,"data.goals",goals); scheduleCloudSave(); renderApp(); }},[el("i",{class:"fa-solid fa-trash"})])
+                  el("button",{class:"btn small", onClick:()=>{
+                    g.done=!g.done;
+                    scheduleCloudSave();
+                    renderApp();
+                  }},[el("i",{class:"fa-solid fa-square-check"}),""]),
+                  el("button",{class:"btn small danger", onClick:()=>{
+                    goals[key]=list.filter(x=>x.id!==g.id);
+                    deepSet(activeProfile,"data.goals",goals);
+                    scheduleCloudSave();
+                    renderApp();
+                  }},[el("i",{class:"fa-solid fa-trash"})])
                 ]) : null
               ]),
               unlocked ? el("input",{class:"input", value:g.text, style:"margin-top:10px;font-family:Montserrat", onInput:(e)=>{ g.text=e.target.value; scheduleCloudSave(); }}) : null
             ]);
+            return item;
           }))
         ]);
+        return col;
       };
-      return el("div",{class:"grid2"},[ column("Court terme","court"), column("Long terme","long") ]);
+
+      return el("div",{class:"grid2"},[
+        column("Court terme","court"),
+        column("Long terme","long")
+      ]);
     }
 
     function renderTimeline(){
-      const events = activeProfile.data?.timeline?.events || [];
-      return el("div",{class:"panel"},[
+      const t = activeProfile.data?.timeline || {events:[]};
+      const events = t.events || [];
+
+      const root = el("div",{class:"panel"},[
         el("div",{style:"display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px"},[
           el("div",{style:"font-weight:900"},["Timeline RP"]),
-          unlocked ? el("button",{class:"btn small primary", onClick:()=>{ events.unshift({id:uid(), at:Date.now(), title:"Nouvel événement", text:"", tags:["PARIS RP"]}); deepSet(activeProfile,"data.timeline.events", events); scheduleCloudSave(); renderApp(); }},[el("i",{class:"fa-solid fa-plus"})," Ajouter"]) : null
+          unlocked ? el("button",{class:"btn small primary", onClick:()=>{
+            events.unshift({id:uid(), at:Date.now(), title:"Nouvel événement", text:"", tags:["PARIS RP"]});
+            deepSet(activeProfile,"data.timeline.events", events);
+            scheduleCloudSave();
+            renderApp();
+          }},[el("i",{class:"fa-solid fa-plus"})," Ajouter"]) : null
         ]),
         el("div",{style:"display:flex;flex-direction:column;gap:12px"}, events.map(ev=>{
           const date = new Date(ev.at || Date.now());
           const item = el("div",{class:"timelineItem"},[
-            el("div",{class:"tlHead"},[ el("div",{style:"font-weight:900;color:var(--gold)"},[ev.title]), el("span",{class:"chip"},[date.toLocaleString()]) ]),
+            el("div",{class:"tlHead"},[
+              el("div",{style:"font-weight:900;color:var(--gold)"},[ev.title]),
+              el("span",{class:"chip"},[date.toLocaleString()])
+            ]),
             el("div",{style:"color:#bbb;line-height:1.8;margin-top:8px"},[ev.text || ""]),
             el("div",{class:"tagRow"}, (ev.tags||[]).map(tag=>el("span",{class:"tag"},[tag])))
           ]);
+
           if(unlocked){
             item.appendChild(el("div",{style:"margin-top:10px;display:grid;gap:10px"},[
               el("input",{class:"input", value:ev.title, onInput:(e)=>{ ev.title=e.target.value; scheduleCloudSave(); }}),
               el("textarea",{class:"input", style:"min-height:120px;font-family:Montserrat;font-size:14px;line-height:1.7", onInput:(e)=>{ ev.text=e.target.value; scheduleCloudSave(); }},[]),
-              el("input",{class:"input", value:(ev.tags||[]).join(", "), placeholder:"tags séparés par virgule", onInput:(e)=>{ ev.tags = e.target.value.split(",").map(x=>x.trim()).filter(Boolean); scheduleCloudSave(); renderApp(); }}),
-              el("div",{style:"display:flex;justify-content:flex-end"},[ el("button",{class:"btn small danger", onClick:()=>{ deepSet(activeProfile,"data.timeline.events", events.filter(x=>x.id!==ev.id)); scheduleCloudSave(); renderApp(); }},[el("i",{class:"fa-solid fa-trash"})," Suppr"]) ])
+              el("input",{class:"input", value:(ev.tags||[]).join(", "), placeholder:"tags séparés par virgule", onInput:(e)=>{
+                ev.tags = e.target.value.split(",").map(x=>x.trim()).filter(Boolean);
+                scheduleCloudSave();
+                renderApp();
+              }}),
+              el("div",{style:"display:flex;justify-content:flex-end"},[
+                el("button",{class:"btn small danger", onClick:()=>{
+                  deepSet(activeProfile,"data.timeline.events", events.filter(x=>x.id!==ev.id));
+                  scheduleCloudSave();
+                  renderApp();
+                }},[el("i",{class:"fa-solid fa-trash"})," Suppr"])
+              ])
             ]));
             item.querySelector("textarea").value = ev.text || "";
           }
+
           return item;
         }))
       ]);
+      return root;
     }
 
     function renderRelations(){
-      const list = activeProfile.data?.relations?.list || [];
-      return el("div",{class:"panel"},[
+      const rel = activeProfile.data?.relations || {list:[]};
+      const list = rel.list || [];
+
+      const root = el("div",{class:"panel"},[
         el("div",{style:"display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px"},[
           el("div",{style:"font-weight:900"},["Relations"]),
-          unlocked ? el("button",{class:"btn small primary", onClick:()=>{ list.unshift({id:uid(), name:"Nouveau contact", tag:"Neutre", note:"", img:""}); deepSet(activeProfile,"data.relations.list", list); scheduleCloudSave(); renderApp(); }},[el("i",{class:"fa-solid fa-plus"})," Ajouter"]) : null
+          unlocked ? el("button",{class:"btn small primary", onClick:()=>{
+            list.unshift({id:uid(), name:"Nouveau contact", tag:"Neutre", note:"", img:""});
+            deepSet(activeProfile,"data.relations.list", list);
+            scheduleCloudSave();
+            renderApp();
+          }},[el("i",{class:"fa-solid fa-plus"})," Ajouter"]) : null
         ]),
         el("div",{class:"grid3"}, list.map(r=>{
           const tagColor = r.tag==="Allié" ? "rgba(46,204,113,.25)" : r.tag==="Ennemi" ? "rgba(231,76,60,.25)" : "rgba(180,180,180,.15)";
           const card = el("div",{class:"panel", style:"margin:0"},[
             el("div",{style:"display:flex;gap:12px;align-items:center"},[
-              el("div",{class:"avatar",style:"width:54px;height:54px;border-color:rgba(212,175,55,.45)"},[ el("img",{src:r.img||"", onError:(e)=>{ e.target.style.opacity = '0'; }}) ]),
-              el("div",{},[ el("div",{style:"font-weight:900"},[r.name]), el("span",{class:"tag", style:`border-color:${tagColor}`},[r.tag]) ])
+              el("div",{class:"avatar",style:"width:54px;height:54px;border-color:rgba(212,175,55,.45)"},[
+                el("img",{src:r.img||"", onError:(e)=>{ e.target.style.opacity = '0'; }})
+              ]),
+              el("div",{},[
+                el("div",{style:"font-weight:900"},[r.name]),
+                el("span",{class:"tag", style:`border-color:${tagColor}`},[r.tag])
+              ])
             ]),
             el("div",{style:"margin-top:10px;color:#bbb;line-height:1.7"},[r.note||""])
           ]);
@@ -1278,112 +1773,259 @@
           if(unlocked){
             card.appendChild(el("div",{style:"margin-top:10px;display:grid;gap:10px"},[
               el("input",{class:"input", value:r.name, onInput:(e)=>{ r.name=e.target.value; scheduleCloudSave(); }}),
-              el("select",{class:"input", onChange:(e)=>{ r.tag=e.target.value; scheduleCloudSave(); renderApp(); }},[ el("option",{value:"Allié"},["Allié"]), el("option",{value:"Ennemi"},["Ennemi"]), el("option",{value:"Neutre"},["Neutre"]) ]),
+              el("select",{class:"input", onChange:(e)=>{ r.tag=e.target.value; scheduleCloudSave(); renderApp(); }},[
+                el("option",{value:"Allié"},["Allié"]),
+                el("option",{value:"Ennemi"},["Ennemi"]),
+                el("option",{value:"Neutre"},["Neutre"])
+              ]),
               el("div", {style:"display:flex; gap:10px; align-items:center;"}, [
                 el("input",{class:"input", style:"flex:1;", value:r.img||"", placeholder:"image url ou import...", onInput:(e)=>{ r.img=e.target.value; scheduleCloudSave(); renderApp(); }}),
                 el("button", {class:"btn small", onClick:()=> {
-                  const fi = document.createElement('input'); fi.type = 'file'; fi.accept = 'image/*';
-                  fi.onchange = (e) => window.processImageUpload(e.target.files[0], (base64) => { r.img = base64; scheduleCloudSave(); renderApp(); toast("Image contact ajoutée"); }); fi.click();
+                  const fi = document.createElement('input');
+                  fi.type = 'file'; fi.accept = 'image/*';
+                  fi.onchange = (e) => window.processImageUpload(e.target.files[0], (base64) => {
+                    r.img = base64;
+                    scheduleCloudSave();
+                    renderApp();
+                    toast("Image contact ajoutée");
+                  });
+                  fi.click();
                 }}, [el("i",{class:"fa-solid fa-upload"})])
               ]),
               el("textarea",{class:"input", style:"min-height:90px;font-family:Montserrat;font-size:14px;line-height:1.7", onInput:(e)=>{ r.note=e.target.value; scheduleCloudSave(); }},[]),
-              el("div",{style:"display:flex;justify-content:flex-end"},[ el("button",{class:"btn small danger", onClick:()=>{ deepSet(activeProfile,"data.relations.list", list.filter(x=>x.id!==r.id)); scheduleCloudSave(); renderApp(); }},[el("i",{class:"fa-solid fa-trash"})," Suppr"]) ])
+              el("div",{style:"display:flex;justify-content:flex-end"},[
+                el("button",{class:"btn small danger", onClick:()=>{
+                  deepSet(activeProfile,"data.relations.list", list.filter(x=>x.id!==r.id));
+                  scheduleCloudSave();
+                  renderApp();
+                }},[el("i",{class:"fa-solid fa-trash"})," Suppr"])
+              ])
             ]));
-            card.querySelector("textarea").value = r.note || ""; card.querySelector("select").value = r.tag || "Neutre";
+            card.querySelector("textarea").value = r.note || "";
+            card.querySelector("select").value = r.tag || "Neutre";
           }
+
           return card;
         }))
       ]);
+
+      return root;
     }
 
     function renderCustomNote(){
       const n = activeProfile.data?.custom_note || {html:""};
       return el("div",{class:"panel"},[
-        el("div",{style:"display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px"},[ el("div",{style:"font-weight:900"},["Carnet (rich text)"]), el("span",{class:"chip"},["Tu peux écrire librement"]) ]),
-        editableDivBlock(n.html, (html)=>{ deepSet(activeProfile,"data.custom_note.html", html); scheduleCloudSave(); })
+        el("div",{style:"display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px"},[
+          el("div",{style:"font-weight:900"},["Carnet (rich text)"]),
+          el("span",{class:"chip"},["Tu peux écrire librement"])
+        ]),
+        editableDivBlock(n.html, (html)=>{
+          deepSet(activeProfile,"data.custom_note.html", html);
+          scheduleCloudSave();
+        })
       ]);
     }
 
     function renderCustomCanvas(){
       const st = activeProfile.data?.custom_canvas || {strokes:[], background:"#0a0a0d"};
+
       const wrap = el("div",{},[
         el("div",{class:"panel"},[
           el("div",{style:"display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px"},[
             el("div",{style:"font-weight:900"},["Dessin (Canvas)"]),
             el("div",{style:"display:flex;gap:10px;flex-wrap:wrap;align-items:center"},[
               unlocked ? el("button",{class:"btn small", onClick:()=>exportCanvasPNG()},[el("i",{class:"fa-solid fa-file-image"})," PNG"]) : null,
-              unlocked ? el("button",{class:"btn small danger", onClick:()=>{ st.strokes = []; deepSet(activeProfile,"data.custom_canvas", st); scheduleCloudSave(); renderApp(); }},[el("i",{class:"fa-solid fa-eraser"})," Clear"]) : null
+              unlocked ? el("button",{class:"btn small danger", onClick:()=>{
+                st.strokes = [];
+                deepSet(activeProfile,"data.custom_canvas", st);
+                scheduleCloudSave();
+                renderApp();
+              }},[el("i",{class:"fa-solid fa-eraser"})," Clear"]) : null
             ])
           ]),
+          
           !unlocked ? el("div",{class:"muted", style:"margin-bottom:15px; font-style:italic; font-size:13px; text-align:center; padding:10px; background:rgba(212,175,55,0.1); border-radius:8px; color:var(--gold);"}, ["🔒 Déverrouillez le profil en haut à droite pour pouvoir dessiner."]) : null,
-          el("div",{class:"canvasWrap"},[ el("canvas",{id:"cvs"}) ]),
+          
+          el("div",{class:"canvasWrap"},[
+            el("canvas",{id:"cvs"})
+          ]),
           unlocked ? el("div",{style:"display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;align-items:center"},[
-            el("label",{class:"chip"},["Couleur"]), el("input",{id:"penColor", type:"color", value:"#d4af37"}), el("label",{class:"chip"},["Taille"]), el("input",{id:"penSize", type:"range", min:"1", max:"18", value:"4"})
+            el("label",{class:"chip"},["Couleur"]),
+            el("input",{id:"penColor", type:"color", value:"#d4af37"}),
+            el("label",{class:"chip"},["Taille"]),
+            el("input",{id:"penSize", type:"range", min:"1", max:"18", value:"4"})
           ]) : null
         ])
       ]);
-      setTimeout(()=>initCanvas(st), 50); return wrap;
+
+      setTimeout(()=>initCanvas(st), 50);
+      return wrap;
     }
 
     function initCanvas(st){
-      const canvas = $("cvs"); if(!canvas) return; const ctx = canvas.getContext("2d");
-      function resize(){ const rect = canvas.getBoundingClientRect(); const dpr = window.devicePixelRatio || 1; canvas.width = Math.floor(rect.width * dpr); canvas.height = Math.floor(rect.height * dpr); ctx.setTransform(dpr,0,0,dpr,0,0); redraw(); }
+      const canvas = $("cvs");
+      if(!canvas) return;
+
+      const ctx = canvas.getContext("2d");
+      function resize(){
+        const rect = canvas.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = Math.floor(rect.width * dpr);
+        canvas.height = Math.floor(rect.height * dpr);
+        ctx.setTransform(dpr,0,0,dpr,0,0);
+        redraw();
+      }
+
       function redraw(){
-        const rect = canvas.getBoundingClientRect(); ctx.clearRect(0,0,rect.width,rect.height); ctx.fillStyle = st.background || "#0a0a0d"; ctx.fillRect(0,0,rect.width,rect.height);
+        const rect = canvas.getBoundingClientRect();
+        ctx.clearRect(0,0,rect.width,rect.height);
+        ctx.fillStyle = st.background || "#0a0a0d";
+        ctx.fillRect(0,0,rect.width,rect.height);
+
         for(const s of (st.strokes||[])){
-          ctx.strokeStyle = s.color; ctx.lineWidth = s.size; ctx.lineCap = "round"; ctx.lineJoin = "round"; ctx.beginPath();
-          for(let i=0;i<s.points.length;i++){ const p = s.points[i]; if(i===0) ctx.moveTo(p.x, p.y); else ctx.lineTo(p.x, p.y); } ctx.stroke();
+          ctx.strokeStyle = s.color;
+          ctx.lineWidth = s.size;
+          ctx.lineCap = "round";
+          ctx.lineJoin = "round";
+          ctx.beginPath();
+          for(let i=0;i<s.points.length;i++){
+            const p = s.points[i];
+            if(i===0) ctx.moveTo(p.x, p.y);
+            else ctx.lineTo(p.x, p.y);
+          }
+          ctx.stroke();
         }
       }
-      window.addEventListener("resize", resize, {passive:true}); resize();
-      if(!unlocked){ canvas.style.cursor = "not-allowed"; return; }
-      let drawing = false; let cur = null;
-      const getPoint = (e)=>{ const rect = canvas.getBoundingClientRect(); const clientX = e.touches ? e.touches[0].clientX : e.clientX; const clientY = e.touches ? e.touches[0].clientY : e.clientY; return { x: clientX - rect.left, y: clientY - rect.top }; };
-      const colorEl = $("penColor"); const sizeEl = $("penSize");
-      const start = (e)=>{ drawing = true; const p = getPoint(e); cur = { id: uid(), color: colorEl?.value || "#d4af37", size: Number(sizeEl?.value||4), points:[p] }; st.strokes = st.strokes || []; st.strokes.push(cur); redraw(); e.preventDefault(); };
-      const move = (e)=>{ if(!drawing || !cur) return; cur.points.push(getPoint(e)); redraw(); e.preventDefault(); };
-      const end = ()=>{ drawing = false; cur = null; deepSet(activeProfile,"data.custom_canvas", st); scheduleCloudSave(); };
-      canvas.addEventListener("pointerdown", start); canvas.addEventListener("pointermove", move); window.addEventListener("pointerup", end);
-      canvas.addEventListener("touchstart", start, {passive:false}); canvas.addEventListener("touchmove", move, {passive:false}); window.addEventListener("touchend", end);
+
+      window.addEventListener("resize", resize, {passive:true});
+      resize();
+
+      if(!unlocked){
+        canvas.style.cursor = "not-allowed";
+        return;
+      }
+
+      let drawing = false;
+      let cur = null;
+
+      const getPoint = (e)=>{
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return { x: clientX - rect.left, y: clientY - rect.top };
+      };
+
+      const colorEl = $("penColor");
+      const sizeEl = $("penSize");
+
+      const start = (e)=>{
+        drawing = true;
+        const p = getPoint(e);
+        cur = { id: uid(), color: colorEl?.value || "#d4af37", size: Number(sizeEl?.value||4), points:[p] };
+        st.strokes = st.strokes || [];
+        st.strokes.push(cur);
+        redraw();
+        e.preventDefault();
+      };
+      const move = (e)=>{
+        if(!drawing || !cur) return;
+        cur.points.push(getPoint(e));
+        redraw();
+        e.preventDefault();
+      };
+      const end = ()=>{
+        drawing = false;
+        cur = null;
+        deepSet(activeProfile,"data.custom_canvas", st);
+        scheduleCloudSave();
+      };
+
+      canvas.addEventListener("pointerdown", start);
+      canvas.addEventListener("pointermove", move);
+      window.addEventListener("pointerup", end);
+
+      canvas.addEventListener("touchstart", start, {passive:false});
+      canvas.addEventListener("touchmove", move, {passive:false});
+      window.addEventListener("touchend", end);
     }
 
     function exportCanvasPNG(){
-      const canvas = $("cvs"); if(!canvas) return; const a = document.createElement("a");
-      a.download = `canvas_${activeKey}.png`; a.href = canvas.toDataURL("image/png"); a.click();
+      const canvas = $("cvs");
+      if(!canvas) return;
+      const a = document.createElement("a");
+      a.download = `canvas_${activeKey}.png`;
+      a.href = canvas.toDataURL("image/png");
+      a.click();
     }
 
     function renderCustomBoard(){
-      const cols = activeProfile.data?.custom_board?.columns || [];
-      return el("div",{class:"panel"},[
+      const b = activeProfile.data?.custom_board || {columns:[]};
+      const cols = b.columns || [];
+
+      const root = el("div",{class:"panel"},[
         el("div",{style:"display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px"},[
           el("div",{style:"font-weight:900"},["Tableau (Kanban RP)"]),
-          unlocked ? el("button",{class:"btn small primary", onClick:()=>{ cols.push({id:uid(), title:"Nouvelle colonne", cards:[]}); deepSet(activeProfile,"data.custom_board.columns", cols); scheduleCloudSave(); renderApp(); }},[el("i",{class:"fa-solid fa-plus"})," Colonne"]) : null
+          unlocked ? el("button",{class:"btn small primary", onClick:()=>{
+            cols.push({id:uid(), title:"Nouvelle colonne", cards:[]});
+            deepSet(activeProfile,"data.custom_board.columns", cols);
+            scheduleCloudSave();
+            renderApp();
+          }},[el("i",{class:"fa-solid fa-plus"})," Colonne"]) : null
         ]),
         el("div",{class:"grid3"}, cols.map(col=>{
           const cards = col.cards || [];
-          return el("div",{class:"panel", style:"margin:0"},[
+          const box = el("div",{class:"panel", style:"margin:0"},[
             el("div",{style:"display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:10px"},[
               el("div",{style:"font-weight:900;color:var(--gold)"},[col.title]),
-              unlocked ? el("button",{class:"btn small danger", onClick:()=>{ deepSet(activeProfile,"data.custom_board.columns", cols.filter(x=>x.id!==col.id)); scheduleCloudSave(); renderApp(); }},[el("i",{class:"fa-solid fa-trash"})]) : null
+              unlocked ? el("button",{class:"btn small danger", onClick:()=>{
+                deepSet(activeProfile,"data.custom_board.columns", cols.filter(x=>x.id!==col.id));
+                scheduleCloudSave();
+                renderApp();
+              }},[el("i",{class:"fa-solid fa-trash"})]) : null
             ]),
             unlocked ? el("input",{class:"input", value:col.title, onInput:(e)=>{ col.title=e.target.value; scheduleCloudSave(); }}) : null,
-            unlocked ? el("button",{class:"btn small primary", style:"margin-top:10px", onClick:()=>{ cards.unshift({id:uid(), text:"Nouvelle carte"}); col.cards = cards; scheduleCloudSave(); renderApp(); }},[el("i",{class:"fa-solid fa-plus"})," Carte"]) : null,
+            unlocked ? el("button",{class:"btn small primary", style:"margin-top:10px", onClick:()=>{
+              cards.unshift({id:uid(), text:"Nouvelle carte"});
+              col.cards = cards;
+              scheduleCloudSave();
+              renderApp();
+            }},[el("i",{class:"fa-solid fa-plus"})," Carte"]) : null,
             el("div",{style:"display:flex;flex-direction:column;gap:10px;margin-top:10px"}, cards.map(cd=>{
               const item = el("div",{class:"timelineItem"},[
                 el("div",{style:"display:flex;justify-content:space-between;gap:10px;align-items:center"},[
                   el("div",{style:"flex:1;color:#ddd"},[cd.text]),
-                  unlocked ? el("button",{class:"btn small danger", onClick:()=>{ col.cards = cards.filter(x=>x.id!==cd.id); scheduleCloudSave(); renderApp(); }},[el("i",{class:"fa-solid fa-trash"})]) : null
+                  unlocked ? el("button",{class:"btn small danger", onClick:()=>{
+                    col.cards = cards.filter(x=>x.id!==cd.id);
+                    scheduleCloudSave();
+                    renderApp();
+                  }},[el("i",{class:"fa-solid fa-trash"})]) : null
                 ])
               ]);
-              if(unlocked){ item.appendChild(el("input",{class:"input", value:cd.text, style:"margin-top:10px;font-family:Montserrat", onInput:(e)=>{ cd.text=e.target.value; scheduleCloudSave(); }})); }
+              if(unlocked){
+                item.appendChild(el("input",{class:"input", value:cd.text, style:"margin-top:10px;font-family:Montserrat", onInput:(e)=>{ cd.text=e.target.value; scheduleCloudSave(); }}));
+              }
               return item;
             }))
           ]);
+          return box;
         }))
       ]);
+      return root;
     }
 
-    function openUnlockModal(){ $("uPin").value = ""; modal($("mUnlock"), true); setTimeout(()=> $("uPin").focus(), 50); }
+    // === FONCTIONS GLOBALES (Modal, Menu Mobile) ===
+    
+    $("mobileMenuBtn").addEventListener("click", () => {
+        document.querySelector(".sidebar").classList.add("open");
+        $("sidebarOverlay").classList.add("open");
+    });
+    
+    $("sidebarOverlay").addEventListener("click", () => {
+        document.querySelector(".sidebar").classList.remove("open");
+        $("sidebarOverlay").classList.remove("open");
+    });
+
+    function openUnlockModal(){ $("uPin").value = ""; modal($("mUnlock"), true); }
     
     function unlock(){
       const pin = ($("uPin").value || "").trim();
@@ -1395,51 +2037,50 @@
     
     function lock(){ unlocked = false; setEditMode(false); toast("Verrouillé"); renderApp(); }
     
-    function openCreateModal(){ 
-      if(!isGlobalCreationAllowed) return toast("La création de dossier est fermée par l'administration.");
-      modal($("mCreate"), true); fillDuplicateSelect(); 
-    }
+    function openCreateModal(){ modal($("mCreate"), true); fillDuplicateSelect(); }
     
     async function createProfile(){
-      if(!isGlobalCreationAllowed) return toast("Création refusée.");
       const name = ($("cName").value || "").trim() || "Dossier"; const key = slugify(($("cKey").value || "").trim() || name); const pin = ($("cPin").value || "").trim();
       if(pin.length < 4) return toast("PIN trop court");
-      
       const ref = doc(db, "profiles", key); const exists = await getDoc(ref); if(exists.exists()) return toast("ID déjà pris");
-      
-      const base = profilesCache.get($("cFrom").value) || harryProfile();
-      const p = JSON.parse(JSON.stringify(base)); 
-      
-      p.key = key; p.displayName = name; p.data.identite.fullName = name; p.public = true;
-      p.meta = p.meta || {}; p.meta.img = ($("cImg").value || "").trim(); p.meta.ref = "";
-      p.security = p.security || {}; p.security.fixedPin = false; p.security.pinHash = hashPin(pin);
-      p.updatedAt = Date.now();
-      p.data.timeline.events = []; p.data.goals.court = []; p.data.goals.long = []; p.data.roulette.history = [];
-
-      import { setDoc } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
+      const p = defaultProfile(key, name); p.security.pinHash = hashPin(pin);
       await setDoc(ref, p); toast("Profil créé !"); modal($("mCreate"), false); await refreshProfilesList();
     }
 
     function exportActive(){
-      const json = JSON.stringify(activeProfile, null, 2); const blob = new Blob([json], {type:"application/json"}); const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob); a.download = `profil_${activeProfile.key}_${new Date().toISOString().slice(0,10)}.json`; a.click();
-      setTimeout(()=>URL.revokeObjectURL(a.href), 1200); toast("Export OK");
+      const json = JSON.stringify(activeProfile, null, 2);
+      const blob = new Blob([json], {type:"application/json"});
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `profil_${activeProfile.key}_${new Date().toISOString().slice(0,10)}.json`;
+      a.click();
+      setTimeout(()=>URL.revokeObjectURL(a.href), 1200);
+      toast("Export OK");
     }
 
     async function importActive(){
       if(!unlocked) return toast("Déverrouille d'abord");
       try{
-        const raw = ($("importJson").value||"").trim(); const obj = JSON.parse(raw);
+        const raw = ($("importJson").value||"").trim();
+        const obj = JSON.parse(raw);
         if(!obj.key || obj.key !== activeKey) return toast("Le JSON doit correspondre à ce profil");
         activeProfile = obj;
-        import { setDoc } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
         await setDoc(doc(db,"profiles",activeKey), activeProfile, {merge:false});
-        modal($("mImport"), false); toast("Import OK");
-      }catch(e){ alert("JSON invalide: " + e.message); }
+        modal($("mImport"), false);
+        toast("Import OK");
+      }catch(e){
+        alert("JSON invalide: " + e.message);
+      }
     }
 
     function printProfile(){
-      const w = window.open("", "_blank"); const p = activeProfile; const name = p.displayName || p.key; const idt = p.data?.identite || {}; const lore = p.data?.lore?.sections || []; const timeline = p.data?.timeline?.events || [];
+      const w = window.open("", "_blank");
+      const p = activeProfile;
+      const name = p.displayName || p.key;
+      const idt = p.data?.identite || {};
+      const lore = p.data?.lore?.sections || [];
+      const timeline = p.data?.timeline?.events || [];
+
       const idtHtml = `
         <p><strong>Nom complet :</strong> ${idt.fullName||""}</p>
         <p><strong>Âge :</strong> ${idt.age||""}</p>
@@ -1449,6 +2090,7 @@
         <p><strong>Physique :</strong> ${idt.phys||""} - ${idt.sign||""}</p>
         <p><strong>Voix :</strong> ${idt.voice||""}</p>
       `;
+
       const loreHtml = lore.map(s => `<h3>${escapeHtml(s.title)}</h3><p>${escapeHtml(s.text)}</p>`).join('');
       const tlHtml = timeline.map(e => `<li><strong>${new Date(e.at).toLocaleDateString()} - ${escapeHtml(e.title)}:</strong> ${escapeHtml(e.text)}</li>`).join('');
 
@@ -1461,19 +2103,67 @@
           h3{margin-top:20px; font-size:16px; color:#555;}
           .stamp{position:fixed; top:30px; right:40px; border:3px solid #d00; color:#d00; padding:10px 15px; transform:rotate(8deg); font-weight:900; font-size:18px; border-radius:4px;}
           .ref{color:#666; font-family:monospace; margin-bottom:30px;}
-          p{margin:8px 0;} ul{padding-left:20px;} li{margin-bottom:10px;}
+          p{margin:8px 0;}
+          ul{padding-left:20px;}
+          li{margin-bottom:10px;}
         </style></head><body>
         <div class="stamp">GRANDLINE // CONFIDENTIEL</div>
         <h1>DOSSIER : ${escapeHtml(name)}</h1>
         <div class="ref">REF: ${escapeHtml(p.meta?.ref||"INCONNUE")} | EXPORT OFFICIEL PARIS RP</div>
-        <h2>1. Identité Civile</h2>${idtHtml}
-        <h2>2. Histoire et Rapports</h2>${loreHtml || "<p>Aucune donnée d'histoire.</p>"}
-        <h2>3. Chronologie (Timeline)</h2><ul>${tlHtml || "<li>Aucun événement enregistré.</li>"}</ul>
+        
+        <h2>1. Identité Civile</h2>
+        ${idtHtml}
+
+        <h2>2. Histoire et Rapports</h2>
+        ${loreHtml || "<p>Aucune donnée d'histoire.</p>"}
+
+        <h2>3. Chronologie (Timeline)</h2>
+        <ul>${tlHtml || "<li>Aucun événement enregistré.</li>"}</ul>
+        
         <script>setTimeout(() => window.print(), 500);<\/script>
         </body></html>
       `);
       w.document.close();
     }
+
+    function escapeHtml(s){
+      return String(s ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");
+    }
+
+    // Événements globaux
+    $("q").addEventListener("input", renderLanding);
+    $("btnCreate").addEventListener("click", openCreateModal);
+    $("cOk").addEventListener("click", createProfile);
+    $("back").addEventListener("click", backToLanding);
+    $("unlock").addEventListener("click", openUnlockModal);
+    $("lock").addEventListener("click", lock);
+    $("uOk").addEventListener("click", unlock);
+    $("uCancel").addEventListener("click", ()=>modal($("mUnlock"), false));
+    $("cCancel").addEventListener("click", ()=>modal($("mCreate"), false));
+    $("tools").addEventListener("click", ()=>modal($("mTools"), true));
+    $("tClose").addEventListener("click", ()=>modal($("mTools"), false));
+    $("export").addEventListener("click", exportActive);
+    $("importOpen").addEventListener("click", ()=>modal($("mImport"), true));
+    $("iCancel").addEventListener("click", ()=>modal($("mImport"), false));
+    $("iOk").addEventListener("click", importActive);
+    $("print").addEventListener("click", printProfile);
+
+    $("deleteProfileBtn").addEventListener("click", async ()=>{
+      if(!unlocked) return toast("Déverrouille d'abord");
+      if(activeKey === "harry" || activeKey === "seya") return toast("Impossible de supprimer les profils de base");
+      if(confirm("Supprimer définitivement ?")){ await deleteDoc(doc(db, "profiles", activeKey)); backToLanding(); modal($("mTools"), false);}
+    });
+
+    document.addEventListener("keydown", (e)=>{
+      if(e.key==="/" && document.activeElement?.tagName!=="INPUT" && document.activeElement?.tagName!=="TEXTAREA"){
+        e.preventDefault(); $("q").focus();
+      }
+      if(e.key==="Escape"){
+        [$("mCreate"),$("mUnlock"),$("mTools"),$("mImport"),$("mHelp")].forEach(m=>m.classList.remove("show"));
+      }
+    });
+
+    await refreshProfilesList();
   </script>
 </body>
 </html>
