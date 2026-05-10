@@ -34,15 +34,15 @@
     a{color:var(--gold)}
 
     .logo-main {
-      height: 90px; 
+      height: 60px; 
       width: auto;
-      max-width: 300px;
+      max-width: 250px;
       object-fit: contain; 
       display: block;
       filter: drop-shadow(0 0 10px rgba(212,175,55, 0.5));
     }
     .logo-sidebar {
-      height: 80px; 
+      height: 40px; 
       width: auto;
       max-width: 200px;
       object-fit: contain; 
@@ -627,6 +627,23 @@
     </div>
   </div>
 
+  <div class="modal" id="modalGallery">
+    <div class="modalBox">
+      <h3>Ajouter Photo</h3>
+      <div class="formGroup">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <label style="margin:0;">Image (URL ou Fichier)</label>
+          <button type="button" class="btn small primary" id="btnUploadGallery"><i class="fa-solid fa-upload"></i> Importer du PC</button>
+        </div>
+        <input type="text" id="galleryUrl" class="input" placeholder="Ex: screen1.png ou import PC">
+      </div>
+      <div class="modalActions">
+        <button class="btn" onclick="closeModal('modalGallery')" style="background:transparent; border-color:#555; color:#888;">Annuler</button>
+        <button class="btn primary" onclick="addPhoto()">Ajouter</button>
+      </div>
+    </div>
+  </div>
+
   <div class="modal" id="mHelp">
     <div class="modalBox">
       <h3>Aide</h3>
@@ -701,6 +718,54 @@
       }
       cur[parts[parts.length-1]] = value;
     }
+
+    // ====== FONCTION POUR COMPRESSER ET CONVERTIR LES IMAGES EN BASE64 ======
+    window.processImageUpload = function(file, callback) {
+      if(!file) return;
+      if(file.type.indexOf('image') === -1) return toast("Ce n'est pas une image.");
+      if(file.size > 10 * 1024 * 1024) return toast("Fichier trop lourd (max 10Mo)"); 
+      
+      toast("Compression de l'image...");
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          const MAX_SIZE = 600; // Résolution max pour économiser la base de données
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height) {
+            if (width > MAX_SIZE) {
+              height *= MAX_SIZE / width;
+              width = MAX_SIZE;
+            }
+          } else {
+            if (height > MAX_SIZE) {
+              width *= MAX_SIZE / height;
+              height = MAX_SIZE;
+            }
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, width, height);
+          
+          // Compression en JPEG qualité 60%
+          const dataUrl = canvas.toDataURL("image/jpeg", 0.6);
+          
+          // Taille approximative en octets du base64
+          const sizeInBytes = Math.round((dataUrl.length - 22) * 3 / 4);
+          if(sizeInBytes > 300000) { 
+             toast("Attention: Image encore un peu lourde.");
+          }
+          callback(dataUrl);
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+    // =========================================================================
 
     const PIN_HARRY = "15122004";
     const PIN_SEYA  = "11111110";
@@ -1140,15 +1205,28 @@
       const idt = activeProfile.data?.identite || {};
       const wrap = el("div",{class:"grid2"},[
         el("div",{class:"panel"},[
-          el("div",{class:"fieldLabel"},["Photo (URL/path)"]),
-          el("input",{class:"input", id:"imgUrl", value: idt.img || activeProfile.meta?.img || ""}),
-          
-          /* === NOUVEAU TEXTE D'AIDE === */
-          el("div",{class:"muted",style:"margin-top:8px; line-height:1.5; font-size:11px;"},[
-              "Comment faire ? Collez ici un lien web direct vers une image (ex: https://lien.com/image.png) ou tapez le nom exact d'un fichier présent sur votre GitHub (ex: photo_harry.png)."
+          el("div",{style:"display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;"},[
+            el("div",{class:"fieldLabel", style:"margin:0;"},["Photo du profil"]),
+            unlocked ? el("button", {class:"btn small primary", onClick:()=> {
+              const fi = document.createElement('input');
+              fi.type = 'file';
+              fi.accept = 'image/*';
+              fi.onchange = (e) => window.processImageUpload(e.target.files[0], (base64) => {
+                const input = $("imgUrl");
+                const preview = $("imgPreview");
+                input.value = base64;
+                activeProfile.meta.img = base64;
+                if(preview) { preview.src = base64; preview.style.opacity = '1'; }
+                scheduleCloudSave();
+                toast("Image uploadée !");
+              });
+              fi.click();
+            }}, [el("i",{class:"fa-solid fa-upload"})," Parcourir (PC)"]) : null
           ]),
-          /* ============================ */
-          
+          el("input",{class:"input", id:"imgUrl", placeholder:"URL ou import PC...", value: idt.img || activeProfile.meta?.img || ""}),
+          el("div",{class:"muted",style:"margin-top:8px; line-height:1.5; font-size:11px;"},[
+              "Comment faire ? Collez ici un lien web direct vers une image (ex: https://lien.com/image.png) ou utilisez le bouton 'Parcourir (PC)' pour importer directement un fichier de votre ordinateur."
+          ]),
           el("div",{style:"margin-top:12px;display:flex;gap:12px;align-items:center;flex-wrap:wrap"},[
             el("div",{class:"avatar",style:"width:92px;height:92px"},[
               el("img",{id:"imgPreview", src: activeProfile.meta?.img || "", onError: (e) => e.target.style.opacity = '0' })
@@ -1430,9 +1508,7 @@
       ]);
 
       return el("div",{},[
-        /* === NOUVEAU TEXTE D'AIDE === */
         el("p", {class:"muted", style:"margin-bottom: 15px; font-size: 13px; font-style: italic;"}, ["Utilisez cet outil pour des choix aléatoires ou de type roulette pour les réactions de votre personnage."]),
-        /* ============================ */
         el("div",{class:"panel"},[
           result,
           el("div",{style:"margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center"},[
@@ -1532,7 +1608,21 @@
                 el("option",{value:"Ennemi"},["Ennemi"]),
                 el("option",{value:"Neutre"},["Neutre"])
               ]),
-              el("input",{class:"input", value:r.img||"", placeholder:"image url/path", onInput:(e)=>{ r.img=e.target.value; scheduleCloudSave(); renderApp(); }}),
+              // BOUTON IMPORT IMAGE CONTACT
+              el("div", {style:"display:flex; gap:10px; align-items:center;"}, [
+                el("input",{class:"input", style:"flex:1;", value:r.img||"", placeholder:"image url ou import...", onInput:(e)=>{ r.img=e.target.value; scheduleCloudSave(); renderApp(); }}),
+                el("button", {class:"btn small", onClick:()=> {
+                  const fi = document.createElement('input');
+                  fi.type = 'file'; fi.accept = 'image/*';
+                  fi.onchange = (e) => window.processImageUpload(e.target.files[0], (base64) => {
+                    r.img = base64;
+                    scheduleCloudSave();
+                    renderApp();
+                    toast("Image contact ajoutée");
+                  });
+                  fi.click();
+                }}, [el("i",{class:"fa-solid fa-upload"})])
+              ]),
               el("textarea",{class:"input", style:"min-height:90px;font-family:Montserrat;font-size:14px;line-height:1.7", onInput:(e)=>{ r.note=e.target.value; scheduleCloudSave(); }},[]),
               el("div",{style:"display:flex;justify-content:flex-end"},[
                 el("button",{class:"btn small danger", onClick:()=>{
@@ -1999,6 +2089,32 @@
       return String(s ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");
     }
 
+    // ====== INITIALISATION DU BOUTON GALERIE ======
+    window.addPhoto = function() {
+      const url = document.getElementById('galleryUrl').value;
+      if(!url) return;
+      
+      let photos = activeProfile.data.photos || [];
+      photos.push({ id: uid(), url: url });
+      deepSet(activeProfile, "data.photos", photos);
+      
+      scheduleCloudSave();
+      renderApp();
+      closeModal('modalGallery');
+      toast("Photo ajoutée !");
+    };
+
+    $("btnUploadGallery").addEventListener("click", ()=>{
+      const fi = document.createElement('input');
+      fi.type = 'file'; fi.accept = 'image/*';
+      fi.onchange = (e) => window.processImageUpload(e.target.files[0], (base64) => {
+        $("galleryUrl").value = base64;
+        toast("Image prête ! Cliquez sur Ajouter.");
+      });
+      fi.click();
+    });
+    // ===============================================
+
     $("q").addEventListener("input", renderLanding);
     $("btnCreate").addEventListener("click", openCreateModal);
     $("btnHelp").addEventListener("click", ()=>modal($("mHelp"), true));
@@ -2045,7 +2161,7 @@
         e.preventDefault(); $("q").focus();
       }
       if(e.key==="Escape"){
-        [$("mCreate"),$("mUnlock"),$("mTools"),$("mImport"),$("mHelp")].forEach(m=>m.classList.remove("show"));
+        [$("mCreate"),$("mUnlock"),$("mTools"),$("mImport"),$("mHelp"), $("modalGallery")].forEach(m=>m.classList.remove("show"));
       }
     });
 
