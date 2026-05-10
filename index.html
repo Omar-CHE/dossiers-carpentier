@@ -37,15 +37,19 @@
 
     /* ======= LOGOS GRANDLINE ======= */
     .logo-main {
-      height: 60px; /* Taille pour la page d'accueil */
+      height: 60px; 
       width: auto;
+      max-width: 250px; /* Évite qu'il prenne trop de place en largeur */
+      object-fit: contain; /* <--- LA MAGIE ANTI-ÉCRASEMENT */
       display: block;
       margin-bottom: 10px;
       filter: drop-shadow(0 0 10px rgba(212,175,55, 0.5));
     }
     .logo-sidebar {
-      height: 40px; /* Taille plus petite pour le menu sur le côté */
+      height: 40px; 
       width: auto;
+      max-width: 200px;
+      object-fit: contain; /* <--- LA MAGIE ANTI-ÉCRASEMENT */
       display: block;
       margin: 0 auto 15px auto;
       filter: drop-shadow(0 0 5px rgba(212,175,55, 0.5));
