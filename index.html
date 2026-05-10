@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>PARIS RP — DOSSIERS</title>
-<link rel="icon" type="image/png" href="logo.png">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Montserrat:wght@300;400;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:wght@600&family=Montserrat:wght@300;400;700;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
@@ -72,7 +72,6 @@
     .btn.primary:hover{background:rgba(212,175,55,.20)}
     .btn.danger{border-color:rgba(231,76,60,.55);background:rgba(231,76,60,.08);color:#ffbdb7}
     
-    /* ======= BOUTON TWITCH ======= */
     .btn.twitch{border-color:#9146ff;background:rgba(145,70,255,0.15);color:#b380ff;}
     .btn.twitch:hover{background:rgba(145,70,255,0.3); color:#fff;}
     .hrp-pseudo{font-size:10px; color:#b380ff; margin-top:3px; font-weight:700; text-transform:uppercase; letter-spacing:1px;}
@@ -80,7 +79,6 @@
     .btn.small{padding:8px 10px;font-size:11px;border-radius:12px}
     .btn:disabled{opacity:.45;cursor:not-allowed}
 
-    /* ======= CREDIT STYLE ======= */
     .credit-landing {
       position: fixed;
       bottom: 20px;
@@ -96,9 +94,7 @@
       font-weight: bold;
       text-decoration: none;
     }
-    .credit-landing a:hover {
-        text-decoration: underline;
-    }
+    .credit-landing a:hover { text-decoration: underline; }
 
     .input{
       width:100%;
@@ -162,14 +158,14 @@
       display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; align-items:flex-start;
       margin-bottom:18px;
     }
-    .brand{
-      display:flex; flex-direction:column; gap:8px;
-    }
+    .brand{ display:flex; flex-direction:column; gap:8px; }
+    
+    /* === POLICE BEBAS NEUE POUR PARIS RP === */
     .brandTitle{
-      font-family:"Playfair Display",serif;
+      font-family:"Bebas Neue", sans-serif;
       color:var(--gold);
-      letter-spacing:6px;
-      font-size:44px;
+      letter-spacing:4px;
+      font-size:54px;
       text-shadow:0 10px 50px rgba(0,0,0,.8);
     }
     .brandSub{
@@ -258,11 +254,13 @@
       text-align:center;
       border-bottom:1px solid #1f1f26;
     }
+    
+    /* === POLICE BEBAS NEUE POUR LE NOM DANS LA SIDEBAR === */
     .sbHead h2{
-      font-family:"Playfair Display",serif;
+      font-family:"Bebas Neue", sans-serif;
       color:var(--gold);
       letter-spacing:2px;
-      font-size:20px;
+      font-size:30px;
       margin-bottom:8px;
     }
     .sbHead p{
@@ -352,9 +350,7 @@
       cursor:pointer;
       user-select: none;
     }
-    .switch input{
-      display:none;
-    }
+    .switch input{ display:none; }
     .slider {
       width: 42px;
       height: 22px;
@@ -409,8 +405,8 @@
     .spin{animation:glitch .08s infinite}
     @keyframes glitch{from{transform:translate(2px,0)}to{transform:translate(-2px,0)}}
 
-    .canvasWrap{border:1px solid #1f1f26;background:#0a0a0d;border-radius:18px;overflow:hidden}
-    canvas{display:block;width:100%;height:420px;touch-action:none}
+    .canvasWrap{border:1px solid #1f1f26;background:#0a0a0d;border-radius:18px;overflow:hidden;}
+    canvas{display:block;width:100%;height:420px;touch-action:none; background:#0a0a0d;}
 
     .modal{display:none; position:fixed; inset:0; background:rgba(0,0,0,.88); backdrop-filter: blur(8px); z-index:50; padding:18px; align-items:center; justify-content:center}
     .modal.show{display:flex}
@@ -967,6 +963,7 @@
       const list = $("list"); list.textContent = "";
       const q = ($("q").value||"").trim().toLowerCase();
       const arr = Array.from(profilesCache.values()).sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0));
+      
       for(const p of arr){
         const hay = `${p.displayName||""} ${p.key||""} ${(p.data?.identite?.role||"")} ${(p.meta?.tags||[]).join(" ")}`.toLowerCase();
         if(q && !hay.includes(q)) continue;
@@ -990,7 +987,6 @@
         name.textContent = p.displayName || p.key;
         info.appendChild(name); 
 
-        // === AJOUT PSEUDO STREAMER ===
         const hrpData = p.data?.hrp || {};
         if(hrpData.isStreamer && hrpData.pseudo) {
             const pseudoDiv = document.createElement("div");
@@ -1024,7 +1020,6 @@
         openBtn.addEventListener("click", ()=>openProfile(p.key));
         actions.appendChild(openBtn);
         
-        // === AJOUT BOUTON TWITCH ===
         if(hrpData.isStreamer && hrpData.twitch) {
             const twBtn = document.createElement("a");
             twBtn.href = hrpData.twitch;
@@ -1118,7 +1113,10 @@
     }
 
     function renderAppHeader(){
-      $("sbName").textContent = (activeProfile.displayName || activeProfile.key) + " O.S";
+      // === AFFICHAGE DU VRAI NOM DU PERSONNAGE ===
+      const fullName = activeProfile.data?.identite?.fullName || activeProfile.displayName || activeProfile.key;
+      $("sbName").textContent = fullName.toUpperCase();
+      
       $("activeName").textContent = (activeProfile.displayName || activeProfile.key);
       $("sbRef").textContent = activeProfile.meta?.ref || "—";
       $("sbPublic").innerHTML = `<i class="fa-solid fa-globe"></i> Public (lecture)`;
@@ -1152,13 +1150,21 @@
       const d = el("div", { class:"editable", tabindex:"0" });
       d.innerHTML = value || "";
       d.contentEditable = unlocked ? "true" : "false";
-      d.addEventListener("blur", ()=>{ 
+      
+      d.addEventListener("input", ()=>{ 
           if(!unlocked) return; 
-          onCommit(d.innerHTML.trim()); 
+          onCommit(d.innerHTML); 
       });
-      d.addEventListener("keydown", (e)=>{ 
-          if(!unlocked) return; 
-          if(e.key==="Enter"){ e.preventDefault(); d.blur(); } 
+      return d;
+    }
+    
+    function editableDivBlock(html, onCommit){
+      const d = el("div",{class:"editable", style:"min-height:240px"});
+      d.innerHTML = html || "";
+      d.contentEditable = unlocked ? "true" : "false";
+      d.addEventListener("input", ()=>{
+        if(!unlocked) return;
+        onCommit(d.innerHTML);
       });
       return d;
     }
@@ -1273,8 +1279,8 @@
               "Comment faire ? Collez ici un lien web direct ou utilisez le bouton 'Parcourir'."
           ]),
           
-          el("div",{style:"margin-top:12px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap"},[
-            el("div",{class:"avatar",style:"width:92px;height:92px"},[
+          el("div",{style:"margin-top:12px;display:flex;justify-content:center;align-items:center;flex-wrap:wrap"},[
+            el("div",{class:"avatar",style:"width:140px;height:140px; border-color:var(--goldDim);"},[
               el("img",{id:"imgPreview", src: activeProfile.meta?.img || "", onError: (e) => e.target.style.opacity = '0' })
             ])
           ])
@@ -1387,7 +1393,13 @@
         el("div",{class:"panel"},[
           el("div",{style:"display:flex;justify-content:space-between;margin-bottom:10px;"},[
               el("div",{style:"font-weight:900"},["Options"]), 
-              unlocked ? el("button",{class:"btn small primary", onClick:()=>{ r.options.push({id:uid(), text:"Nouvelle action"}); scheduleCloudSave(); renderApp(); }},["+"]) : null 
+              unlocked ? el("button",{class:"btn small primary", onClick:()=>{ 
+                  const txt = prompt("Quelle action voulez-vous ajouter ?");
+                  if(!txt) return;
+                  r.options.push({id:uid(), text:txt, weight:1}); 
+                  scheduleCloudSave(); 
+                  renderApp(); 
+              }},["+ Ajouter"]) : null 
           ]),
           el("div",{style:"display:flex;flex-wrap:wrap;gap:10px"}, r.options.map(o=> 
               el("div",{class:"tag"},[
@@ -1407,6 +1419,9 @@
             el("span",{class:"ref"},["customizable"]) 
         ]),
         el("div",{class:"panel"},[
+          el("div",{class:"muted",style:"line-height:1.7;margin-bottom:12px"},[
+            "Ici tu peux renommer, masquer (enabled), et choisir la visibilité publique de chaque onglet."
+          ]),
           el("div",{style:"display:flex;flex-direction:column;gap:12px"}, tabs.map((t,idx)=>{
             return el("div",{class:"timelineItem"},[
               el("div",{style:"display:flex;justify-content:space-between;"},[ 
@@ -1660,7 +1675,6 @@
           el("div",{style:"display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px"},[
             el("div",{style:"font-weight:900"},["Dessin (Canvas)"]),
             el("div",{style:"display:flex;gap:10px;flex-wrap:wrap;align-items:center"},[
-              el("span",{class:"chip"},["Public: " + (isTabPublic("custom2") ? "oui" : "non")]),
               unlocked ? el("button",{class:"btn small", onClick:()=>exportCanvasPNG()},[el("i",{class:"fa-solid fa-file-image"})," PNG"]) : null,
               unlocked ? el("button",{class:"btn small danger", onClick:()=>{
                 st.strokes = [];
@@ -1670,6 +1684,9 @@
               }},[el("i",{class:"fa-solid fa-eraser"})," Clear"]) : null
             ])
           ]),
+          
+          !unlocked ? el("div",{class:"muted", style:"margin-bottom:15px; font-style:italic; font-size:13px; text-align:center; padding:10px; background:rgba(212,175,55,0.1); border-radius:8px; color:var(--gold);"}, ["🔒 Déverrouillez le profil en haut à droite pour pouvoir dessiner."]) : null,
+          
           el("div",{class:"canvasWrap"},[
             el("canvas",{id:"cvs"})
           ]),
@@ -1678,11 +1695,11 @@
             el("input",{id:"penColor", type:"color", value:"#d4af37"}),
             el("label",{class:"chip"},["Taille"]),
             el("input",{id:"penSize", type:"range", min:"1", max:"18", value:"4"})
-          ]) : el("div",{class:"muted",style:"margin-top:10px"},["Lecture seule"])
+          ]) : null
         ])
       ]);
 
-      setTimeout(()=>initCanvas(st), 0);
+      setTimeout(()=>initCanvas(st), 50);
       return wrap;
     }
 
@@ -1837,8 +1854,9 @@
       return root;
     }
 
-    // === RESTE DU SCRIPT FIREBASE ===
+    // === FONCTIONS GLOBALES (Modal, Déverrouillage) ===
     function openUnlockModal(){ $("uPin").value = ""; modal($("mUnlock"), true); }
+    
     function unlock(){
       const pin = ($("uPin").value || "").trim();
       if(activeProfile.key==="harry" && pin !== PIN_HARRY) return toast("PIN incorrect");
@@ -1846,8 +1864,11 @@
       if(activeProfile.key!=="harry" && activeProfile.key!=="seya" && activeProfile.security.pinHash && hashPin(pin) !== activeProfile.security.pinHash) return toast("PIN incorrect");
       unlocked = true; setEditMode(true); modal($("mUnlock"), false); toast("Édition activée"); renderApp();
     }
+    
     function lock(){ unlocked = false; setEditMode(false); toast("Verrouillé"); renderApp(); }
+    
     function openCreateModal(){ modal($("mCreate"), true); fillDuplicateSelect(); }
+    
     async function createProfile(){
       const name = ($("cName").value || "").trim() || "Dossier"; const key = slugify(($("cKey").value || "").trim() || name); const pin = ($("cPin").value || "").trim();
       if(pin.length < 4) return toast("PIN trop court");
@@ -1856,6 +1877,91 @@
       await setDoc(ref, p); toast("Profil créé !"); modal($("mCreate"), false); await refreshProfilesList();
     }
 
+    // Export/Import
+    function exportActive(){
+      const json = JSON.stringify(activeProfile, null, 2);
+      const blob = new Blob([json], {type:"application/json"});
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `profil_${activeProfile.key}_${new Date().toISOString().slice(0,10)}.json`;
+      a.click();
+      setTimeout(()=>URL.revokeObjectURL(a.href), 1200);
+      toast("Export OK");
+    }
+
+    async function importActive(){
+      if(!unlocked) return toast("Déverrouille d'abord");
+      try{
+        const raw = ($("importJson").value||"").trim();
+        const obj = JSON.parse(raw);
+        if(!obj.key || obj.key !== activeKey) return toast("Le JSON doit correspondre à ce profil");
+        activeProfile = obj;
+        await setDoc(doc(db,"profiles",activeKey), activeProfile, {merge:false});
+        modal($("mImport"), false);
+        toast("Import OK");
+      }catch(e){
+        alert("JSON invalide: " + e.message);
+      }
+    }
+
+    function printProfile(){
+      const w = window.open("", "_blank");
+      const p = activeProfile;
+      const name = p.displayName || p.key;
+      const idt = p.data?.identite || {};
+      const lore = p.data?.lore?.sections || [];
+      const timeline = p.data?.timeline?.events || [];
+
+      const idtHtml = `
+        <p><strong>Nom complet :</strong> ${idt.fullName||""}</p>
+        <p><strong>Âge :</strong> ${idt.age||""}</p>
+        <p><strong>Naissance :</strong> ${idt.birthdate||""} à ${idt.birthplace||""}</p>
+        <p><strong>Origines :</strong> ${idt.origins||""}</p>
+        <p><strong>Rôle :</strong> ${idt.role||""}</p>
+        <p><strong>Physique :</strong> ${idt.phys||""} - ${idt.sign||""}</p>
+        <p><strong>Voix :</strong> ${idt.voice||""}</p>
+      `;
+
+      const loreHtml = lore.map(s => `<h3>${escapeHtml(s.title)}</h3><p>${escapeHtml(s.text)}</p>`).join('');
+      const tlHtml = timeline.map(e => `<li><strong>${new Date(e.at).toLocaleDateString()} - ${escapeHtml(e.title)}:</strong> ${escapeHtml(e.text)}</li>`).join('');
+
+      w.document.write(`
+        <html><head><title>${name} — Dossier RP</title>
+        <style>
+          body{font-family:'Segoe UI', Arial, sans-serif; padding:40px; color:#111; line-height:1.6;}
+          h1{margin:0 0 5px; font-size:32px; border-bottom:2px solid #000; padding-bottom:10px; text-transform:uppercase;}
+          h2{margin-top:30px; font-size:20px; color:#333; border-bottom:1px solid #ccc; padding-bottom:5px; text-transform:uppercase;}
+          h3{margin-top:20px; font-size:16px; color:#555;}
+          .stamp{position:fixed; top:30px; right:40px; border:3px solid #d00; color:#d00; padding:10px 15px; transform:rotate(8deg); font-weight:900; font-size:18px; border-radius:4px;}
+          .ref{color:#666; font-family:monospace; margin-bottom:30px;}
+          p{margin:8px 0;}
+          ul{padding-left:20px;}
+          li{margin-bottom:10px;}
+        </style></head><body>
+        <div class="stamp">GRANDLINE // CONFIDENTIEL</div>
+        <h1>DOSSIER : ${escapeHtml(name)}</h1>
+        <div class="ref">REF: ${escapeHtml(p.meta?.ref||"INCONNUE")} | EXPORT OFFICIEL PARIS RP</div>
+        
+        <h2>1. Identité Civile</h2>
+        ${idtHtml}
+
+        <h2>2. Histoire et Rapports</h2>
+        ${loreHtml || "<p>Aucune donnée d'histoire.</p>"}
+
+        <h2>3. Chronologie (Timeline)</h2>
+        <ul>${tlHtml || "<li>Aucun événement enregistré.</li>"}</ul>
+        
+        <script>setTimeout(() => window.print(), 500);<\/script>
+        </body></html>
+      `);
+      w.document.close();
+    }
+
+    function escapeHtml(s){
+      return String(s ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");
+    }
+
+    // Événements globaux
     $("q").addEventListener("input", renderLanding);
     $("btnCreate").addEventListener("click", openCreateModal);
     $("cOk").addEventListener("click", createProfile);
@@ -1867,10 +1973,25 @@
     $("cCancel").addEventListener("click", ()=>modal($("mCreate"), false));
     $("tools").addEventListener("click", ()=>modal($("mTools"), true));
     $("tClose").addEventListener("click", ()=>modal($("mTools"), false));
-    $("export").addEventListener("click", ()=>toast("Export JSON..."));
+    $("export").addEventListener("click", exportActive);
+    $("importOpen").addEventListener("click", ()=>modal($("mImport"), true));
+    $("iCancel").addEventListener("click", ()=>modal($("mImport"), false));
+    $("iOk").addEventListener("click", importActive);
+    $("print").addEventListener("click", printProfile);
+
     $("deleteProfileBtn").addEventListener("click", async ()=>{
       if(!unlocked) return toast("Déverrouille d'abord");
-      if(confirm("Supprimer définitivement ?")){ await deleteDoc(doc(db, "profiles", activeKey)); backToLanding(); }
+      if(activeKey === "harry" || activeKey === "seya") return toast("Impossible de supprimer les profils de base");
+      if(confirm("Supprimer définitivement ?")){ await deleteDoc(doc(db, "profiles", activeKey)); backToLanding(); modal($("mTools"), false);}
+    });
+
+    document.addEventListener("keydown", (e)=>{
+      if(e.key==="/" && document.activeElement?.tagName!=="INPUT" && document.activeElement?.tagName!=="TEXTAREA"){
+        e.preventDefault(); $("q").focus();
+      }
+      if(e.key==="Escape"){
+        [$("mCreate"),$("mUnlock"),$("mTools"),$("mImport"),$("mHelp")].forEach(m=>m.classList.remove("show"));
+      }
     });
 
     await refreshProfilesList();
